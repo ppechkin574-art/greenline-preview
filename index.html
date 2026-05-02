@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<!-- GreenLine v11 -->
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>GreenLine</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- ===== FIREBASE SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<link rel="stylesheet" href="css/styles.css?v=21">
+</head>
+<body>
+<div class="device-stage">
+<div class="device-frame">
+  <div class="device-button device-button-mute" aria-hidden="true"></div>
+  <div class="device-button device-button-volup" aria-hidden="true"></div>
+  <div class="device-button device-button-voldown" aria-hidden="true"></div>
+  <div class="device-button device-button-power" aria-hidden="true"></div>
+<div class="phone">
+
+<!-- iOS Status Bar (показывается только в десктоп-мокапе) -->
+<div class="ios-status" aria-hidden="true">
+  <span class="ios-status-time" id="iosStatusTime">9:41</span>
+  <span class="ios-status-right">
+    <span class="ios-status-signal" aria-hidden="true">
+      <svg viewBox="0 0 18 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0"  y="8"  width="3" height="4"  rx="0.6"/>
+        <rect x="5"  y="6"  width="3" height="6"  rx="0.6"/>
+        <rect x="10" y="3"  width="3" height="9"  rx="0.6"/>
+        <rect x="15" y="0"  width="3" height="12" rx="0.6"/>
+      </svg>
+    </span>
+    <span class="ios-status-net">5G</span>
+    <span class="ios-status-battery" aria-hidden="true">
+      <svg viewBox="0 0 26 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" fill="none"/>
+        <rect x="2"   y="2"   width="17" height="8"  rx="1.6" fill="currentColor"/>
+        <rect x="23.5" y="3.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity="0.4"/>
+      </svg>
+    </span>
+  </span>
+</div>
+
+<!-- ===== REGISTER / LOGIN ===== -->
+<div id="page-register" class="page active">
+  <!-- Декоративный фоновый блик в верхнем углу -->
+  <div class="reg-blob"></div>
+
+  <!-- Top row: back button (left) + GreenLine brand (centered) + invisible spacer (right) -->
+  <div class="reg-header-row">
+    <button class="reg-back" id="regBackBtn" type="button" style="visibility:hidden;" aria-label="Назад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="reg-brand">
+      <span class="reg-brand-text">GreenLine</span>
+    </div>
+    <div class="reg-back-spacer" aria-hidden="true"></div>
+  </div>
+
+  <!-- Прогресс-индикатор с подписью текущего шага -->
+  <div class="reg-progress-wrap">
+    <div class="reg-progress">
+      <div class="reg-progress-seg active" id="regSeg1"></div>
+      <div class="reg-progress-seg" id="regSeg2"></div>
+    </div>
+    <div class="reg-progress-label" id="regProgressLabel">Шаг 1 из 2 · Контактные данные</div>
+  </div>
+
+  <!-- ШАГ 1A: ВХОД (только телефон) -->
+  <div id="reg-login" class="reg-step">
+    <div class="reg-title">С возвращением</div>
+    <div class="reg-sub">Введите номер, чтобы войти в&nbsp;аккаунт</div>
+    <form class="reg-form" id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="login-phone">Номер телефона</label>
+        <div class="input-wrap">
+          <span class="phone-prefix" aria-hidden="true">
+            <span class="kz-flag">
+              <svg viewBox="0 0 32 22" fill="none" aria-hidden="true">
+                <rect width="32" height="22" rx="3" fill="#00AFCA"/>
+                <circle cx="16" cy="10.5" r="3.2" fill="#FFD400"/>
+                <g stroke="#FFD400" stroke-width="0.7" stroke-linecap="round">
+                  <path d="M16 5.7v-1.2"/><path d="M16 16.5v-1.2"/>
+                  <path d="M21 10.5h1.2"/><path d="M9.8 10.5H11"/>
+                  <path d="M19.5 7l0.85-0.85"/><path d="M11.65 14.85L12.5 14"/>
+                  <path d="M19.5 14l0.85 0.85"/><path d="M11.65 6.15L12.5 7"/>
+                </g>
+              </svg>
+            </span>
+            <span class="phone-prefix-text">+7</span>
+          </span>
+          <input class="form-input phone-in" type="tel" inputmode="numeric" placeholder="700 000 00 00" id="login-phone" maxlength="15" autocomplete="tel" data-validate="phone">
+          <span class="input-status" id="login-phone-status" aria-hidden="true">
+            <svg viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="11" fill="currentColor"/>
+              <path d="M6.5 11.4l3.2 3.2 6-6.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+        </div>
+        <div class="form-error" id="login-phone-error"></div>
+      </div>
+      <button class="btn-primary" id="loginBtnSend" type="submit" disabled>
+        <span class="btn-label">Получить код</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+    <div class="reg-toggle">Нет аккаунта? <a id="switchToRegLink" tabindex="0" role="button">Зарегистрироваться</a></div>
+  </div>
+
+  <!-- ШАГ 1B: РЕГИСТРАЦИЯ (имя + телефон) -->
+  <div id="reg-register" class="reg-step" style="display:none;">
+    <div class="reg-title">Создаём аккаунт</div>
+    <div class="reg-sub">Пара секунд — и вы в&nbsp;GreenLine</div>
+    <form class="reg-form" id="registerForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Ваше имя</label>
+        <div class="input-wrap">
+          <input class="form-input" type="text" placeholder="Жахангир Нариман" id="reg-name" autocomplete="name" data-validate="name">
+          <span class="input-status" id="reg-name-status" aria-hidden="true">
+            <svg viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="11" fill="currentColor"/>
+              <path d="M6.5 11.4l3.2 3.2 6-6.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+        </div>
+        <div class="form-error" id="reg-name-error"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-phone">Номер телефона</label>
+        <div class="input-wrap">
+          <span class="phone-prefix" aria-hidden="true">
+            <span class="kz-flag">
+              <svg viewBox="0 0 32 22" fill="none" aria-hidden="true">
+                <rect width="32" height="22" rx="3" fill="#00AFCA"/>
+                <circle cx="16" cy="10.5" r="3.2" fill="#FFD400"/>
+                <g stroke="#FFD400" stroke-width="0.7" stroke-linecap="round">
+                  <path d="M16 5.7v-1.2"/><path d="M16 16.5v-1.2"/>
+                  <path d="M21 10.5h1.2"/><path d="M9.8 10.5H11"/>
+                  <path d="M19.5 7l0.85-0.85"/><path d="M11.65 14.85L12.5 14"/>
+                  <path d="M19.5 14l0.85 0.85"/><path d="M11.65 6.15L12.5 7"/>
+                </g>
+              </svg>
+            </span>
+            <span class="phone-prefix-text">+7</span>
+          </span>
+          <input class="form-input phone-in" type="tel" inputmode="numeric" placeholder="700 000 00 00" id="reg-phone" maxlength="15" autocomplete="tel" data-validate="phone">
+          <span class="input-status" id="reg-phone-status" aria-hidden="true">
+            <svg viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="11" fill="currentColor"/>
+              <path d="M6.5 11.4l3.2 3.2 6-6.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+        </div>
+        <div class="form-error" id="reg-phone-error"></div>
+      </div>
+      <button class="btn-primary" id="regBtnSend" type="submit" disabled>
+        <span class="btn-label">Получить код</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+    <div class="reg-toggle">Уже есть аккаунт? <a id="switchToLoginLink" tabindex="0" role="button">Войти</a></div>
+    <div class="reg-terms">
+      Продолжая, вы соглашаетесь с <a>Условиями</a> и <a>Политикой&nbsp;конфиденциальности</a>
+    </div>
+  </div>
+
+  <!-- ШАГ 2: Ввод кода -->
+  <div id="reg-step2" class="reg-step" style="display:none;">
+    <div class="reg-title" id="regCodeTitle">Введите код</div>
+    <div class="reg-sub">Мы отправили 6-значный код на номер</div>
+    <div class="reg-phone-shown" id="regPhoneShown">+7 700 000 00 00 <button class="reg-edit-phone" id="regEditPhone" type="button" aria-label="Изменить номер">Изменить</button></div>
+    <div class="reg-code-wrap" id="regCodeWrap">
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc0" autocomplete="one-time-code">
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc1">
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc2">
+      <span class="reg-code-dash" aria-hidden="true"></span>
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc3">
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc4">
+      <input class="reg-code-input" type="tel" inputmode="numeric" maxlength="1" id="rc5">
+    </div>
+    <div id="reg-code-error" class="reg-error">Неверный код. Попробуйте ещё раз</div>
+    <button class="btn-primary" id="regBtnVerify" type="button" disabled>
+      <span class="btn-label">Подтвердить</span>
+      <span class="btn-spinner" aria-hidden="true"></span>
+    </button>
+    <div class="reg-resend">
+      <span id="reg-resend-timer" style="display:none;">Отправить снова через <span id="reg-resend-sec">59</span> сек</span>
+      <a id="reg-resend-link" style="display:none;" tabindex="0" role="button">Отправить код повторно</a>
+    </div>
+  </div>
+
+  <!-- ШАГ 3: УСПЕХ (только после регистрации) -->
+  <div id="reg-success" class="reg-step" style="display:none;">
+    <div class="reg-success-blob" aria-hidden="true"></div>
+    <div class="reg-success-icon" id="regSuccessIcon">
+      <svg viewBox="0 0 88 88" fill="none">
+        <defs>
+          <linearGradient id="regSuccessGrad" x1="0" y1="0" x2="88" y2="88">
+            <stop offset="0%" stop-color="#4ADE4A"/>
+            <stop offset="100%" stop-color="#2E8B2E"/>
+          </linearGradient>
+        </defs>
+        <circle class="rsi-circle" cx="44" cy="44" r="42" fill="url(#regSuccessGrad)"/>
+        <path class="rsi-check" d="M26 46l12 12 24-26" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="reg-title reg-title-center">Готово!</div>
+    <div class="reg-sub reg-sub-center">Добро пожаловать, <span id="regSuccessName">друг</span>.<br>Ваш аккаунт создан.</div>
+    <button class="btn-primary" id="regBtnFinish" type="button">
+      <span class="btn-label">Начать пользоваться</span>
+    </button>
+  </div>
+
+  <!-- reCAPTCHA контейнер (невидимый) -->
+  <div id="recaptcha-container"></div>
+</div>
+
+<!-- ===== HOME ===== -->
+<div id="page-home" class="page">
+
+  <div class="scroll-body" id="homeScrollBody">
+
+    <!-- Floating Action Button (Заказать) — появляется при скролле -->
+    <button class="home-fab" id="homeFab" type="button" onclick="openOrderPage()" aria-label="Создать заявку">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span>Заказать</span>
+    </button>
+
+    <!-- Personal discount with countdown -->
+    <section class="section home-discount-wrap home-reveal">
+      <div class="home-discount">
+        <div class="home-discount-blob" aria-hidden="true"></div>
+        <div class="home-discount-glow" aria-hidden="true"></div>
+
+        <div class="home-discount-content">
+          <!-- Top row: gift on left, text on right -->
+          <div class="home-discount-top">
+            <div class="home-discount-gift" aria-hidden="true">
+              <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <!-- Box faces (3D isometric) -->
+                  <linearGradient id="boxFront" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FFFFFF"/>
+                    <stop offset="100%" stop-color="#C8D8CC"/>
+                  </linearGradient>
+                  <linearGradient id="boxSide" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#A8BFAB"/>
+                    <stop offset="100%" stop-color="#7B9080"/>
+                  </linearGradient>
+                  <linearGradient id="boxTop" x1="0" y1="0" x2="0.4" y2="1">
+                    <stop offset="0%" stop-color="#FFFFFF"/>
+                    <stop offset="100%" stop-color="#E8F0E8"/>
+                  </linearGradient>
+                  <linearGradient id="lidFront" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FFFFFF"/>
+                    <stop offset="100%" stop-color="#D8E8DC"/>
+                  </linearGradient>
+                  <linearGradient id="lidSide" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#B8CFBC"/>
+                    <stop offset="100%" stop-color="#8FA593"/>
+                  </linearGradient>
+
+                  <!-- Ribbon gradients (golden, multi-stop) -->
+                  <linearGradient id="ribbonFront" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FFE680"/>
+                    <stop offset="50%" stop-color="#FFB020"/>
+                    <stop offset="100%" stop-color="#D88C00"/>
+                  </linearGradient>
+                  <linearGradient id="ribbonSide" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#E89400"/>
+                    <stop offset="100%" stop-color="#A56000"/>
+                  </linearGradient>
+                  <linearGradient id="ribbonTop" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FFEC9C"/>
+                    <stop offset="100%" stop-color="#FFC840"/>
+                  </linearGradient>
+
+                  <!-- Bow gradient -->
+                  <radialGradient id="bowGrad" cx="35%" cy="35%" r="80%">
+                    <stop offset="0%" stop-color="#FFEC9C"/>
+                    <stop offset="60%" stop-color="#FFB020"/>
+                    <stop offset="100%" stop-color="#B27000"/>
+                  </radialGradient>
+
+                  <filter id="giftShadow3d" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="5" flood-opacity="0.32"/>
+                  </filter>
+                </defs>
+
+                <!-- Cast ground shadow -->
+                <ellipse cx="70" cy="128" rx="44" ry="5" fill="rgba(0,0,0,0.20)"/>
+
+                <g filter="url(#giftShadow3d)">
+                  <!-- ===== BOX BODY (isometric: front + top + right) ===== -->
+                  <!-- Right side face -->
+                  <polygon points="102,72 118,62 118,118 102,128" fill="url(#boxSide)"/>
+                  <!-- Front face -->
+                  <polygon points="22,72 102,72 102,128 22,128" fill="url(#boxFront)"/>
+                  <!-- Top face -->
+                  <polygon points="22,72 38,62 118,62 102,72" fill="url(#boxTop)"/>
+
+                  <!-- ===== LID (slightly wider, on top of body) ===== -->
+                  <!-- Lid right side -->
+                  <polygon points="106,66 122,56 122,72 106,82" fill="url(#lidSide)"/>
+                  <!-- Lid front -->
+                  <polygon points="18,66 106,66 106,82 18,82" fill="url(#lidFront)"/>
+                  <!-- Lid top -->
+                  <polygon points="18,66 34,56 122,56 106,66" fill="url(#boxTop)"/>
+                  <!-- Lid edge highlight (top thin line) -->
+                  <polygon points="18,66 34,56 122,56 106,66 106,67 22,67 18,67" fill="rgba(255,255,255,0.7)"/>
+
+                  <!-- ===== RIBBON VERTICAL ===== -->
+                  <!-- Ribbon on lid front -->
+                  <polygon points="58,66 70,66 70,82 58,82" fill="url(#ribbonFront)"/>
+                  <!-- Ribbon on lid top -->
+                  <polygon points="58,66 70,66 86,56 74,56" fill="url(#ribbonTop)"/>
+                  <!-- Ribbon on lid right side (small triangle visible from perspective) -->
+                  <polygon points="70,66 70,82 86,72 86,56" fill="url(#ribbonSide)" opacity="0.85"/>
+                  <!-- Ribbon on box front -->
+                  <polygon points="58,82 70,82 70,128 58,128" fill="url(#ribbonFront)"/>
+                  <!-- Ribbon on box top (visible strip) -->
+                  <polygon points="58,72 70,72 86,62 74,62" fill="url(#ribbonTop)" opacity="0.95"/>
+                  <!-- Bridge ribbon between lid and box (slight darker) -->
+                  <polygon points="58,82 70,82 70,72 58,72" fill="url(#ribbonFront)" opacity="0.92"/>
+
+                  <!-- ===== BOW (3D layered) ===== -->
+                  <!-- Left bow loop (back) -->
+                  <path d="M64 56 C 36 36, 28 22, 40 18 C 50 18, 60 32, 66 50 Z" fill="url(#bowGrad)"/>
+                  <!-- Left bow loop highlight -->
+                  <path d="M62 50 C 44 36, 36 26, 44 22" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <!-- Right bow loop (back) -->
+                  <path d="M76 56 C 104 36, 112 22, 100 18 C 90 18, 80 32, 74 50 Z" fill="url(#bowGrad)"/>
+                  <!-- Right bow loop highlight -->
+                  <path d="M78 50 C 96 36, 104 26, 96 22" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <!-- Bow tails (hanging down) -->
+                  <path d="M62 56 Q 56 64, 50 76 L 56 74 L 54 82 Q 60 76, 64 70 Z" fill="url(#ribbonFront)" opacity="0.92"/>
+                  <path d="M78 56 Q 84 64, 90 76 L 84 74 L 86 82 Q 80 76, 76 70 Z" fill="url(#ribbonFront)" opacity="0.92"/>
+                  <!-- Center knot -->
+                  <ellipse cx="70" cy="56" rx="9" ry="7" fill="url(#bowGrad)"/>
+                  <ellipse cx="68" cy="53" rx="5" ry="3" fill="rgba(255,255,255,0.55)"/>
+                  <!-- Knot deep shadow line -->
+                  <ellipse cx="70" cy="60" rx="7" ry="2" fill="rgba(0,0,0,0.18)"/>
+                </g>
+
+                <!-- Sparkles -->
+                <g fill="#fff">
+                  <path d="M120 28 L122 34 L128 36 L122 38 L120 44 L118 38 L112 36 L118 34 Z" opacity="0.95"/>
+                  <path d="M14 24 L15 27 L18 28 L15 29 L14 32 L13 29 L10 28 L13 27 Z" opacity="0.7"/>
+                  <circle cx="126" cy="64" r="1.6" opacity="0.85"/>
+                  <circle cx="10" cy="48" r="1.3" opacity="0.7"/>
+                  <circle cx="118" cy="86" r="1.2" opacity="0.6"/>
+                </g>
+              </svg>
+            </div>
+
+            <div class="home-discount-info">
+              <div class="home-discount-eyebrow">Персональная скидка</div>
+              <span class="home-discount-num"><span class="hdn-minus">−</span><span class="hdn-val">10</span><span class="hdn-sup">%</span></span>
+              <div class="home-discount-text-title">на любую услугу</div>
+              <div class="home-discount-text-sub">при первом заказе</div>
+            </div>
+          </div>
+
+          <div class="home-discount-timer-row">
+            <span class="home-discount-timer-label">Сгорит через</span>
+            <div class="home-discount-timer" id="discountTimer">
+              <div class="timer-cell"><b id="dcH">23</b><small>ч</small></div>
+              <span class="timer-colon">:</span>
+              <div class="timer-cell"><b id="dcM">45</b><small>м</small></div>
+              <span class="timer-colon">:</span>
+              <div class="timer-cell"><b id="dcS">12</b><small>с</small></div>
+            </div>
+          </div>
+
+          <button class="home-discount-cta" type="button" onclick="openOrderPage()">
+            <span>Применить скидку</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Before After (gallery) -->
+    <section class="section home-reveal" style="padding-top: 8px; padding-bottom: 0;">
+      <div class="ba-card">
+        <div class="home-section-head">
+          <h3 class="home-section-title">До и после</h3>
+          <span class="home-section-link" onclick="showPage('gallery')">Все работы ›</span>
+        </div>
+        <div class="home-section-sub">Покажем, как преобразился участок наших клиентов</div>
+        <div class="ba-grid" style="margin-top:12px">
+          <div class="ba-tile" onclick="showPage('gallery')">
+            <img src="img/bfd86991f4.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+            <div class="ba-tile-label">Покос · 6 соток</div>
+          </div>
+          <div class="ba-tile" onclick="showPage('gallery')">
+            <img src="img/8ed73f0d79.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+            <div class="ba-tile-label">Стрижка газона</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subscription / regular care -->
+    <section class="section home-reveal" style="padding-bottom: 8px;">
+      <div class="subscription-card">
+        <div class="subscription-leaf" aria-hidden="true">
+          <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="subPlantA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="rgba(74,222,74,0.34)"/>
+                <stop offset="100%" stop-color="rgba(46,139,46,0.06)"/>
+              </linearGradient>
+              <linearGradient id="subPlantB" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(74,222,74,0.32)"/>
+                <stop offset="100%" stop-color="rgba(46,139,46,0.06)"/>
+              </linearGradient>
+            </defs>
+            <!-- Тень-постамент -->
+            <ellipse cx="70" cy="130" rx="32" ry="3" fill="rgba(46,139,46,0.08)"/>
+            <!-- Стебель -->
+            <path d="M70 130 Q72 100 70 70 Q68 50 70 28" stroke="rgba(46,139,46,0.34)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Левый большой лист -->
+            <path d="M70 78 Q40 72 22 88 Q28 102 50 98 Q66 92 70 84 Z" fill="url(#subPlantA)"/>
+            <path d="M70 80 Q52 84 28 92" stroke="rgba(46,139,46,0.22)" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <!-- Правый большой лист -->
+            <path d="M70 60 Q98 54 116 68 Q112 84 90 82 Q74 76 70 66 Z" fill="url(#subPlantB)"/>
+            <path d="M70 62 Q88 64 112 70" stroke="rgba(46,139,46,0.22)" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <!-- Левый средний лист -->
+            <path d="M70 48 Q50 42 38 50 Q42 60 56 60 Q66 56 70 52 Z" fill="url(#subPlantA)" opacity="0.85"/>
+            <!-- Правый средний лист -->
+            <path d="M70 36 Q86 30 96 38 Q92 48 80 48 Q72 44 70 40 Z" fill="url(#subPlantB)" opacity="0.85"/>
+            <!-- Верхний росток -->
+            <path d="M70 28 Q63 16 70 8 Q77 16 70 28 Z" fill="url(#subPlantA)"/>
+            <path d="M70 28 Q70 18 70 10" stroke="rgba(46,139,46,0.32)" stroke-width="0.8" fill="none"/>
+            <!-- Капля росы -->
+            <ellipse cx="56" cy="78" rx="2" ry="2.6" fill="rgba(180,220,255,0.4)"/>
+            <ellipse cx="56" cy="77" rx="0.8" ry="1" fill="rgba(255,255,255,0.7)"/>
+          </svg>
+        </div>
+        <div class="subscription-icon">
+          <svg viewBox="0 0 28 28" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 4v3M14 21v3M4 14h3M21 14h3M7 7l2 2M19 19l2 2M7 21l2-2M19 9l2-2"/>
+            <circle cx="14" cy="14" r="4.5"/>
+          </svg>
+        </div>
+        <div class="subscription-content">
+          <div class="subscription-eyebrow">Регулярный уход</div>
+          <h3 class="subscription-title">Подписка на покос</h3>
+          <p class="subscription-text">Газон отрос — мы приехали. Заранее, по расписанию, без вашего участия.</p>
+          <button class="subscription-cta" type="button" onclick="openOrderPage()">
+            <span>Узнать подробнее</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section home-reveal" style="padding-top: 8px;">
+      <div class="reviews-card">
+        <div class="home-section-head">
+          <h3 class="home-section-title">Отзывы клиентов</h3>
+          <span class="home-section-link">Все отзывы ›</span>
+        </div>
+        <div class="home-section-sub">Реальные отзывы от наших клиентов из Уральска</div>
+        <div class="reviews-row" id="reviewsRow">
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Очень аккуратно подстригли газон и убрали всё за собой. Команда вежливая, выехали в назначенное время.</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="0">А</div>
+              <div class="review-author-info">
+                <div class="review-name">Айгуль Н.</div>
+                <div class="review-service">Стрижка газона · 2 дня назад</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Заказывал вспашку — всё по фотографиям. Цена честная, доплат на месте не было. Рекомендую!</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="1">Е</div>
+              <div class="review-author-info">
+                <div class="review-name">Ержан С.</div>
+                <div class="review-service">Вспашка · 5 дней назад</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Подстригли тую идеальной формы. Были опасения после прошлых "мастеров", но эти ребята — профи!</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="2">С</div>
+              <div class="review-author-info">
+                <div class="review-name">Сауле Б.</div>
+                <div class="review-service">Топиарная обрезка · 1 нед.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Подписалась на регулярный покос — газон выглядит отлично всё лето. Никаких хлопот.</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="3">Д</div>
+              <div class="review-author-info">
+                <div class="review-name">Динара К.</div>
+                <div class="review-service">Подписка на покос · 2 нед.</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social media -->
+    <section class="section home-reveal" style="padding-top: 8px; padding-bottom: 96px;">
+      <div class="social-card">
+        <div class="home-section-head">
+          <h3 class="home-section-title">Мы в соцсетях</h3>
+        </div>
+        <div class="home-section-sub">Подпишитесь, чтобы первыми узнавать о скидках и акциях</div>
+        <div class="social-row">
+          <a class="social-link" href="https://instagram.com/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://instagram.com/greenline','_system');">
+            <span class="social-icon social-icon-ig" aria-hidden="true">
+              <svg viewBox="0 0 28 28" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="20" height="20" rx="6"/>
+                <circle cx="14" cy="14" r="5"/>
+                <circle cx="20.5" cy="7.5" r="1" fill="#fff"/>
+              </svg>
+            </span>
+            <span class="social-name">Instagram</span>
+          </a>
+          <a class="social-link" href="https://t.me/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://t.me/greenline','_system');">
+            <span class="social-icon social-icon-tg" aria-hidden="true">
+              <svg viewBox="0 0 28 28" fill="#fff">
+                <path d="M23.5 5.5L3.5 13.2c-1 .4-1 1.8 0 2.2l5 1.7 1.8 5.6c.3 1 1.6 1.2 2.3.4l3-3.2 5.4 4c.9.7 2.1.2 2.3-.9l3-15c.3-1.4-1.1-2.6-2.3-2zM10.6 17.6l-.5 4.4 2.6-3.4 7-7.6c.2-.2-.1-.5-.3-.4l-8.8 7z"/>
+              </svg>
+            </span>
+            <span class="social-name">Telegram</span>
+          </a>
+          <a class="social-link" href="https://wa.me/77000000000" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://wa.me/77000000000','_system');">
+            <span class="social-icon social-icon-wa" aria-hidden="true">
+              <svg viewBox="0 0 28 28" fill="#fff">
+                <path d="M14 3a11 11 0 00-9.5 16.5L3 25l5.6-1.5A11 11 0 1014 3zm0 20a9 9 0 01-4.6-1.3l-.3-.2-3.3.9.9-3.2-.2-.3A9 9 0 1114 23zm5-6.7c-.3-.1-1.6-.8-1.9-.9-.3-.1-.5-.1-.7.2l-.9 1.1c-.2.2-.3.2-.6.1-.9-.4-1.7-1-2.4-1.7-.6-.6-1.1-1.4-1.5-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5l.3-.4c.1-.1 0-.3 0-.5-.1-.1-.6-1.5-.9-2.1-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1.1-1.1 2.6 0 1.5 1.1 3 1.3 3.2.2.3 2.2 3.4 5.4 4.6 2.7 1 3.3.9 3.9.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.5-.4z"/>
+              </svg>
+            </span>
+            <span class="social-name">WhatsApp</span>
+          </a>
+          <a class="social-link" href="https://tiktok.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://tiktok.com/@greenline','_system');">
+            <span class="social-icon social-icon-tt" aria-hidden="true">
+              <svg viewBox="0 0 28 28" fill="#fff">
+                <path d="M19.5 4c.4 1.8 1.5 3.3 3 4.2 1 .6 2.2 1 3.5 1v3.5c-2.2 0-4.2-.7-5.9-2v8.4c0 4.6-3.7 8.4-8.4 8.4S3.3 23.7 3.3 19c0-4.6 3.7-8.4 8.4-8.4.4 0 .8 0 1.2.1v3.5c-.4-.1-.8-.2-1.2-.2-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9 4.9-2.2 4.9-4.9V4h2.9z"/>
+              </svg>
+            </span>
+            <span class="social-name">TikTok</span>
+          </a>
+          <a class="social-link" href="https://youtube.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://youtube.com/@greenline','_system');">
+            <span class="social-icon social-icon-yt" aria-hidden="true">
+              <svg viewBox="0 0 28 28" fill="#fff">
+                <path d="M26 9.2c-.3-1.1-1.2-2-2.3-2.3C21.6 6.3 14 6.3 14 6.3s-7.6 0-9.7.6c-1.1.3-2 1.2-2.3 2.3C1.4 11.3 1.4 14 1.4 14s0 2.7.6 4.8c.3 1.1 1.2 2 2.3 2.3 2.1.6 9.7.6 9.7.6s7.6 0 9.7-.6c1.1-.3 2-1.2 2.3-2.3.6-2.1.6-4.8.6-4.8s0-2.7-.6-4.8zM11.6 18V10l6.4 4-6.4 4z"/>
+              </svg>
+            </span>
+            <span class="social-name">YouTube</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+      </div>
+</div>
+
+    <!-- ===== ORDERS ===== -->
+<div id="page-orders" class="page">
+  <div class="scroll-body">
+    <!-- Active / past orders block -->
+    <section class="orders-section">
+      <div class="orders-section-header">
+        <h2 class="orders-section-title">Ваши заказы</h2>
+      </div>
+      <div class="orders-empty-card">
+        <div class="orders-empty-card-icon" aria-hidden="true">
+          <svg viewBox="0 0 56 56" fill="none">
+            <rect x="10" y="8" width="36" height="42" rx="6" stroke="#2E8B2E" stroke-width="2.2" fill="rgba(46,139,46,0.06)"/>
+            <path d="M19 22h18M19 30h18M19 38h12" stroke="#2E8B2E" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="orders-empty-card-title">Активных заказов нет</div>
+        <div class="orders-empty-card-sub">Закажите услугу из каталога ниже</div>
+      </div>
+    </section>
+
+    <!-- Service catalog -->
+    <section class="orders-section orders-catalog">
+      <div class="orders-section-header">
+        <h2 class="orders-section-title">Каталог услуг</h2>
+        <div class="orders-section-sub">Выберите услугу для оформления заявки</div>
+      </div>
+      <div class="home-service-grid">
+        <div class="home-service-tile" onclick="openServiceDetail('Покос травы', this, 'orders')">
+          <img src="img/a993e26b12.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Покос травы</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+        <div class="home-service-tile" onclick="openServiceDetail('Стрижка газона', this, 'orders')">
+          <img src="img/4eecf9d329.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Стрижка газона</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+        <div class="home-service-tile" onclick="openServiceDetail('Вспашка', this, 'orders')">
+          <img src="img/c7ea20cb93.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Вспашка</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+        <div class="home-service-tile" onclick="openServiceDetail('Посадка газона', this, 'orders')">
+          <img src="img/0d19d8e209.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Посадка газона</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+        <div class="home-service-tile" onclick="openServiceDetail('Посадка растений', this, 'orders')">
+          <img src="img/c300d3358f.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Посадка растений</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+        <div class="home-service-tile" onclick="openServiceDetail('Топиарная обрезка', this, 'orders')">
+          <img src="img/6c992cb66e.png" alt="">
+          <div class="hst-bottom">
+            <div class="hst-name">Топиарная обрезка</div>
+            <div class="hst-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ===== GALLERY (До и после) ===== -->
+<div id="page-gallery" class="page">
+  <div class="header header-clean header-with-back">
+    <button class="page-back" type="button" onclick="goToHome()" aria-label="Назад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="header-title-stack">
+      <div class="header-title">Наши работы</div>
+      <div class="header-subtitle" id="galleryCount">8 работ · до и после</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="gallery-filters">
+      <button class="gallery-filter active" data-filter="all">Все</button>
+      <button class="gallery-filter" data-filter="mow">Покос</button>
+      <button class="gallery-filter" data-filter="lawn">Газон</button>
+      <button class="gallery-filter" data-filter="till">Вспашка</button>
+      <button class="gallery-filter" data-filter="topiary">Топиарная</button>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</div>
+
+<!-- ===== SERVICES ===== -->
+<div id="page-services" class="page">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-logo"><span class="logo-text">GreenLine</span></div>
+    </div>
+    <div class="header-sub">Все услуги</div>
+  </div>
+  <div class="scroll-body">
+    <div style="padding:8px 0;">
+      <div class="order-svc-item" onclick="openServiceDetail('Покос травы', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/a993e26b12.png" alt="Покос травы">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Покос травы</div>
+          <div class="order-svc-desc">Профессиональный покос травы на участке любой сложности</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+      <div class="order-svc-item" onclick="openServiceDetail('Стрижка газона', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/4eecf9d329.png" alt="Стрижка газона">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Стрижка газона</div>
+          <div class="order-svc-desc">Аккуратная стрижка газона и поддержание идеальной высоты</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+      <div class="order-svc-item" onclick="openServiceDetail('Вспашка', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/c7ea20cb93.png" alt="Вспашка">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Вспашка</div>
+          <div class="order-svc-desc">Вспашка земли мотоблоком и подготовка к посадке</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+      <div class="order-svc-item" onclick="openServiceDetail('Посадка газона', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/0d19d8e209.png" alt="Посадка газона">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Посадка газона</div>
+          <div class="order-svc-desc">Профессиональная укладка рулонного газона</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+      <div class="order-svc-item" onclick="openServiceDetail('Посадка растений', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/c300d3358f.png" alt="Посадка растений">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Посадка растений</div>
+          <div class="order-svc-desc">Посадка деревьев, кустарников, цветов и других растений</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+      <div class="order-svc-item" onclick="openServiceDetail('Топиарная обрезка', this, 'services')">
+        <div class="order-svc-img">
+          <img src="img/6c992cb66e.png" alt="Топиарная обрезка">
+        </div>
+        <div class="order-svc-text">
+          <div class="order-svc-name">Топиарная обрезка</div>
+          <div class="order-svc-desc">Формирование и декоративная стрижка растений и кустарников</div>
+        </div>
+        <div class="order-svc-arrow">›</div>
+      </div>
+    </div><div class="service-grid-name">Покос травы</div></div></div>
+
+      
+
+    
+<div id="page-service-detail" class="page">
+  <div class="detail-hero">
+    <img id="detailHeroImg" src="img/6c992cb66e.png" alt="">
+    <button class="detail-back" onclick="detailGoBack()">←</button>
+    <div class="detail-hero-overlay">
+      <div class="detail-hero-title" id="detailTitle">Топиарная обрезка</div>
+      <div class="detail-hero-sub" id="detailSub">Придадим вашим растениям идеальную форму</div>
+      <div class="detail-hero-icon" id="detailIcon">🌲</div>
+    </div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-step-header">
+        <div class="detail-step-num">1</div>
+        <div><div class="detail-step-title">Площадь участка</div><div class="detail-step-sub">Укажите примерную площадь</div></div>
+      </div>
+      <div style="padding: 0 4px;">
+        <div style="font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;color:var(--green);margin-bottom:8px" id="detailAreaVal">4 <span style="font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;font-weight:400">соток</span></div>
+        <input type="range" class="area-slider" min="1" max="20" value="4" id="detailAreaSlider" oninput="updateDetailArea(this.value)">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px"><span>1 сотка</span><span>20 соток</span></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-step-header">
+        <div class="detail-step-num">2</div>
+        <div><div class="detail-step-title">Адрес участка</div><div class="detail-step-sub">Укажите точный адрес для выезда</div></div>
+      </div>
+      <div class="detail-input-wrap">
+        <span class="detail-input-icon">📍</span>
+        <input class="detail-input" type="text" id="detailAddress" placeholder="Введите адрес">
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-step-header">
+        <div class="detail-step-num">3</div>
+        <div><div class="detail-step-title">Когда удобно?</div><div class="detail-step-sub">Выберите удобное время</div></div>
+      </div>
+      <div class="date-grid">
+        <div class="date-card selected" id="dateToday" onclick="selectDate(this, dateLabelToday())">
+          <div class="date-card-icon">🗓️</div>
+          <div class="date-card-name" id="dateTodayLabel">Сегодня</div>
+        </div>
+        <div class="date-card" id="dateTomorrow" onclick="selectDate(this, dateLabelTomorrow())">
+          <div class="date-card-icon">🗓️</div>
+          <div class="date-card-name" id="dateTomorrowLabel">Завтра</div>
+        </div>
+        <div class="date-card" onclick="selectDate(this,'В ближайшие дни')">
+          <div class="date-card-icon">🗓️</div>
+          <div class="date-card-name">В ближайшие дни</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-step-header">
+        <div class="detail-step-num">4</div>
+        <div><div class="detail-step-title">Ваши контакты</div><div class="detail-step-sub">Оставьте свои данные</div></div>
+      </div>
+      <div class="contacts-grid">
+        <div class="contact-input-wrap">
+          <span class="contact-input-icon">👤</span>
+          <input class="contact-input" type="text" id="detailName" placeholder="Ваше имя">
+        </div>
+        <div class="contact-input-wrap">
+          <span class="contact-input-icon">📞</span>
+          <input class="contact-input" type="tel" id="detailPhone" placeholder="Номер телефона">
+        </div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+
+      <!-- Photo upload -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">5</div>
+          <div>
+            <div class="detail-step-title">Фото участка</div>
+            <div class="detail-step-sub">По желанию — поможет точнее оценить работу</div>
+          </div>
+        </div>
+        <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
+          <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+          <div id="photoPreview" class="photo-preview-empty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2E8B2E" stroke-width="1.5"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>
+            <div class="photo-upload-text">Нажмите чтобы добавить фото</div>
+            <div class="photo-upload-sub">Камера или галерея</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 8px 20px 24px;">
+      <button class="btn-whatsapp" onclick="sendWhatsApp()" style="width:100%;">
+        Узнать стоимость
+      </button>
+      <div class="detail-privacy" style="text-align:center;margin-top:8px;">🔒 Мы не передаём ваши данные третьим лицам</div>
+    </div>
+  </div>
+
+<!-- PROFILE SUB PAGES -->
+<div id="page-profile-addresses" class="page">
+  <div class="header">
+    <div class="header-top">
+      <button onclick="showPage('profile')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#2E8B2E;padding:0;line-height:1;">←</button>
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:#1a1a1a;">Мои адреса</div>
+      <div style="width:22px;"></div>
+    </div>
+  </div>
+  <div class="scroll-body" style="padding:16px;padding-bottom:100px;">
+    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.07);margin-bottom:12px;">
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px;">📍 Домашний адрес</div>
+      <div style="font-size:13px;color:#666;">Уральск, ул. Достык, 45</div>
+    </div>
+    <button onclick="alert('Добавление адреса будет доступно после подключения Firebase')" style="width:100%;padding:14px;background:#E8F5E8;border:2px dashed #2E8B2E;border-radius:16px;color:#2E8B2E;font-size:14px;font-weight:600;cursor:pointer;">+ Добавить новый адрес</button>
+  </div>
+</div>
+
+<div id="page-profile-notifications" class="page">
+  <div class="header">
+    <div class="header-top">
+      <button onclick="showPage('profile')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#2E8B2E;padding:0;line-height:1;">←</button>
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:#1a1a1a;">Уведомления</div>
+      <div style="width:22px;"></div>
+    </div>
+  </div>
+  <div class="scroll-body" style="padding:16px;padding-bottom:100px;">
+    <div style="background:#fff;border-radius:16px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #E8F5E8;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">Push-уведомления</div>
+          <div style="font-size:12px;color:#888;">О статусе заказов</div>
+        </div>
+        <input type="checkbox" checked style="width:20px;height:20px;accent-color:#2E8B2E;">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #E8F5E8;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">Напоминания о покосе</div>
+          <div style="font-size:12px;color:#888;">Когда пора косить</div>
+        </div>
+        <input type="checkbox" checked style="width:20px;height:20px;accent-color:#2E8B2E;">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">Акции и скидки</div>
+          <div style="font-size:12px;color:#888;">Специальные предложения</div>
+        </div>
+        <input type="checkbox" style="width:20px;height:20px;accent-color:#2E8B2E;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-profile-referral" class="page">
+  <div class="header">
+    <div class="header-top">
+      <button onclick="showPage('profile')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#2E8B2E;padding:0;line-height:1;">←</button>
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:#1a1a1a;">Акция</div>
+      <div style="width:22px;"></div>
+    </div>
+  </div>
+  <div class="scroll-body" style="padding:0;padding-bottom:100px;">
+    <div style="background:linear-gradient(160deg,#1a6b1a,#2E8B2E,#3DA83D);padding:32px 24px;text-align:center;position:relative;overflow:hidden;">
+      <div style="font-size:48px;margin-bottom:12px;">📸</div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;">Сделай сторис —<br>получи скидку!</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.85);">Поделись нашим приложением в Instagram</div>
+      <div style="display:inline-block;background:#fff;border-radius:20px;padding:10px 28px;margin-top:16px;">
+        <span style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;color:#2E8B2E;">500 ₸</span>
+      </div>
+    </div>
+    <div style="padding:20px 16px;">
+      <div style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;color:#1a1a1a;margin-bottom:14px;">Как получить скидку?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="width:40px;height:40px;background:#E8F5E8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">1️⃣</div>
+          <div><div style="font-weight:700;font-size:14px;">Сделай сторис</div><div style="font-size:12px;color:#888;margin-top:2px;">Сфотографируй или сделай скриншот</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="width:40px;height:40px;background:#E8F5E8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">2️⃣</div>
+          <div><div style="font-weight:700;font-size:14px;">Опубликуй в Instagram</div><div style="font-size:12px;color:#888;margin-top:2px;">Расскажи друзьям про GreenLine</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="width:40px;height:40px;background:#E8F5E8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">3️⃣</div>
+          <div><div style="font-weight:700;font-size:14px;">Скинь скриншот нам</div><div style="font-size:12px;color:#888;margin-top:2px;">Отправь скриншот сторис в WhatsApp</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div style="width:40px;height:40px;background:#2E8B2E;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✅</div>
+          <div><div style="font-weight:700;font-size:14px;">Получи скидку 500 ₸</div><div style="font-size:12px;color:#888;margin-top:2px;">На любую следующую услугу</div></div>
+        </div>
+      </div>
+      <div style="background:#FFF8E8;border-radius:16px;padding:14px;margin-bottom:16px;border:1px solid #FFE082;">
+        <div style="font-weight:700;font-size:13px;color:#8B6914;margin-bottom:8px;">📋 Условия</div>
+        <div style="font-size:12px;color:#7a6030;line-height:1.7;">• Сторис должна быть публичной<br>• Скидка действует 30 дней<br>• Скидка на одну услугу</div>
+      </div>
+      <button onclick="window.open('https://wa.me/77000000000?text=Привет! Я сделал сторис с GreenLine. Отправляю скриншот!','_blank')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">💬 Отправить скриншот в WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div id="page-profile-help" class="page">
+  <div class="header">
+    <div class="header-top">
+      <button onclick="showPage('profile')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#2E8B2E;padding:0;line-height:1;">←</button>
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:#1a1a1a;">Помощь</div>
+      <div style="width:22px;"></div>
+    </div>
+  </div>
+  <div class="scroll-body" style="padding:16px;padding-bottom:100px;">
+    <div style="background:#fff;border-radius:16px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.07);margin-bottom:12px;">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'" style="padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:600;font-size:14px;">Как оформить заказ?</span><span style="color:#2E8B2E;">›</span>
+      </div>
+      <div style="display:none;padding:0 14px 14px;font-size:13px;color:#666;line-height:1.6;">Выберите услугу, укажите адрес, дату и контакты. Нажмите "Узнать стоимость" — мы свяжемся в течение 15 минут.</div>
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'" style="padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #E8F5E8;">
+        <span style="font-weight:600;font-size:14px;">Как отменить заказ?</span><span style="color:#2E8B2E;">›</span>
+      </div>
+      <div style="display:none;padding:0 14px 14px;font-size:13px;color:#666;line-height:1.6;">Напишите нам в WhatsApp — отменим бесплатно за 2 часа до приезда.</div>
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'" style="padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #E8F5E8;">
+        <span style="font-weight:600;font-size:14px;">Как рассчитывается цена?</span><span style="color:#2E8B2E;">›</span>
+      </div>
+      <div style="display:none;padding:0 14px 14px;font-size:13px;color:#666;line-height:1.6;">Цена зависит от площади и типа услуги. Менеджер сообщит точную стоимость после уточнения деталей.</div>
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'" style="padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #E8F5E8;">
+        <span style="font-weight:600;font-size:14px;">Работаете в дождь?</span><span style="color:#2E8B2E;">›</span>
+      </div>
+      <div style="display:none;padding:0 14px 14px;font-size:13px;color:#666;line-height:1.6;">Нет, при дожде переносим на ближайший подходящий день и предупреждаем заранее.</div>
+    </div>
+    <button onclick="window.open('https://wa.me/77000000000','_blank')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;">💬 Написать в WhatsApp</button>
+  </div>
+</div>
+
+<div id="page-profile" class="page">
+  <div class="scroll-body">
+
+    <!-- Profile hero card -->
+    <section class="profile-hero">
+      <div class="profile-hero-bg" aria-hidden="true"></div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="profileInitial">А</div>
+        <div class="profile-avatar-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+      </div>
+      <div class="profile-name" id="profileName">Алибек</div>
+      <div class="profile-phone" id="profilePhone">+7 (700) 000-00-00</div>
+
+      <!-- Member stats row -->
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="profileStatOrders">0</div>
+          <div class="profile-stat-label">заказов</div>
+        </div>
+        <div class="profile-stat-divider"></div>
+        <div class="profile-stat">
+          <div class="profile-stat-num">0%</div>
+          <div class="profile-stat-label">скидка</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu list -->
+    <section class="profile-menu">
+      <div class="profile-section-label">Аккаунт</div>
+      <div class="profile-list">
+        <button type="button" class="profile-item" onclick="showPage('profile-addresses')">
+          <span class="profile-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22c-4-4-7-8-7-12a7 7 0 0114 0c0 4-3 8-7 12z"/><circle cx="12" cy="10" r="2.5"/>
+            </svg>
+          </span>
+          <span class="profile-item-text">Мои адреса</span>
+          <span class="profile-item-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </button>
+        <button type="button" class="profile-item" onclick="showPage('profile-notifications')">
+          <span class="profile-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M14 21a2 2 0 01-4 0"/>
+            </svg>
+          </span>
+          <span class="profile-item-text">Уведомления</span>
+          <span class="profile-item-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </button>
+        <button type="button" class="profile-item" onclick="showPage('profile-referral')">
+          <span class="profile-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 12h18"/><path d="M12 9v12"/>
+              <path d="M12 9c-2-3-6-3-6 0M12 9c2-3 6-3 6 0"/>
+            </svg>
+          </span>
+          <span class="profile-item-text">Реферальная программа</span>
+          <span class="profile-item-pill">+5%</span>
+          <span class="profile-item-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <div class="profile-section-label">Поддержка</div>
+      <div class="profile-list">
+        <button type="button" class="profile-item" onclick="showPage('profile-help')">
+          <span class="profile-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 4"/><circle cx="12" cy="17" r="0.6" fill="#fff"/>
+            </svg>
+          </span>
+          <span class="profile-item-text">Помощь и FAQ</span>
+          <span class="profile-item-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>
+        </button>
+        <button type="button" class="profile-item profile-item-link" onclick="window.open('https://wa.me/77000000000','_system')">
+          <span class="profile-item-icon profile-item-icon-wa">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M17 14c-.3-.2-1.7-.8-2-1-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-.9-.4-1.7-.9-2.5-1.6-.7-.7-1.2-1.6-1.4-1.9-.2-.3 0-.5.1-.6.2-.2.4-.4.5-.6.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.4 2 .8 2.8.9 3.8.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4 0-.1-.3-.2-.5-.3z"/><path d="M3 21l1.5-4.5A8 8 0 1112 20a8 8 0 01-3.5-.8L3 21z" stroke="#fff" stroke-width="0" fill="rgba(255,255,255,0.18)"/></svg>
+          </span>
+          <span class="profile-item-text">Связаться по WhatsApp</span>
+          <span class="profile-item-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <button type="button" class="profile-logout" onclick="showPage('register')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 17l5-5-5-5"/><path d="M20 12H9"/><path d="M9 4H6a2 2 0 00-2 2v12a2 2 0 002 2h3"/>
+        </svg>
+        <span>Выйти из аккаунта</span>
+      </button>
+
+      <div class="profile-version">GreenLine · v1.0</div>
+    </section>
+  </div>
+</div>
+
+<div id="page-order" class="page">
+  <div class="order-header">
+    <button class="order-back" onclick="goToHome()">←</button>
+    <div class="order-header-title" id="orderHeaderTitle">Выбор услуги</div>
+  </div>
+  <div class="steps-bar" id="stepsBar">
+    <div class="step-dot active" id="sd1">1</div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-dot pending" id="sd2">2</div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-dot pending" id="sd3">3</div>
+  </div>
+  <div class="scroll-body" id="orderScrollBody">
+    <div class="step-section active" id="ostep1">
+      <span class="section-label">Выберите услугу</span>
+      <div class="order-svc-list">
+        <div class="order-svc-item" onclick="selectService(this,'Покос травы','🌾',3000)">
+          <div class="order-svc-img">
+            <img src="img/a993e26b12.png" alt="Покос травы">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Покос травы</div>
+            <div class="order-svc-desc">Профессиональный покос травы на участке любой сложности</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+        <div class="order-svc-item" onclick="selectService(this,'Стрижка газона','🚜',4000)">
+          <div class="order-svc-img">
+            <img src="img/4eecf9d329.png" alt="Стрижка газона">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Стрижка газона</div>
+            <div class="order-svc-desc">Аккуратная стрижка газона и поддержание идеальной высоты</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+        <div class="order-svc-item" onclick="selectService(this,'Вспашка','🚜',5000)">
+          <div class="order-svc-img">
+            <img src="img/c7ea20cb93.png" alt="Вспашка">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Вспашка</div>
+            <div class="order-svc-desc">Вспашка земли мотоблоком и подготовка к посадке</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+        <div class="order-svc-item" onclick="selectService(this,'Посадка газона','🌱',8000)">
+          <div class="order-svc-img">
+            <img src="img/0d19d8e209.png" alt="Посадка газона">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Посадка газона</div>
+            <div class="order-svc-desc">Профессиональная укладка рулонного газона</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+        <div class="order-svc-item" onclick="selectService(this,'Посадка растений','🌿',6000)">
+          <div class="order-svc-img">
+            <img src="img/c300d3358f.png" alt="Посадка растений">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Посадка растений</div>
+            <div class="order-svc-desc">Посадка деревьев, кустарников, цветов и других растений</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+        <div class="order-svc-item" onclick="selectService(this,'Топиарная обрезка','✂️',7000)">
+          <div class="order-svc-img">
+            <img src="img/6c992cb66e.png" alt="Топиарная обрезка">
+          </div>
+          <div class="order-svc-text">
+            <div class="order-svc-name">Топиарная обрезка</div>
+            <div class="order-svc-desc">Формирование и декоративная стрижка растений и кустарников</div>
+          </div>
+          <div class="order-svc-arrow">›</div>
+        </div>
+      </div>
+      </div>
+    <div class="step-section" id="ostep2">
+
+      <!-- Площадь участка -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">1</div>
+          <div>
+            <div class="detail-step-title">Площадь участка</div>
+            <div class="detail-step-sub">Укажите примерную площадь</div>
+          </div>
+        </div>
+        <div class="area-value-big"><span id="areaVal2">4</span> <span style="font-size:16px;font-weight:400;color:#888;">соток</span></div>
+        <input type="range" class="area-slider" min="1" max="20" value="4" id="areaSlider" oninput="updateArea2(this.value)">
+        <div class="area-labels"><span>1 сотка</span><span>20 соток</span></div>
+      </div>
+
+      <!-- Адрес -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">2</div>
+          <div>
+            <div class="detail-step-title">Адрес участка</div>
+            <div class="detail-step-sub">Укажите точный адрес для выезда</div>
+          </div>
+        </div>
+        <div class="detail-input-wrap">
+          <span style="color:#e53935;">📍</span>
+          <input class="detail-input" type="text" id="orderAddress" placeholder="Введите адрес">
+        </div>
+      </div>
+
+      <!-- Дата -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">3</div>
+          <div>
+            <div class="detail-step-title">Когда удобно?</div>
+            <div class="detail-step-sub">Выберите удобное время</div>
+          </div>
+        </div>
+        <div class="date-cards">
+          <div class="date-card selected" onclick="selectOrderDate(this,'Сегодня, 28 апреля')">
+            <div class="date-card-icon">🗓️</div>
+            <div>Сегодня, 28 апреля</div>
+          </div>
+          <div class="date-card" onclick="selectOrderDate(this,'Завтра, 29 апреля')">
+            <div class="date-card-icon">🗓️</div>
+            <div>Завтра, 29 апреля</div>
+          </div>
+          <div class="date-card" onclick="selectOrderDate(this,'В ближайшие дни')">
+            <div class="date-card-icon">🗓️</div>
+            <div>В ближайшие дни</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Контакты -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">4</div>
+          <div>
+            <div class="detail-step-title">Ваши контакты</div>
+            <div class="detail-step-sub">Оставьте свои данные</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="detail-input-wrap">
+            <span>👤</span>
+            <input class="detail-input" type="text" id="orderName" placeholder="Ваше имя">
+          </div>
+          <div class="detail-input-wrap">
+            <span>📞</span>
+            <input class="detail-input" type="tel" id="orderPhone" placeholder="Номер телефона">
+          </div>
+        </div>
+      </div>
+
+      <!-- Фото -->
+      <div class="detail-section">
+        <div class="detail-step-header">
+          <div class="detail-step-num">5</div>
+          <div>
+            <div class="detail-step-title">Фото участка</div>
+            <div class="detail-step-sub">По желанию — поможет точнее оценить работу</div>
+          </div>
+        </div>
+        <div class="photo-upload-area" onclick="document.getElementById('orderPhotoInput').click()">
+          <input type="file" id="orderPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleOrderPhoto(this)">
+          <div id="orderPhotoPreview" class="photo-preview-empty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2E8B2E" stroke-width="1.5"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>
+            <div class="photo-upload-text">Нажмите чтобы добавить фото</div>
+            <div class="photo-upload-sub">Камера или галерея</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка -->
+      <div style="padding:8px 20px 32px;">
+        <button class="btn-whatsapp" onclick="submitOrderWhatsApp()" style="width:100%;">
+          Узнать стоимость
+        </button>
+      </div>
+
+    </div>
+    <div class="step-section" id="ostep3">
+      <span class="section-label">Ваш заказ</span>
+      <div class="price-summary">
+        <div class="price-summary-title">Итого по заказу</div>
+        <div class="price-row"><span>Услуга</span><span class="val" id="sumService">—</span></div>
+        <div class="price-row"><span>Площадь</span><span class="val" id="sumArea">—</span></div>
+        <div class="price-row"><span>Дата</span><span class="val" id="sumDate">—</span></div>
+        <div class="price-row"><span>Время</span><span class="val" id="sumTime">—</span></div>
+        <div class="price-row"><span>Адрес</span><span class="val" id="sumAddr">—</span></div>
+        <div class="price-row total"><span>К оплате</span><span class="val" id="sumTotal">—</span></div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="order-field"><label class="order-label">Способ оплаты</label><select class="order-input" style="appearance:none"><option>💵 Наличные при приезде</option><option>💳 Kaspi Pay</option><option>📱 QR оплата</option></select></div>
+    </div>
+    <div class="step-section" id="ostep-success">
+      <div class="success-screen">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Заказ оформлен!</div>
+        <div class="success-sub">Мы получили вашу заявку и скоро свяжемся для подтверждения</div>
+        <div class="success-order-num"><div class="success-order-label">Номер заказа</div><div class="success-order-val" id="orderNum">#GL-0001</div></div>
+        <button class="btn-green" style="max-width:300px;margin:0 auto" onclick="goToHome()">На главную</button>
+      </div>
+    </div>
+  </div>
+  <div class="step-footer" id="orderFooter">
+    <button class="btn-back-step" id="orderPrevBtn" onclick="orderPrev()" style="display:none">←</button>
+    <button class="btn-next" id="orderNextBtn" onclick="orderNext()">Далее →</button>
+  </div>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div id="page-admin" class="page">
+
+<div style="padding-bottom: 70px;">
+  <!-- Header -->
+  <div class="adm-header">
+    <div class="adm-header-left">
+      <button class="adm-menu-btn" onclick="showPage('register')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div>
+        <div class="adm-title"><span>GreenLine</span> Admin</div>
+        <div class="adm-subtitle">Заявки клиентов</div>
+      </div>
+    </div>
+    <button class="adm-bell" onclick="showPage('register')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <div class="adm-bell-dot"></div>
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="adm-stats">
+    <div class="adm-stat">
+      <div class="adm-stat-icon">🗓️</div>
+      <div>
+        <div class="adm-stat-label">Сегодня</div>
+        <div class="adm-stat-num" id="admStatTotal">0</div>
+        <div class="adm-stat-unit">заявок</div>
+      </div>
+    </div>
+    <div class="adm-stat">
+      <div class="adm-stat-icon">📋</div>
+      <div>
+        <div class="adm-stat-label">Новые</div>
+        <div class="adm-stat-num" id="admStatNew">0</div>
+        <div class="adm-stat-unit">заявки</div>
+      </div>
+    </div>
+    <div class="adm-stat">
+      <div class="adm-stat-icon">📞</div>
+      <div>
+        <div class="adm-stat-label">Связались</div>
+        <div class="adm-stat-num" id="admStatContacted">0</div>
+        <div class="adm-stat-unit">заявки</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="adm-tabs" id="admTabs"></div>
+
+  <!-- Leads -->
+  <div class="adm-leads" id="admLeads"></div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="adm-bottom-nav">
+  <button class="adm-nav-btn active">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+    Заявки
+  </button>
+  <button class="adm-nav-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    История
+  </button>
+  <button class="adm-nav-btn" onclick="showPage('register')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+    Выйти
+  </button>
+</div>
+</div>
+</div>
+  </div>
+  
+</div>
+
+<!-- ===== PROFILE ===== -->
+
+<!-- ===== ORDER PAGE ===== -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Оформить заявку</div>
+    <div class="modal-form-group"><label class="modal-label">Услуга</label><select class="modal-select"><option>Покос травы</option><option>Стрижка газона</option><option>Вспашка</option><option>Посадка газона</option><option>Обрезка</option><option>Топиар</option></select></div>
+    <div class="modal-form-group"><label class="modal-label">Адрес</label><input class="modal-input" type="text" placeholder="ул. Назарбаева, 12"></div>
+    <div class="modal-form-group"><label class="modal-label">Дата</label><input class="modal-input" type="date"></div>
+    <button class="btn-green" onclick="submitOrder()">Отправить заявку</button>
+  </div>
+</div>
+
+<!-- ===== SERVICE DETAIL PAGE ===== -->
+
+</div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div id="successScreen" style="display:none; position:fixed; inset:0; z-index:9999; background:#E8F5E8; overflow-y:auto;">
+
+<div class="sc-wrap">
+  <svg class="sc-grass" viewBox="0 0 380 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="645" rx="90" ry="36" fill="#C8E6C8" opacity="0.7"/>
+    <ellipse cx="320" cy="662" rx="70" ry="28" fill="#C8E6C8" opacity="0.55"/>
+    <rect x="30" y="618" width="6" height="30" rx="3" fill="#3DA83D" opacity="0.35"/>
+    <rect x="42" y="607" width="6" height="40" rx="3" fill="#3DA83D" opacity="0.28"/>
+    <rect x="54" y="620" width="5" height="27" rx="2.5" fill="#3DA83D" opacity="0.32"/>
+    <rect x="66" y="612" width="6" height="35" rx="3" fill="#3DA83D" opacity="0.25"/>
+    <rect x="78" y="622" width="5" height="25" rx="2.5" fill="#3DA83D" opacity="0.3"/>
+    <rect x="290" y="628" width="6" height="28" rx="3" fill="#3DA83D" opacity="0.3"/>
+    <rect x="302" y="615" width="6" height="41" rx="3" fill="#3DA83D" opacity="0.25"/>
+    <rect x="314" y="622" width="5" height="33" rx="2.5" fill="#3DA83D" opacity="0.32"/>
+    <rect x="326" y="630" width="6" height="25" rx="3" fill="#3DA83D" opacity="0.22"/>
+    <ellipse cx="190" cy="100" rx="170" ry="75" fill="#C8E6C8" opacity="0.3"/>
+  </svg>
+  <div class="sc-inner">
+    <div class="sc-icon">
+      <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+        <polyline class="sc-check" points="10,24 20,34 36,14" stroke="#2E8B2E" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <p class="sc-title">Заказ оформлен</p>
+    <p class="sc-sub">Мы уже получили вашу заявку и скоро свяжемся с вами</p>
+    <div class="sc-badge">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="#2E8B2E" stroke-width="1.4"/><polyline points="6.5,3.5 6.5,6.8 8.5,8.2" stroke="#2E8B2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="font-size:12.5px;color:#888;">Обычно отвечаем в течение 10–15 минут</span>
+    </div>
+    <div class="sc-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:13px;color:#888;">Услуга</span>
+        <span style="font-size:13px;color:#1a1a1a;font-weight:500;" id="scService">—</span>
+      </div>
+      <div style="height:1px;background:#C8E6C8;margin-bottom:10px;"></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:13px;color:#888;">Адрес</span>
+        <span style="font-size:13px;color:#1a1a1a;font-weight:500;" id="scAddress">—</span>
+      </div>
+      <div style="height:1px;background:#C8E6C8;margin-bottom:10px;"></div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="font-size:13px;color:#888;">Номер заявки</span>
+        <span style="font-size:13px;color:#2E8B2E;font-weight:600;" id="scOrderNum">—</span>
+      </div>
+    </div>
+    <button class="sc-btn-main" onclick="openWhatsAppAgain()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.5 13.3c-.3-.2-1.9-1-2.2-1.1-.3-.1-.5-.1-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1-.4-1.9-.9-2.7-1.7-.8-.8-1.3-1.7-1.5-2-.2-.3 0-.5.1-.7l.7-.8c.2-.2.2-.4.1-.6l-1-2.3c-.3-.6-.6-.5-.8-.5h-.6c-.2 0-.6.1-.9.4C5.2 6.5 4.5 7.2 4.5 8.7c0 1.5 1.1 3 1.3 3.2.2.3 2.2 3.3 5.3 4.6 2.2.9 3.1 1 4.2.8.7-.1 2.2-.9 2.5-1.8.3-.8.3-1.5.2-1.7-.1-.2-.3-.3-.5-.4z" fill="#fff"/></svg>
+      Написать в WhatsApp
+    </button>
+    <button class="sc-btn-sec" onclick="closeSuccess()">Вернуться на главную</button>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== AI CHAT ===== -->
+
+<!-- Chat overlay -->
+<div id="ai-chat-overlay" onclick="closeAiChat()"></div>
+
+<!-- Floating button -->
+<button id="ai-chat-btn" onclick="openAiChat()" title="ИИ помощник">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.66 0-3.21-.5-4.5-1.34l-.32-.19-3.3.92.92-3.3-.19-.32C3.5 15.21 3 13.66 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9z"/>
+  </svg>
+</button>
+
+<!-- Chat panel -->
+<div id="ai-chat-panel">
+  <div class="ai-chat-header">
+    <div class="ai-chat-avatar">🌿</div>
+    <div>
+      <div class="ai-chat-title">GreenLine Помощник</div>
+      <div class="ai-chat-sub">Онлайн · отвечает мгновенно</div>
+    </div>
+    <button class="ai-chat-close" onclick="closeAiChat()">✕</button>
+  </div>
+  <div class="ai-chat-messages" id="aiMessages"></div>
+  <div class="ai-quick-btns" id="aiQuickBtns">
+    <button class="ai-quick-btn" onclick="aiQuick('Сколько стоит покос травы?')">💰 Цены</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Как записаться на услугу?')">📝 Запись</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Какие услуги есть?')">🌿 Услуги</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Когда вы работаете?')">🕐 Режим</button>
+    <button class="ai-quick-btn" onclick="aiQuick('В каких районах работаете?')">📍 Районы</button>
+  </div>
+  <div class="ai-chat-input-wrap">
+    <input class="ai-chat-input" id="aiInput" placeholder="Напишите вопрос..." onkeydown="if(event.key==='Enter') aiSend()">
+    <button class="ai-send-btn" onclick="aiSend()">➤</button>
+  </div>
+</div>
+
+<script src="js/app.js?v=21"></script>
+</body>
+</html>
