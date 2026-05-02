@@ -1787,20 +1787,15 @@ function renderGallery(filter) {
               '<img src="' + it.after + '" alt="После">' +
               '<span class="gallery-thumb-tag gallery-thumb-tag-after">После</span>' +
             '</div>' +
-            '<span class="gallery-thumb-duration">' + it.duration + '</span>' +
-          '</div>' +
-          '<div class="gallery-info">' +
-            '<h3 class="gallery-info-title">' + it.title + '</h3>' +
-            '<div class="gallery-info-meta">' +
-              '<span class="gallery-info-meta-item">' +
-                '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg>' +
-                it.addr +
-              '</span>' +
-              '<span class="gallery-info-dot">·</span>' +
-              '<span class="gallery-info-meta-item">' +
-                '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l2.5 1.5"/></svg>' +
-                it.duration + ' работы' +
-              '</span>' +
+            '<div class="gallery-thumb-overlay">' +
+              '<div class="gallery-overlay-info">' +
+                '<div class="gallery-overlay-title">' + it.title + '</div>' +
+                '<div class="gallery-overlay-addr">' +
+                  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg>' +
+                  '<span>' + it.addr + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="gallery-overlay-duration">' + it.duration + '</div>' +
             '</div>' +
           '</div>' +
         '</article>';
