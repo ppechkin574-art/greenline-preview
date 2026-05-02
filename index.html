@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=32">
+<link rel="stylesheet" href="css/styles.css?v=33">
 </head>
 <body>
 <div class="device-stage">
@@ -663,6 +663,26 @@
             <div class="active-order-num">#GL-2476</div>
           </div>
 
+          <!-- Order timeline (4 steps) -->
+          <div class="active-order-timeline" id="aoTimeline">
+            <div class="aot-step" data-step="1">
+              <span class="aot-dot"></span>
+              <span class="aot-label">Создан</span>
+            </div>
+            <div class="aot-step" data-step="2">
+              <span class="aot-dot"></span>
+              <span class="aot-label">Подтв.</span>
+            </div>
+            <div class="aot-step" data-step="3">
+              <span class="aot-dot"></span>
+              <span class="aot-label">В пути</span>
+            </div>
+            <div class="aot-step" data-step="4">
+              <span class="aot-dot"></span>
+              <span class="aot-label">Готов</span>
+            </div>
+          </div>
+
           <div class="active-order-info">
             <div class="aor-row">
               <span class="aor-icon">
@@ -699,10 +719,27 @@
             </div>
           </div>
 
-          <button class="aoa-btn aoa-btn-primary aoa-btn-full" type="button">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
-            <span>Позвонить менеджеру</span>
-          </button>
+          <!-- Manager info -->
+          <div class="active-order-manager">
+            <div class="aom-avatar">А</div>
+            <div class="aom-info">
+              <div class="aom-label">Ваш менеджер</div>
+              <div class="aom-name">Айгуль</div>
+            </div>
+            <span class="aom-online" aria-label="онлайн"></span>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="active-order-actions-stack">
+            <button class="aoa-btn aoa-btn-primary aoa-btn-full" type="button">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
+              <span>Позвонить менеджеру</span>
+            </button>
+            <button class="aoa-btn aoa-btn-outline aoa-btn-full" type="button" onclick="requestCallback()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/><path d="M11 1.5v3M11 4.5L13.5 2M11 4.5L8.5 2"/></svg>
+              <span>Заказать обратный звонок</span>
+            </button>
+          </div>
         </div>
       </article>
     </section>
@@ -1595,6 +1632,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=32"></script>
+<script src="js/app.js?v=33"></script>
 </body>
 </html>

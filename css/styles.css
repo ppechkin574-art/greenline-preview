@@ -2895,6 +2895,198 @@ body {
   min-height: 48px;
   font-size: 14px;
 }
+/* Outline variant — белая с зелёной обводкой и зелёным текстом */
+.aoa-btn-outline {
+  background: #ffffff;
+  color: #2E8B2E;
+  border: 1.5px solid #2E8B2E;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 4px 10px -3px rgba(46, 139, 46, 0.18);
+}
+.aoa-btn-outline:active {
+  background: #F0FAF0;
+  transform: scale(0.985);
+}
+
+/* Стек action-кнопок (вертикальный) */
+.active-order-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== ORDER TIMELINE (4-step progress) ===== */
+.active-order-timeline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  padding: 14px 6px 8px;
+  margin-bottom: 4px;
+}
+/* Соединительная линия — серая, под точками */
+.active-order-timeline::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: calc(12.5% + 6px);
+  right: calc(12.5% + 6px);
+  height: 2px;
+  background: #E5EFE5;
+  z-index: 0;
+  border-radius: 2px;
+}
+/* Прогресс-линия (заполненная часть) — зелёная, поверх серой */
+.active-order-timeline::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: calc(12.5% + 6px);
+  width: var(--aot-progress, 0%);
+  height: 2px;
+  background: linear-gradient(90deg, #4ADE4A 0%, #2E8B2E 100%);
+  z-index: 1;
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aot-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+.aot-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #C5D5C5;
+  position: relative;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.aot-step.done .aot-dot {
+  background: linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 100%);
+  border-color: #2E8B2E;
+}
+.aot-step.done .aot-dot::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 3px;
+  width: 8px; height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg);
+}
+.aot-step.active .aot-dot {
+  background: #ffffff;
+  border-color: #2E8B2E;
+  box-shadow: 0 0 0 4px rgba(46, 139, 46, 0.18), 0 0 0 8px rgba(46, 139, 46, 0.08);
+  animation: aotPulse 1.6s ease-in-out infinite;
+}
+.aot-step.active .aot-dot::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: #2E8B2E;
+  border-radius: 50%;
+}
+@keyframes aotPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(46, 139, 46, 0.18), 0 0 0 8px rgba(46, 139, 46, 0.08); }
+  50% { box-shadow: 0 0 0 6px rgba(46, 139, 46, 0.10), 0 0 0 12px rgba(46, 139, 46, 0.04); }
+}
+.aot-step.cancelled .aot-dot {
+  background: #F0F2F4;
+  border-color: #B3BBB3;
+}
+
+.aot-label {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94A094;
+  letter-spacing: 0.02em;
+}
+.aot-step.done .aot-label,
+.aot-step.active .aot-label { color: #2E8B2E; }
+
+/* ===== MANAGER INFO ===== */
+.active-order-manager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #F7FBF7 0%, #ECF5EC 100%);
+  border: 1px solid #DCEEDC;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.aom-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 55%, #1F6B1F 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.16),
+    0 4px 10px -3px rgba(46, 139, 46, 0.45);
+}
+.aom-avatar::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 7px;
+  width: 12px; height: 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 7px;
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+.aom-info {
+  flex: 1;
+  min-width: 0;
+}
+.aom-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6F7B6F;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.aom-name {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0E1A0E;
+  letter-spacing: -0.01em;
+  margin-top: 1px;
+}
+.aom-online {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2ECC71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.22);
+  flex-shrink: 0;
+  animation: aomBlink 2s ease-in-out infinite;
+}
+@keyframes aomBlink {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.22); }
+  50% { box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.10); }
+}
 .orders-catalog .home-service-grid {
   margin-top: 4px;
 }
