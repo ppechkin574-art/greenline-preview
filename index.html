@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=22">
+<link rel="stylesheet" href="css/styles.css?v=23">
 </head>
 <body>
 <div class="device-stage">
@@ -227,14 +227,6 @@
 
   <div class="scroll-body" id="homeScrollBody">
 
-    <!-- Floating Action Button (Заказать) — появляется при скролле -->
-    <button class="home-fab" id="homeFab" type="button" onclick="openOrderPage()" aria-label="Создать заявку">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      </svg>
-      <span>Заказать</span>
-    </button>
-
     <!-- Personal discount with countdown -->
     <section class="section home-discount-wrap home-reveal">
       <div class="home-discount">
@@ -395,10 +387,10 @@
     <section class="section home-reveal" style="padding-top: 8px; padding-bottom: 0;">
       <div class="ba-card">
         <div class="home-section-head">
-          <h3 class="home-section-title">До и после</h3>
+          <h3 class="home-section-title">Наши работы</h3>
           <span class="home-section-link" onclick="showPage('gallery')">Все работы ›</span>
         </div>
-        <div class="home-section-sub">Покажем, как преобразился участок наших клиентов</div>
+        <div class="home-section-sub">Фото до и после</div>
         <div class="ba-grid" style="margin-top:12px">
           <div class="ba-tile" onclick="showPage('gallery')">
             <img src="img/bfd86991f4.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
@@ -1521,6 +1513,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=22"></script>
+<script src="js/app.js?v=23"></script>
 </body>
 </html>
