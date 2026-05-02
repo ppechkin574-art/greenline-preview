@@ -2437,6 +2437,263 @@ body {
   color: #6F7B6F;
   line-height: 1.4;
 }
+
+/* Demo button to preview active order */
+.orders-demo-btn {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #2E8B2E;
+  border: 1px solid #DCEEDC;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.12s, box-shadow 0.18s;
+  box-shadow: 0 4px 10px -3px rgba(46, 139, 46, 0.15);
+  min-height: 40px;
+}
+.orders-demo-btn:active {
+  transform: scale(0.97);
+  background: #F0FAF0;
+}
+.orders-demo-btn svg {
+  width: 14px; height: 14px;
+}
+
+/* ===== ACTIVE ORDER CARD (mock) ===== */
+.active-order-card {
+  background: #ffffff;
+  border-radius: 22px;
+  border: 1px solid #ECF1EC;
+  box-shadow:
+    0 12px 28px -10px rgba(46, 139, 46, 0.22),
+    0 4px 10px -2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+}
+
+.active-order-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.12s;
+}
+.active-order-close:active { transform: scale(0.92); background: rgba(0,0,0,0.6); }
+.active-order-close svg { width: 14px; height: 14px; }
+
+/* Image header */
+.active-order-image {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+.active-order-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Status pill — at top-left of image */
+.active-order-status {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border-radius: 100px;
+  padding: 6px 12px 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  z-index: 5;
+  transition: background 0.25s, color 0.25s;
+}
+.aos-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Status colour variants */
+.active-order-status[data-status="processing"]      { background: #FFF4E0; color: #C97A12; box-shadow: 0 4px 12px rgba(243, 156, 18, 0.32); }
+.active-order-status[data-status="processing"] .aos-dot { background: #F39C12; box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.22); }
+
+.active-order-status[data-status="onway"]           { background: #E5F2FB; color: #1A6FAE; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.32); }
+.active-order-status[data-status="onway"] .aos-dot { background: #3498DB; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.22); animation: aoPulse 1.4s ease-in-out infinite; }
+
+.active-order-status[data-status="late"]            { background: #FCE8E0; color: #B73D11; box-shadow: 0 4px 12px rgba(230, 126, 34, 0.32); }
+.active-order-status[data-status="late"] .aos-dot { background: #E67E22; box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.22); animation: aoPulse 0.9s ease-in-out infinite; }
+
+.active-order-status[data-status="cancelled"]       { background: #F0F2F4; color: #6E7780; box-shadow: 0 4px 12px rgba(149, 165, 166, 0.32); }
+.active-order-status[data-status="cancelled"] .aos-dot { background: #95A5A6; }
+
+.active-order-status[data-status="confirmed"]       { background: #E8F5E8; color: #1F6B1F; box-shadow: 0 4px 12px rgba(46, 139, 46, 0.32); }
+.active-order-status[data-status="confirmed"] .aos-dot { background: #2E8B2E; box-shadow: 0 0 0 3px rgba(46, 139, 46, 0.22); }
+
+@keyframes aoPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* "Пример" badge bottom right of image */
+.active-order-demo-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Body */
+.active-order-body { padding: 16px 18px 18px; }
+.active-order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.active-order-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0E1A0E;
+  margin: 0;
+}
+.active-order-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: #B3BBB3;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.active-order-status-desc {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6F7B6F;
+  margin: 4px 0 14px;
+  line-height: 1.4;
+}
+
+/* Info rows */
+.active-order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: #F7FBF7;
+  border: 1px solid #E5EFE5;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.aor-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.aor-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #DCEEDC;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.aor-icon svg { width: 18px; height: 18px; }
+.aor-text { flex: 1; min-width: 0; }
+.aor-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A094;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.aor-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0E1A0E;
+  letter-spacing: -0.01em;
+  margin-top: 1px;
+}
+
+/* Action buttons */
+.active-order-actions {
+  display: flex;
+  gap: 8px;
+}
+.aoa-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.12s, background 0.15s;
+  min-height: 44px;
+}
+.aoa-btn:active { transform: scale(0.97); }
+.aoa-btn svg { width: 14px; height: 14px; }
+.aoa-btn-secondary {
+  background: #F4F6F4;
+  color: #4A6A4A;
+}
+.aoa-btn-secondary:active { background: #E8ECE8; }
+.aoa-btn-primary {
+  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(46, 139, 46, 0.45);
+}
 .orders-catalog .home-service-grid {
   margin-top: 4px;
 }

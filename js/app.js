@@ -1935,3 +1935,48 @@ function _glHomeFab() {
     run();
   }
 })();
+
+/* ============================================================
+   ORDERS PAGE — Demo active order with cyclable status
+   ============================================================ */
+var DEMO_ORDER_STATUSES = [
+  { key: 'processing', text: 'В обработке',     desc: 'Менеджер скоро свяжется с вами' },
+  { key: 'confirmed',  text: 'Подтверждён',     desc: 'Заказ принят, команда готовится к выезду' },
+  { key: 'onway',      text: 'Мы едем к вам',   desc: 'Команда в пути — будем через ~10 минут' },
+  { key: 'late',       text: 'Опаздываем',      desc: 'Задержка ~15 минут из-за пробок, извините' },
+  { key: 'cancelled',  text: 'Отменён',         desc: 'Заказ был отменён. Свяжитесь с нами для деталей' }
+];
+var _demoOrderStatusIdx = 0;
+
+function _renderDemoOrderStatus(idx) {
+  var s = DEMO_ORDER_STATUSES[idx];
+  var pill = document.getElementById('aoStatusPill');
+  var desc = document.getElementById('aoStatusDesc');
+  if (pill) {
+    pill.setAttribute('data-status', s.key);
+    var txt = pill.querySelector('.aos-text');
+    if (txt) txt.textContent = s.text;
+  }
+  if (desc) desc.textContent = s.desc;
+}
+
+function toggleDemoOrder() {
+  var card = document.getElementById('demoOrderCard');
+  var empty = document.getElementById('emptyOrderCard');
+  if (!card || !empty) return;
+  var isHidden = (card.style.display === 'none' || !card.style.display);
+  if (isHidden) {
+    empty.style.display = 'none';
+    card.style.display = 'block';
+    _demoOrderStatusIdx = 0;
+    _renderDemoOrderStatus(_demoOrderStatusIdx);
+  } else {
+    card.style.display = 'none';
+    empty.style.display = 'flex';
+  }
+}
+
+function cycleDemoStatus() {
+  _demoOrderStatusIdx = (_demoOrderStatusIdx + 1) % DEMO_ORDER_STATUSES.length;
+  _renderDemoOrderStatus(_demoOrderStatusIdx);
+}

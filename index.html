@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=27">
+<link rel="stylesheet" href="css/styles.css?v=28">
 </head>
 <body>
 <div class="device-stage">
@@ -611,7 +611,8 @@
       <div class="orders-section-header">
         <h2 class="orders-section-title">Ваши заказы</h2>
       </div>
-      <div class="orders-empty-card">
+      <!-- Empty state -->
+      <div class="orders-empty-card" id="emptyOrderCard">
         <div class="orders-empty-card-icon" aria-hidden="true">
           <svg viewBox="0 0 56 56" fill="none">
             <rect x="10" y="8" width="36" height="42" rx="6" stroke="#2E8B2E" stroke-width="2.2" fill="rgba(46,139,46,0.06)"/>
@@ -620,7 +621,76 @@
         </div>
         <div class="orders-empty-card-title">Активных заказов нет</div>
         <div class="orders-empty-card-sub">Закажите услугу из каталога ниже</div>
+        <button class="orders-demo-btn" type="button" onclick="toggleDemoOrder()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3l2 1.5"/></svg>
+          Показать пример активного заказа
+        </button>
       </div>
+
+      <!-- Demo active order card (hidden by default) -->
+      <article class="active-order-card" id="demoOrderCard" style="display:none;">
+        <button class="active-order-close" type="button" onclick="toggleDemoOrder()" aria-label="Скрыть">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+        </button>
+
+        <div class="active-order-image">
+          <img src="img/a993e26b12.png" alt="">
+          <span class="active-order-status" id="aoStatusPill" data-status="processing">
+            <span class="aos-dot"></span>
+            <span class="aos-text">В обработке</span>
+          </span>
+          <span class="active-order-demo-badge">Пример</span>
+        </div>
+
+        <div class="active-order-body">
+          <div class="active-order-head">
+            <h3 class="active-order-title">Покос травы</h3>
+            <div class="active-order-num">#GL-2476</div>
+          </div>
+          <div class="active-order-status-desc" id="aoStatusDesc">Менеджер скоро свяжется с вами</div>
+
+          <div class="active-order-info">
+            <div class="aor-row">
+              <span class="aor-icon">
+                <svg viewBox="0 0 20 20" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="14" height="13" rx="2.5"/><path d="M7 3v3M13 3v3M3 9h14"/></svg>
+              </span>
+              <div class="aor-text">
+                <div class="aor-label">Дата и время</div>
+                <div class="aor-value">Сегодня, 14:30</div>
+              </div>
+            </div>
+            <div class="aor-row">
+              <span class="aor-icon">
+                <svg viewBox="0 0 20 20" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18c-3-3-6-7-6-11a6 6 0 0112 0c0 4-3 8-6 11z"/><circle cx="10" cy="7.5" r="2.2"/></svg>
+              </span>
+              <div class="aor-text">
+                <div class="aor-label">Адрес</div>
+                <div class="aor-value">мкр. Самал 1, кв. 45</div>
+              </div>
+            </div>
+            <div class="aor-row">
+              <span class="aor-icon">
+                <svg viewBox="0 0 20 20" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14"/><path d="M14 6.5h-5a2.5 2.5 0 000 5h2a2.5 2.5 0 010 5H6"/></svg>
+              </span>
+              <div class="aor-text">
+                <div class="aor-label">Стоимость</div>
+                <div class="aor-value">~ 8 000 ₸</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="active-order-actions">
+            <button class="aoa-btn aoa-btn-secondary" type="button" onclick="cycleDemoStatus()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a6 6 0 0110-4.5M14 8a6 6 0 01-10 4.5"/><path d="M10 3.5h2.5V1M6 12.5H3.5V15"/></svg>
+              <span>Сменить статус</span>
+            </button>
+            <button class="aoa-btn aoa-btn-primary" type="button">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
+              <span>Позвонить</span>
+            </button>
+          </div>
+        </div>
+      </article>
     </section>
 
     <!-- Service catalog -->
@@ -1512,6 +1582,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=27"></script>
+<script src="js/app.js?v=28"></script>
 </body>
 </html>
