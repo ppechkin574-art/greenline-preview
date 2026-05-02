@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=29">
+<link rel="stylesheet" href="css/styles.css?v=30">
 </head>
 <body>
 <div class="device-stage">
@@ -649,7 +649,9 @@
         <div class="active-order-image">
           <img src="img/a993e26b12.png" alt="">
           <button class="active-order-status" id="aoStatusPill" data-status="processing" type="button" onclick="cycleDemoStatus()" aria-label="Сменить статус (демо)" title="Тап — сменить статус для демо">
-            <span class="aos-dot"></span>
+            <span class="aos-icon" id="aoStatusIcon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>
+            </span>
             <span class="aos-text">В обработке</span>
           </button>
           <span class="active-order-demo-badge">Пример</span>
@@ -660,7 +662,6 @@
             <h3 class="active-order-title">Покос травы</h3>
             <div class="active-order-num">#GL-2476</div>
           </div>
-          <div class="active-order-status-desc" id="aoStatusDesc">Менеджер скоро свяжется с вами</div>
 
           <div class="active-order-info">
             <div class="aor-row">
@@ -669,8 +670,11 @@
               </span>
               <div class="aor-text">
                 <div class="aor-label">Дата и время</div>
-                <div class="aor-value">Сегодня, 14:30</div>
+                <div class="aor-value" id="aoDateValue">Сегодня, 14:30</div>
               </div>
+              <button class="aor-edit" type="button" onclick="editOrderField('date')" aria-label="Изменить дату">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+              </button>
             </div>
             <div class="aor-row">
               <span class="aor-icon">
@@ -678,8 +682,11 @@
               </span>
               <div class="aor-text">
                 <div class="aor-label">Адрес</div>
-                <div class="aor-value">мкр. Самал 1, кв. 45</div>
+                <div class="aor-value" id="aoAddrValue">мкр. Самал 1, кв. 45</div>
               </div>
+              <button class="aor-edit" type="button" onclick="editOrderField('addr')" aria-label="Изменить адрес">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+              </button>
             </div>
             <div class="aor-row">
               <span class="aor-icon">
@@ -694,7 +701,7 @@
 
           <button class="aoa-btn aoa-btn-primary aoa-btn-full" type="button">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
-            <span>Позвонить</span>
+            <span>Позвонить менеджеру</span>
           </button>
         </div>
       </article>
@@ -1589,6 +1596,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=29"></script>
+<script src="js/app.js?v=30"></script>
 </body>
 </html>

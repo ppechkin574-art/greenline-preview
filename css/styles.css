@@ -2568,58 +2568,112 @@ body {
   display: block;
 }
 
-/* Status pill — at top-left of image (clickable button для демо-цикла) */
+/* Status pill — at top-left of image, 3D-style icon + label */
 .active-order-status {
   position: absolute;
   top: 14px;
   left: 14px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.96);
   border: none;
   border-radius: 100px;
-  padding: 6px 12px 6px 10px;
+  padding: 5px 14px 5px 5px;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   font-family: inherit;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  color: #0E1A0E;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.20),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   z-index: 5;
-  transition: background 0.25s, color 0.25s, transform 0.12s;
+  transition: transform 0.12s;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 .active-order-status:active { transform: scale(0.95); }
-.aos-dot {
-  width: 8px;
-  height: 8px;
+
+/* 3D-icon inside pill — gradient circle with white SVG glyph */
+.aos-icon {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  position: relative;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.aos-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 5px;
+  width: 9px; height: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 5px;
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+.aos-icon svg {
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+}
+.aos-text { letter-spacing: 0.01em; }
+
+/* Status icon variants — 3D градиенты в каждом цвете статуса */
+.active-order-status[data-status="processing"] .aos-icon {
+  background: linear-gradient(135deg, #FFCB55 0%, #F39C12 55%, #C97A12 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.40),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.18),
+    0 4px 10px -2px rgba(243, 156, 18, 0.55);
+}
+.active-order-status[data-status="confirmed"] .aos-icon {
+  background: linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 55%, #1F6B1F 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.18),
+    0 4px 10px -2px rgba(46, 139, 46, 0.55);
+}
+.active-order-status[data-status="onway"] .aos-icon {
+  background: linear-gradient(135deg, #5DADE2 0%, #3498DB 55%, #1A6FAE 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.18),
+    0 4px 10px -2px rgba(52, 152, 219, 0.55);
+  animation: aoIconWobble 2.2s ease-in-out infinite;
+}
+.active-order-status[data-status="late"] .aos-icon {
+  background: linear-gradient(135deg, #F0A861 0%, #E67E22 55%, #B73D11 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.20),
+    0 4px 10px -2px rgba(230, 126, 34, 0.55);
+  animation: aoIconShake 1.6s ease-in-out infinite;
+}
+.active-order-status[data-status="cancelled"] .aos-icon {
+  background: linear-gradient(135deg, #BCC4CC 0%, #95A5A6 55%, #6E7780 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.20),
+    0 4px 10px -2px rgba(149, 165, 166, 0.40);
 }
 
-/* Status colour variants */
-.active-order-status[data-status="processing"]      { background: #FFF4E0; color: #C97A12; box-shadow: 0 4px 12px rgba(243, 156, 18, 0.32); }
-.active-order-status[data-status="processing"] .aos-dot { background: #F39C12; box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.22); }
-
-.active-order-status[data-status="onway"]           { background: #E5F2FB; color: #1A6FAE; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.32); }
-.active-order-status[data-status="onway"] .aos-dot { background: #3498DB; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.22); animation: aoPulse 1.4s ease-in-out infinite; }
-
-.active-order-status[data-status="late"]            { background: #FCE8E0; color: #B73D11; box-shadow: 0 4px 12px rgba(230, 126, 34, 0.32); }
-.active-order-status[data-status="late"] .aos-dot { background: #E67E22; box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.22); animation: aoPulse 0.9s ease-in-out infinite; }
-
-.active-order-status[data-status="cancelled"]       { background: #F0F2F4; color: #6E7780; box-shadow: 0 4px 12px rgba(149, 165, 166, 0.32); }
-.active-order-status[data-status="cancelled"] .aos-dot { background: #95A5A6; }
-
-.active-order-status[data-status="confirmed"]       { background: #E8F5E8; color: #1F6B1F; box-shadow: 0 4px 12px rgba(46, 139, 46, 0.32); }
-.active-order-status[data-status="confirmed"] .aos-dot { background: #2E8B2E; box-shadow: 0 0 0 3px rgba(46, 139, 46, 0.22); }
-
-@keyframes aoPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.7; }
+@keyframes aoIconWobble {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+@keyframes aoIconShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
 }
 
 /* "Пример" badge bottom right of image */
@@ -2662,15 +2716,7 @@ body {
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
-.active-order-status-desc {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6F7B6F;
-  margin: 4px 0 14px;
-  line-height: 1.4;
-}
-
-/* Info rows */
+/* Info rows (active order) */
 .active-order-info {
   display: flex;
   flex-direction: column;
@@ -2679,13 +2725,32 @@ body {
   background: #F7FBF7;
   border: 1px solid #E5EFE5;
   border-radius: 14px;
-  margin-bottom: 14px;
+  margin: 14px 0;
 }
 .aor-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+/* Edit pencil — справа в row */
+.aor-edit {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #DCEEDC;
+  background: #ffffff;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #2E8B2E;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.12s;
+}
+.aor-edit:active { transform: scale(0.92); background: #F0FAF0; }
+.aor-edit svg { width: 14px; height: 14px; }
 .aor-icon {
   width: 36px;
   height: 36px;

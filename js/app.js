@@ -1939,25 +1939,59 @@ function _glHomeFab() {
 /* ============================================================
    ORDERS PAGE — Demo active order with cyclable status
    ============================================================ */
+// Inline-SVG для каждого статуса (виден внутри 3D-icon на pill).
+// Glyph'ы белые, поверх цветного градиента иконки.
 var DEMO_ORDER_STATUSES = [
-  { key: 'processing', text: 'В обработке',     desc: 'Менеджер скоро свяжется с вами' },
-  { key: 'confirmed',  text: 'Подтверждён',     desc: 'Заказ принят, команда готовится к выезду' },
-  { key: 'onway',      text: 'Мы едем к вам',   desc: 'Команда в пути — будем через ~10 минут' },
-  { key: 'late',       text: 'Опаздываем',      desc: 'Задержка ~15 минут из-за пробок, извините' },
-  { key: 'cancelled',  text: 'Отменён',         desc: 'Заказ был отменён. Свяжитесь с нами для деталей' }
+  {
+    key: 'processing', text: 'В обработке',
+    iconSvg: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>'
+  },
+  {
+    key: 'confirmed', text: 'Подтверждён',
+    iconSvg: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.5"/></svg>'
+  },
+  {
+    key: 'onway', text: 'Мы едем к вам',
+    iconSvg: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11V6a1 1 0 011-1h6v6"/><path d="M9 7h3l2 2.5V11"/><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/></svg>'
+  },
+  {
+    key: 'late', text: 'Опаздываем',
+    iconSvg: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5l6.5 11.5h-13z"/><path d="M8 6v3"/><circle cx="8" cy="11" r="0.6" fill="#fff"/></svg>'
+  },
+  {
+    key: 'cancelled', text: 'Отменён',
+    iconSvg: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5"/></svg>'
+  }
 ];
 var _demoOrderStatusIdx = 0;
 
 function _renderDemoOrderStatus(idx) {
   var s = DEMO_ORDER_STATUSES[idx];
   var pill = document.getElementById('aoStatusPill');
-  var desc = document.getElementById('aoStatusDesc');
+  var icon = document.getElementById('aoStatusIcon');
   if (pill) {
     pill.setAttribute('data-status', s.key);
     var txt = pill.querySelector('.aos-text');
     if (txt) txt.textContent = s.text;
   }
-  if (desc) desc.textContent = s.desc;
+  if (icon) icon.innerHTML = s.iconSvg;
+}
+
+/* Inline editing — карандаш у даты/адреса. В прототипе prompt(),
+   в проде → datepicker / map-picker. */
+function editOrderField(field) {
+  var el, label;
+  if (field === 'date') { el = document.getElementById('aoDateValue'); label = 'Дата и время'; }
+  else if (field === 'addr') { el = document.getElementById('aoAddrValue'); label = 'Адрес'; }
+  else return;
+  if (!el) return;
+  var current = el.textContent;
+  var next = window.prompt('Изменить «' + label + '»:', current);
+  if (next === null) return;
+  next = next.trim();
+  if (!next) return;
+  el.textContent = next;
+  // На этапе 2: PUT /api/orders/:id { date | addr } → бэкенд → пуш менеджеру
 }
 
 function toggleDemoOrder() {
