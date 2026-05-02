@@ -835,51 +835,60 @@ var orderState = {
 };
 
 function openServiceDetail(name, tileEl, fromPage) {
+  // САМОЕ ВАЖНОЕ — переключаем страницу первым делом, чтобы даже если
+  // что-то ниже упадёт, пользователь увидит экран заказа
   window._detailFromPage = fromPage || 'home';
-  var imgSrc = (tileEl && tileEl.querySelector('img')) ? tileEl.querySelector('img').src : null;
-
-  // Сброс state
-  orderState.service = name;
-  orderState.area = 4;
-  orderState.address = '';
-  orderState.date = null;
-  orderState.time = null;
-
-  // Автозаполнение контактов из localStorage
-  var savedName = localStorage.getItem('gl_name') || 'Друг';
-  var savedPhone = localStorage.getItem('gl_phone') || '';
-  orderState.name = savedName;
-  orderState.phone = savedPhone;
-  var nameNode = document.getElementById('orderContactName');
-  var phoneNode = document.getElementById('orderContactPhone');
-  if (nameNode) nameNode.textContent = savedName;
-  if (phoneNode) phoneNode.textContent = savedPhone ? formatPhoneForDisplay(savedPhone) : 'Не указан';
-
-  // Сброс UI полей
-  var addrEl = document.getElementById('orderAddress');
-  if (addrEl) addrEl.value = '';
-  var slider = document.getElementById('orderAreaSlider');
-  if (slider) slider.value = 4;
-  var areaVal = document.getElementById('orderAreaVal');
-  if (areaVal) areaVal.textContent = 4;
-  var photoPreview = document.getElementById('photoPreview');
-  // Не трогаем фото — может быть выбрано
-
-  // Hero
-  var titleEl = document.getElementById('detailTitle');
-  var subEl = document.getElementById('detailSub');
-  var heroImg = document.getElementById('detailHeroImg');
-  var info = (typeof serviceDetails !== 'undefined' && serviceDetails[name]) ? serviceDetails[name] : { sub: '' };
-  if (titleEl) titleEl.textContent = name;
-  if (subEl) subEl.textContent = info.sub || '';
-  if (heroImg && imgSrc) heroImg.src = imgSrc;
-
-  // Рендер дат и времени
-  renderOrderDates();
-  renderOrderTimes();
-
-  updateOrderState();
   showPage('service-detail');
+
+  try {
+    var imgSrc = null;
+    try { imgSrc = (tileEl && tileEl.querySelector && tileEl.querySelector('img')) ? tileEl.querySelector('img').src : null; } catch(e) {}
+
+    // Сброс state
+    orderState.service = name;
+    orderState.area = 4;
+    orderState.address = '';
+    orderState.date = null;
+    orderState.time = null;
+
+    // Автозаполнение контактов из localStorage (защищено от Safari private mode)
+    var savedName = 'Друг', savedPhone = '';
+    try {
+      savedName = localStorage.getItem('gl_name') || 'Друг';
+      savedPhone = localStorage.getItem('gl_phone') || '';
+    } catch(e) {}
+    orderState.name = savedName;
+    orderState.phone = savedPhone;
+    var nameNode = document.getElementById('orderContactName');
+    var phoneNode = document.getElementById('orderContactPhone');
+    if (nameNode) nameNode.textContent = savedName;
+    if (phoneNode) phoneNode.textContent = savedPhone ? formatPhoneForDisplay(savedPhone) : 'Не указан';
+
+    // Сброс UI полей
+    var addrEl = document.getElementById('orderAddress');
+    if (addrEl) addrEl.value = '';
+    var slider = document.getElementById('orderAreaSlider');
+    if (slider) slider.value = 4;
+    var areaVal = document.getElementById('orderAreaVal');
+    if (areaVal) areaVal.textContent = 4;
+
+    // Hero
+    var titleEl = document.getElementById('detailTitle');
+    var subEl = document.getElementById('detailSub');
+    var heroImg = document.getElementById('detailHeroImg');
+    var info = (typeof serviceDetails !== 'undefined' && serviceDetails[name]) ? serviceDetails[name] : { sub: '' };
+    if (titleEl) titleEl.textContent = name;
+    if (subEl) subEl.textContent = info.sub || '';
+    if (heroImg && imgSrc) heroImg.src = imgSrc;
+
+    // Рендер дат и времени
+    renderOrderDates();
+    renderOrderTimes();
+
+    updateOrderState();
+  } catch (err) {
+    console.error('openServiceDetail error:', err);
+  }
 }
 
 function updateOrderArea(val) {
