@@ -52,6 +52,17 @@ function showPage(name) {
   }
 }
 function switchTo(tab) { showPage(tab); }
+
+// Гарантированный открыватель галереи: переключаем страницу + рендерим
+function openGallery() {
+  showPage('gallery');
+  // Всегда вызываем явно, не полагаясь на typeof check внутри showPage
+  if (typeof renderGallery === 'function') {
+    renderGallery('all');
+    setTimeout(function(){ renderGallery('all'); }, 80);
+    setTimeout(function(){ renderGallery('all'); }, 250);
+  }
+}
 function detailGoBack() { showPage(window._detailFromPage || 'home'); }
 function goToHome() { showPage('home'); }
 // ============================================================
@@ -1965,40 +1976,6 @@ var DEMO_ORDER_STATUSES = [
 ];
 var _demoOrderStatusIdx = 0;
 
-/* Карта статуса → активный шаг таймлайна (1..4) */
-var STATUS_TO_TIMELINE = {
-  'processing': 1,
-  'confirmed':  2,
-  'onway':      3,
-  'late':       3,
-  'cancelled':  0
-};
-
-function _renderTimeline(statusKey) {
-  var timeline = document.getElementById('aoTimeline');
-  if (!timeline) return;
-  var step = STATUS_TO_TIMELINE[statusKey] || 0;
-  var steps = timeline.querySelectorAll('.aot-step');
-  steps.forEach(function(el, i) {
-    var n = i + 1;
-    el.classList.remove('done', 'active', 'cancelled');
-    if (statusKey === 'cancelled') {
-      el.classList.add('cancelled');
-    } else if (n < step) {
-      el.classList.add('done');
-    } else if (n === step) {
-      el.classList.add('active');
-    }
-  });
-  // Прогресс-линия: 0% (step1) / 33% (step2) / 66% (step3) / 100% (step4)
-  var pct = 0;
-  if (statusKey === 'cancelled') pct = 0;
-  else if (step >= 4) pct = 100;
-  else if (step === 3) pct = 66;
-  else if (step === 2) pct = 33;
-  timeline.style.setProperty('--aot-progress', pct + '%');
-}
-
 function _renderDemoOrderStatus(idx) {
   var s = DEMO_ORDER_STATUSES[idx];
   var pill = document.getElementById('aoStatusPill');
@@ -2009,7 +1986,6 @@ function _renderDemoOrderStatus(idx) {
     if (txt) txt.textContent = s.text;
   }
   if (icon) icon.innerHTML = s.iconSvg;
-  _renderTimeline(s.key);
 }
 
 /* Заглушка обратного звонка */

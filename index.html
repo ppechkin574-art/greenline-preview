@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=33">
+<link rel="stylesheet" href="css/styles.css?v=34">
 </head>
 <body>
 <div class="device-stage">
@@ -388,15 +388,15 @@
       <div class="ba-card">
         <div class="home-section-head">
           <h3 class="home-section-title">Наши работы</h3>
-          <span class="home-section-link" onclick="showPage('gallery')">Все работы ›</span>
+          <span class="home-section-link" onclick="openGallery()">Все работы ›</span>
         </div>
         <div class="home-section-sub">Фото до и после</div>
         <div class="ba-grid" style="margin-top:12px">
-          <div class="ba-tile" onclick="showPage('gallery')">
+          <div class="ba-tile" onclick="openGallery()">
             <img src="img/bfd86991f4.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
             <div class="ba-tile-label">Покос · 6 соток</div>
           </div>
-          <div class="ba-tile" onclick="showPage('gallery')">
+          <div class="ba-tile" onclick="openGallery()">
             <img src="img/8ed73f0d79.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
             <div class="ba-tile-label">Стрижка газона</div>
           </div>
@@ -661,26 +661,6 @@
           <div class="active-order-head">
             <h3 class="active-order-title">Покос травы</h3>
             <div class="active-order-num">#GL-2476</div>
-          </div>
-
-          <!-- Order timeline (4 steps) -->
-          <div class="active-order-timeline" id="aoTimeline">
-            <div class="aot-step" data-step="1">
-              <span class="aot-dot"></span>
-              <span class="aot-label">Создан</span>
-            </div>
-            <div class="aot-step" data-step="2">
-              <span class="aot-dot"></span>
-              <span class="aot-label">Подтв.</span>
-            </div>
-            <div class="aot-step" data-step="3">
-              <span class="aot-dot"></span>
-              <span class="aot-label">В пути</span>
-            </div>
-            <div class="aot-step" data-step="4">
-              <span class="aot-dot"></span>
-              <span class="aot-label">Готов</span>
-            </div>
           </div>
 
           <div class="active-order-info">
@@ -1632,6 +1612,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=33"></script>
+<script src="js/app.js?v=34"></script>
 </body>
 </html>
