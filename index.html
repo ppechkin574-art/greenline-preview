@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=35">
+<link rel="stylesheet" href="css/styles.css?v=36">
 </head>
 <body>
 <div class="device-stage">
@@ -796,7 +796,114 @@
       <button class="gallery-filter" data-filter="till">Вспашка</button>
       <button class="gallery-filter" data-filter="topiary">Топиарная</button>
     </div>
-    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Pre-rendered cards (статичный fallback на случай если JS не успеет;
+           renderGallery() заменит innerHTML при загрузке) -->
+      <article class="gallery-item" data-filter="mow">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/bfd86991f4.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/8ed73f0d79.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Покос</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Самал 1</span></div>
+            </div>
+            <div class="gallery-overlay-duration">1 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="lawn">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/4b43bb493b.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/ce6a6b6607.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Стрижка газона</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Сатпаева 22</span></div>
+            </div>
+            <div class="gallery-overlay-duration">1,5 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="topiary">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/8624433c27.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/0d19d8e209.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Топиарная обрезка</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Жибек жолы 14</span></div>
+            </div>
+            <div class="gallery-overlay-duration">2 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="mow">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/c7ea20cb93.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/c300d3358f.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Покос триммером</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Курмангазы 7</span></div>
+            </div>
+            <div class="gallery-overlay-duration">1,5 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="lawn">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/8ed73f0d79.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/bfd86991f4.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Стрижка газона</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Чапаева 19</span></div>
+            </div>
+            <div class="gallery-overlay-duration">1 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="lawn">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/0d19d8e209.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/4b43bb493b.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Посадка газона</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Абая 45</span></div>
+            </div>
+            <div class="gallery-overlay-duration">4 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="till">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/c300d3358f.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/c7ea20cb93.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Вспашка</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Ескелди 8</span></div>
+            </div>
+            <div class="gallery-overlay-duration">3 ч</div>
+          </div>
+        </div>
+      </article>
+      <article class="gallery-item" data-filter="lawn">
+        <div class="gallery-thumb">
+          <div class="gallery-thumb-half"><img src="img/ce6a6b6607.png" alt="До"><span class="gallery-thumb-tag">До</span></div>
+          <div class="gallery-thumb-half"><img src="img/8624433c27.png" alt="После"><span class="gallery-thumb-tag gallery-thumb-tag-after">После</span></div>
+          <div class="gallery-thumb-overlay">
+            <div class="gallery-overlay-info">
+              <div class="gallery-overlay-title">Посадка растений</div>
+              <div class="gallery-overlay-addr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg><span>Достык 2</span></div>
+            </div>
+            <div class="gallery-overlay-duration">2,5 ч</div>
+          </div>
+        </div>
+      </article>
+    </div>
   </div>
 </div>
 
@@ -1668,6 +1775,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=35"></script>
+<script src="js/app.js?v=36"></script>
 </body>
 </html>
