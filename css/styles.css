@@ -2744,27 +2744,13 @@ body {
   width: 26px; height: 26px;
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
 }
-#page-home .subscription-eyebrow {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #2E8B2E;
-  margin-bottom: 4px;
-}
-#page-home .subscription-title {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: #0E1A0E;
-}
+/* Подписка использует унифицированные стили home-section-title/sub.
+   Локальные оверрайды только для интервалов внутри карточки. */
+#page-home .subscription-title { margin: 0; }
 #page-home .subscription-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6F7B6F;
-  line-height: 1.45;
   margin-top: 6px;
   margin-bottom: 14px;
+  line-height: 1.45;
 }
 #page-home .subscription-cta {
   background: #F0FAF0;
