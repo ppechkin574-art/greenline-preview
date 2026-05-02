@@ -804,52 +804,210 @@ const serviceDetails = {
 // Store images per service for detail page
 const serviceImages = {};
 
-function openServiceDetail(name, tileEl, fromPage) { window._detailFromPage = fromPage || 'home';
-  const imgSrc = tileEl ? tileEl.querySelector('img').src : null;
-  detailVolume = 'Маленький';
-  detailDate = 'Сегодня';
+/* ============================================================
+   ORDER PAGE v2 — clean form with validation, autofill, price calc
+   ============================================================ */
 
-  document.querySelectorAll('.volume-card').forEach((c,i) => c.classList.toggle('selected', i===0));
-  document.querySelectorAll('.date-card').forEach((c,i) => c.classList.toggle('selected', i===0));
+// Тарифы за сотку (примерные, для расчёта стоимости)
+var ORDER_RATES = {
+  'Покос травы':         1500,
+  'Покос':               1500,
+  'Покос триммером':     1800,
+  'Стрижка газона':      2000,
+  'Вспашка':             3000,
+  'Вспашка участка':     3000,
+  'Посадка газона':      8000,
+  'Посадка рулонного газона': 8000,
+  'Посадка растений':    5000,
+  'Топиарная обрезка':   4000,
+  '__default':           2000
+};
+var TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-  const addrEl = document.getElementById('detailAddress');
-  const nameEl = document.getElementById('detailName');
-  const phoneEl = document.getElementById('detailPhone');
-  const titleEl = document.getElementById('detailTitle');
-  const subEl = document.getElementById('detailSub');
-  const iconEl = document.getElementById('detailIcon');
-  const heroImg = document.getElementById('detailHeroImg');
+var orderState = {
+  service: null,
+  area: 4,
+  address: '',
+  date: null,
+  time: null,
+  name: '',
+  phone: ''
+};
 
+function openServiceDetail(name, tileEl, fromPage) {
+  window._detailFromPage = fromPage || 'home';
+  var imgSrc = (tileEl && tileEl.querySelector('img')) ? tileEl.querySelector('img').src : null;
+
+  // Сброс state
+  orderState.service = name;
+  orderState.area = 4;
+  orderState.address = '';
+  orderState.date = null;
+  orderState.time = null;
+
+  // Автозаполнение контактов из localStorage
+  var savedName = localStorage.getItem('gl_name') || 'Друг';
+  var savedPhone = localStorage.getItem('gl_phone') || '';
+  orderState.name = savedName;
+  orderState.phone = savedPhone;
+  var nameNode = document.getElementById('orderContactName');
+  var phoneNode = document.getElementById('orderContactPhone');
+  if (nameNode) nameNode.textContent = savedName;
+  if (phoneNode) phoneNode.textContent = savedPhone ? formatPhoneForDisplay(savedPhone) : 'Не указан';
+
+  // Сброс UI полей
+  var addrEl = document.getElementById('orderAddress');
   if (addrEl) addrEl.value = '';
-  if (nameEl) nameEl.value = '';
-  if (phoneEl) phoneEl.value = '';
+  var slider = document.getElementById('orderAreaSlider');
+  if (slider) slider.value = 4;
+  var areaVal = document.getElementById('orderAreaVal');
+  if (areaVal) areaVal.textContent = 4;
+  var photoPreview = document.getElementById('photoPreview');
+  // Не трогаем фото — может быть выбрано
 
-  const info = serviceDetails[name] || { sub: '', icon: '🌿' };
+  // Hero
+  var titleEl = document.getElementById('detailTitle');
+  var subEl = document.getElementById('detailSub');
+  var heroImg = document.getElementById('detailHeroImg');
+  var info = (typeof serviceDetails !== 'undefined' && serviceDetails[name]) ? serviceDetails[name] : { sub: '' };
   if (titleEl) titleEl.textContent = name;
-  if (subEl) subEl.textContent = info.sub;
-  if (iconEl) iconEl.textContent = info.icon;
+  if (subEl) subEl.textContent = info.sub || '';
   if (heroImg && imgSrc) heroImg.src = imgSrc;
 
+  // Рендер дат и времени
+  renderOrderDates();
+  renderOrderTimes();
+
+  updateOrderState();
   showPage('service-detail');
 }
 
-function updateDetailArea(val) {
-  const el = document.getElementById('detailAreaVal');
-  if (el) el.innerHTML = val + ' <span style="font-size:13px;color:var(--muted);font-family:Inter,sans-serif;font-weight:400">соток</span>';
-  detailVolume = val + ' соток';
+function updateOrderArea(val) {
+  orderState.area = parseInt(val, 10) || 1;
+  var el = document.getElementById('orderAreaVal');
+  if (el) el.textContent = orderState.area;
+  updateOrderState();
 }
 
-function selectVolume(card, val) {
-  document.querySelectorAll('.volume-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  detailVolume = val;
+function renderOrderDates() {
+  var row = document.getElementById('orderDateRow');
+  if (!row) return;
+  var dows = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  var today = new Date();
+  var html = '';
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(today);
+    d.setDate(today.getDate() + i);
+    var iso = d.toISOString().slice(0,10);
+    var dow = (i === 0) ? 'Сегодня' : (i === 1 ? 'Завтра' : dows[d.getDay()]);
+    html += '<button type="button" class="order-date-chip" data-date="' + iso + '" onclick="selectOrderDate(\'' + iso + '\', this)">' +
+      '<span class="order-date-chip-dow">' + dow + '</span>' +
+      '<span class="order-date-chip-day">' + d.getDate() + '</span>' +
+      '<span class="order-date-chip-mon">' + months[d.getMonth()] + '</span>' +
+    '</button>';
+  }
+  row.innerHTML = html;
 }
 
-function selectDate(card, val) {
-  document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  detailDate = val;
+function renderOrderTimes() {
+  var grid = document.getElementById('orderTimeGrid');
+  if (!grid) return;
+  var html = '';
+  for (var i = 0; i < TIME_SLOTS.length; i++) {
+    html += '<button type="button" class="order-time-chip" data-time="' + TIME_SLOTS[i] + '" onclick="selectOrderTime(\'' + TIME_SLOTS[i] + '\', this)">' + TIME_SLOTS[i] + '</button>';
+  }
+  grid.innerHTML = html;
 }
+
+function selectOrderDate(iso, el) {
+  orderState.date = iso;
+  document.querySelectorAll('#orderDateRow .order-date-chip').forEach(function(c){ c.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+  updateOrderState();
+}
+
+function selectOrderTime(t, el) {
+  orderState.time = t;
+  document.querySelectorAll('#orderTimeGrid .order-time-chip').forEach(function(c){ c.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+  updateOrderState();
+}
+
+function onOrderInputChange() {
+  var addrEl = document.getElementById('orderAddress');
+  orderState.address = addrEl ? addrEl.value.trim() : '';
+  updateOrderState();
+}
+
+function editOrderContact(field) {
+  var label = field === 'name' ? 'Имя' : 'Номер телефона';
+  var current = field === 'name' ? orderState.name : orderState.phone;
+  var next = window.prompt('Изменить «' + label + '»:', current);
+  if (next === null) return;
+  next = next.trim();
+  if (!next) return;
+  if (field === 'name') {
+    orderState.name = next;
+    var n = document.getElementById('orderContactName');
+    if (n) n.textContent = next;
+    localStorage.setItem('gl_name', next);
+  } else {
+    orderState.phone = next;
+    var p = document.getElementById('orderContactPhone');
+    if (p) p.textContent = formatPhoneForDisplay(next);
+    localStorage.setItem('gl_phone', next);
+  }
+}
+
+function calcOrderPrice() {
+  var rate = ORDER_RATES[orderState.service] || ORDER_RATES.__default;
+  return orderState.area * rate;
+}
+
+function _formatPriceKZT(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function updateOrderState() {
+  var addrEl = document.getElementById('orderAddress');
+  if (addrEl) orderState.address = addrEl.value.trim();
+  var validArea = orderState.area >= 1;
+  var validAddr = orderState.address.length >= 3;
+  var validDate = !!orderState.date;
+  var validTime = !!orderState.time;
+  var allValid = validArea && validAddr && validDate && validTime;
+
+  // Price preview
+  var preview = document.getElementById('orderPricePreview');
+  var priceEl = document.getElementById('orderPriceVal');
+  if (allValid && preview && priceEl) {
+    priceEl.textContent = _formatPriceKZT(calcOrderPrice());
+    preview.hidden = false;
+  } else if (preview) {
+    preview.hidden = true;
+  }
+
+  // Submit button
+  var btn = document.getElementById('orderSubmitBtn');
+  if (btn) btn.disabled = !allValid;
+}
+
+function submitOrder() {
+  if (document.getElementById('orderSubmitBtn').disabled) return;
+  // На этапе 2: POST /api/orders
+  // Сейчас — открываем success screen существующий
+  if (typeof showOrderSuccess === 'function') {
+    showOrderSuccess(orderState.service, orderState.address, orderState.date + ' ' + orderState.time);
+  } else {
+    alert('Заказ оформлен!\n\n' + orderState.service + '\n' + orderState.address + '\n' + orderState.date + ' ' + orderState.time + '\n~ ' + _formatPriceKZT(calcOrderPrice()) + ' ₸');
+  }
+}
+
+// Legacy совместимость (старые onclick могут вызывать)
+function selectDate(card, val) { /* no-op */ }
+function selectVolume(card, val) { /* no-op */ }
+function updateDetailArea(val) { updateOrderArea(val); }
 
 function sendWhatsApp() {
   const name = document.getElementById('detailName').value.trim();

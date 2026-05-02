@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=34">
+<link rel="stylesheet" href="css/styles.css?v=35">
 </head>
 <body>
 <div class="device-stage">
@@ -876,100 +876,156 @@
 
     
 <div id="page-service-detail" class="page">
-  <div class="detail-hero">
-    <img id="detailHeroImg" src="img/6c992cb66e.png" alt="">
-    <button class="detail-back" onclick="detailGoBack()">←</button>
-    <div class="detail-hero-overlay">
-      <div class="detail-hero-title" id="detailTitle">Топиарная обрезка</div>
-      <div class="detail-hero-sub" id="detailSub">Придадим вашим растениям идеальную форму</div>
-      <div class="detail-hero-icon" id="detailIcon">🌲</div>
+  <!-- Hero -->
+  <div class="order-hero">
+    <img id="detailHeroImg" src="img/a993e26b12.png" alt="">
+    <button class="order-back" type="button" onclick="detailGoBack()" aria-label="Назад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="order-hero-overlay">
+      <h1 class="order-hero-title" id="detailTitle">Покос травы</h1>
+      <p class="order-hero-sub" id="detailSub">Быстро и аккуратно скосим траву</p>
     </div>
   </div>
-  <div class="detail-body">
-    <div class="detail-section">
-      <div class="detail-step-header">
-        <div class="detail-step-num">1</div>
-        <div><div class="detail-step-title">Площадь участка</div><div class="detail-step-sub">Укажите примерную площадь</div></div>
-      </div>
-      <div style="padding: 0 4px;">
-        <div style="font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;color:var(--green);margin-bottom:8px" id="detailAreaVal">4 <span style="font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;font-weight:400">соток</span></div>
-        <input type="range" class="area-slider" min="1" max="20" value="4" id="detailAreaSlider" oninput="updateDetailArea(this.value)">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px"><span>1 сотка</span><span>20 соток</span></div>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-step-header">
-        <div class="detail-step-num">2</div>
-        <div><div class="detail-step-title">Адрес участка</div><div class="detail-step-sub">Укажите точный адрес для выезда</div></div>
-      </div>
-      <div class="detail-input-wrap">
-        <span class="detail-input-icon">📍</span>
-        <input class="detail-input" type="text" id="detailAddress" placeholder="Введите адрес">
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-step-header">
-        <div class="detail-step-num">3</div>
-        <div><div class="detail-step-title">Когда удобно?</div><div class="detail-step-sub">Выберите удобное время</div></div>
-      </div>
-      <div class="date-grid">
-        <div class="date-card selected" id="dateToday" onclick="selectDate(this, dateLabelToday())">
-          <div class="date-card-icon">🗓️</div>
-          <div class="date-card-name" id="dateTodayLabel">Сегодня</div>
-        </div>
-        <div class="date-card" id="dateTomorrow" onclick="selectDate(this, dateLabelTomorrow())">
-          <div class="date-card-icon">🗓️</div>
-          <div class="date-card-name" id="dateTomorrowLabel">Завтра</div>
-        </div>
-        <div class="date-card" onclick="selectDate(this,'В ближайшие дни')">
-          <div class="date-card-icon">🗓️</div>
-          <div class="date-card-name">В ближайшие дни</div>
-        </div>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-step-header">
-        <div class="detail-step-num">4</div>
-        <div><div class="detail-step-title">Ваши контакты</div><div class="detail-step-sub">Оставьте свои данные</div></div>
-      </div>
-      <div class="contacts-grid">
-        <div class="contact-input-wrap">
-          <span class="contact-input-icon">👤</span>
-          <input class="contact-input" type="text" id="detailName" placeholder="Ваше имя">
-        </div>
-        <div class="contact-input-wrap">
-          <span class="contact-input-icon">📞</span>
-          <input class="contact-input" type="tel" id="detailPhone" placeholder="Номер телефона">
-        </div>
-      </div>
-    </div>
-    <div style="height:16px"></div>
 
-      <!-- Photo upload -->
-      <div class="detail-section">
-        <div class="detail-step-header">
-          <div class="detail-step-num">5</div>
-          <div>
-            <div class="detail-step-title">Фото участка</div>
-            <div class="detail-step-sub">По желанию — поможет точнее оценить работу</div>
-          </div>
-        </div>
-        <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
-          <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-          <div id="photoPreview" class="photo-preview-empty">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2E8B2E" stroke-width="1.5"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>
-            <div class="photo-upload-text">Нажмите чтобы добавить фото</div>
-            <div class="photo-upload-sub">Камера или галерея</div>
-          </div>
+  <div class="order-form">
+
+    <!-- 1. Площадь -->
+    <section class="order-section">
+      <div class="order-step-header">
+        <span class="order-step-num">1</span>
+        <div class="order-step-text">
+          <h3 class="order-step-title">Площадь участка <span class="order-required">*</span></h3>
+          <p class="order-step-sub">Передвиньте бегунок</p>
         </div>
       </div>
-    </div>
-    <div style="padding: 8px 20px 24px;">
-      <button class="btn-whatsapp" onclick="sendWhatsApp()" style="width:100%;">
-        Узнать стоимость
+      <div class="order-area-card">
+        <div class="order-area-display">
+          <span class="oad-num" id="orderAreaVal">4</span>
+          <span class="oad-unit">соток</span>
+        </div>
+        <input type="range" class="order-area-slider" min="1" max="30" value="4" step="1" id="orderAreaSlider" oninput="updateOrderArea(this.value)">
+        <div class="order-area-marks">
+          <span>1 сотка</span>
+          <span>30 соток</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Адрес -->
+    <section class="order-section">
+      <div class="order-step-header">
+        <span class="order-step-num">2</span>
+        <div class="order-step-text">
+          <h3 class="order-step-title">Адрес участка <span class="order-required">*</span></h3>
+          <p class="order-step-sub">Куда подъехать команде</p>
+        </div>
+      </div>
+      <div class="order-input-wrap">
+        <span class="order-input-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg>
+        </span>
+        <input class="order-input" type="text" id="orderAddress" placeholder="Например: мкр. Самал 1, кв. 45" oninput="onOrderInputChange()">
+      </div>
+    </section>
+
+    <!-- 3. Дата и время -->
+    <section class="order-section">
+      <div class="order-step-header">
+        <span class="order-step-num">3</span>
+        <div class="order-step-text">
+          <h3 class="order-step-title">Дата и время <span class="order-required">*</span></h3>
+          <p class="order-step-sub">Когда команде приехать</p>
+        </div>
+      </div>
+      <div class="order-date-block">
+        <div class="order-date-label">Дата</div>
+        <div class="order-date-row" id="orderDateRow"></div>
+      </div>
+      <div class="order-time-block">
+        <div class="order-date-label">Время</div>
+        <div class="order-time-grid" id="orderTimeGrid"></div>
+      </div>
+    </section>
+
+    <!-- 4. Контакты (автозаполнение) -->
+    <section class="order-section">
+      <div class="order-step-header">
+        <span class="order-step-num">4</span>
+        <div class="order-step-text">
+          <h3 class="order-step-title">Ваши контакты</h3>
+          <p class="order-step-sub">Подтягиваются из аккаунта</p>
+        </div>
+      </div>
+      <div class="order-contact-card" id="orderContactCard">
+        <div class="order-contact-row">
+          <span class="order-contact-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg>
+          </span>
+          <div class="order-contact-info">
+            <div class="order-contact-label">Имя</div>
+            <div class="order-contact-value" id="orderContactName">Жахангир</div>
+          </div>
+          <button class="order-contact-edit" type="button" onclick="editOrderContact('name')" aria-label="Изменить имя">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+          </button>
+        </div>
+        <div class="order-contact-row">
+          <span class="order-contact-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
+          </span>
+          <div class="order-contact-info">
+            <div class="order-contact-label">Телефон</div>
+            <div class="order-contact-value" id="orderContactPhone">+7 778 794 37 60</div>
+          </div>
+          <button class="order-contact-edit" type="button" onclick="editOrderContact('phone')" aria-label="Изменить номер">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Фото (опциональное) -->
+    <section class="order-section order-section-optional">
+      <div class="order-step-header">
+        <span class="order-step-num order-step-num-optional">5</span>
+        <div class="order-step-text">
+          <h3 class="order-step-title">Фото участка <span class="order-optional-tag">опционально</span></h3>
+          <p class="order-step-sub">Поможет точнее оценить работу</p>
+        </div>
+      </div>
+      <div class="order-photo-upload" onclick="document.getElementById('photoInput').click()">
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+        <div id="photoPreview" class="order-photo-empty">
+          <span class="order-photo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+          </span>
+          <div class="order-photo-text">Добавить фото</div>
+          <div class="order-photo-sub">Камера или галерея</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Price preview (показывается когда все обязательные поля заполнены) -->
+    <section class="order-price-preview" id="orderPricePreview" hidden>
+      <div class="order-price-row">
+        <div>
+          <div class="order-price-label">Примерная стоимость</div>
+          <div class="order-price-note">Окончательную цену озвучит мастер на месте</div>
+        </div>
+        <div class="order-price-value">~&nbsp;<span id="orderPriceVal">0</span>&nbsp;₸</div>
+      </div>
+    </section>
+
+    <!-- Submit -->
+    <div class="order-submit-wrap">
+      <button class="order-submit" id="orderSubmitBtn" type="button" disabled onclick="submitOrder()">
+        <span class="order-submit-text">Заказать</span>
+        <svg class="order-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
-      <div class="detail-privacy" style="text-align:center;margin-top:8px;">🔒 Мы не передаём ваши данные третьим лицам</div>
+      <div class="order-privacy">🔒 Мы не передаём ваши данные третьим лицам</div>
     </div>
+
   </div>
 
 <!-- PROFILE SUB PAGES -->
@@ -1612,6 +1668,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=34"></script>
+<script src="js/app.js?v=35"></script>
 </body>
 </html>
