@@ -1980,3 +1980,33 @@ function cycleDemoStatus() {
   _demoOrderStatusIdx = (_demoOrderStatusIdx + 1) % DEMO_ORDER_STATUSES.length;
   _renderDemoOrderStatus(_demoOrderStatusIdx);
 }
+
+function toggleOrderMenu(e) {
+  if (e) e.stopPropagation();
+  var dd = document.getElementById('orderMenuDropdown');
+  if (!dd) return;
+  dd.classList.toggle('open');
+}
+
+function cancelDemoOrder() {
+  // В демо — переключаемся на статус "cancelled" и закрываем меню
+  for (var i = 0; i < DEMO_ORDER_STATUSES.length; i++) {
+    if (DEMO_ORDER_STATUSES[i].key === 'cancelled') {
+      _demoOrderStatusIdx = i;
+      _renderDemoOrderStatus(i);
+      break;
+    }
+  }
+  var dd = document.getElementById('orderMenuDropdown');
+  if (dd) dd.classList.remove('open');
+}
+
+// Закрытие dropdown по клику вне
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('orderMenuDropdown');
+  if (!dd || !dd.classList.contains('open')) return;
+  var menu = document.querySelector('.active-order-menu-wrap');
+  if (menu && !menu.contains(e.target)) {
+    dd.classList.remove('open');
+  }
+});

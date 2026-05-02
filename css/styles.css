@@ -2481,29 +2481,78 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
 }
 
-.active-order-close {
+/* Three-dot menu button (top-right) */
+.active-order-menu-wrap {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 32px;
-  height: 32px;
+  top: 12px;
+  right: 12px;
+  z-index: 11;
+}
+.active-order-menu {
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.55);
   color: #fff;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: background 0.15s, transform 0.12s;
 }
-.active-order-close:active { transform: scale(0.92); background: rgba(0,0,0,0.6); }
-.active-order-close svg { width: 14px; height: 14px; }
+.active-order-menu:active { transform: scale(0.92); background: rgba(0,0,0,0.7); }
+.active-order-menu svg { width: 18px; height: 18px; }
+
+/* Dropdown menu — appears under the three-dot button */
+.active-order-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 160px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow:
+    0 12px 32px -6px rgba(0, 0, 0, 0.25),
+    0 4px 10px -2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ECF1EC;
+  padding: 6px;
+  display: none;
+  z-index: 20;
+  animation: aoMenuIn 0.18s ease-out;
+}
+.active-order-menu-dropdown.open { display: block; }
+@keyframes aoMenuIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.active-order-menu-item {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0E1A0E;
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.12s;
+}
+.active-order-menu-item:active { background: #F4F6F4; }
+.active-order-menu-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.active-order-menu-item-danger { color: #E53935; }
+.active-order-menu-item-danger:active { background: #FFF6F5; }
 
 /* Image header */
 .active-order-image {
@@ -2519,7 +2568,7 @@ body {
   display: block;
 }
 
-/* Status pill — at top-left of image */
+/* Status pill — at top-left of image (clickable button для демо-цикла) */
 .active-order-status {
   position: absolute;
   top: 14px;
@@ -2528,17 +2577,23 @@ body {
   align-items: center;
   gap: 6px;
   background: #fff;
+  border: none;
   border-radius: 100px;
   padding: 6px 12px 6px 10px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
+  font-family: inherit;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   z-index: 5;
-  transition: background 0.25s, color 0.25s;
+  transition: background 0.25s, color 0.25s, transform 0.12s;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
+.active-order-status:active { transform: scale(0.95); }
 .aos-dot {
   width: 8px;
   height: 8px;
@@ -2693,6 +2748,12 @@ body {
   background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
   color: #fff;
   box-shadow: 0 6px 14px -4px rgba(46, 139, 46, 0.45);
+}
+.aoa-btn-full {
+  width: 100%;
+  flex: none;
+  min-height: 48px;
+  font-size: 14px;
 }
 .orders-catalog .home-service-grid {
   margin-top: 4px;

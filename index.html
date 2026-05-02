@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=28">
+<link rel="stylesheet" href="css/styles.css?v=29">
 </head>
 <body>
 <div class="device-stage">
@@ -629,16 +629,29 @@
 
       <!-- Demo active order card (hidden by default) -->
       <article class="active-order-card" id="demoOrderCard" style="display:none;">
-        <button class="active-order-close" type="button" onclick="toggleDemoOrder()" aria-label="Скрыть">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
-        </button>
+        <!-- Three-dot menu (top-right) -->
+        <div class="active-order-menu-wrap">
+          <button class="active-order-menu" type="button" onclick="toggleOrderMenu(event)" aria-label="Меню">
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <circle cx="8" cy="3.5" r="1.6"/>
+              <circle cx="8" cy="8" r="1.6"/>
+              <circle cx="8" cy="12.5" r="1.6"/>
+            </svg>
+          </button>
+          <div class="active-order-menu-dropdown" id="orderMenuDropdown">
+            <button class="active-order-menu-item active-order-menu-item-danger" type="button" onclick="cancelDemoOrder()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+              <span>Отменить</span>
+            </button>
+          </div>
+        </div>
 
         <div class="active-order-image">
           <img src="img/a993e26b12.png" alt="">
-          <span class="active-order-status" id="aoStatusPill" data-status="processing">
+          <button class="active-order-status" id="aoStatusPill" data-status="processing" type="button" onclick="cycleDemoStatus()" aria-label="Сменить статус (демо)" title="Тап — сменить статус для демо">
             <span class="aos-dot"></span>
             <span class="aos-text">В обработке</span>
-          </span>
+          </button>
           <span class="active-order-demo-badge">Пример</span>
         </div>
 
@@ -673,22 +686,16 @@
                 <svg viewBox="0 0 20 20" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14"/><path d="M14 6.5h-5a2.5 2.5 0 000 5h2a2.5 2.5 0 010 5H6"/></svg>
               </span>
               <div class="aor-text">
-                <div class="aor-label">Стоимость</div>
+                <div class="aor-label">Примерная стоимость</div>
                 <div class="aor-value">~ 8 000 ₸</div>
               </div>
             </div>
           </div>
 
-          <div class="active-order-actions">
-            <button class="aoa-btn aoa-btn-secondary" type="button" onclick="cycleDemoStatus()">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a6 6 0 0110-4.5M14 8a6 6 0 01-10 4.5"/><path d="M10 3.5h2.5V1M6 12.5H3.5V15"/></svg>
-              <span>Сменить статус</span>
-            </button>
-            <button class="aoa-btn aoa-btn-primary" type="button">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
-              <span>Позвонить</span>
-            </button>
-          </div>
+          <button class="aoa-btn aoa-btn-primary aoa-btn-full" type="button">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
+            <span>Позвонить</span>
+          </button>
         </div>
       </article>
     </section>
@@ -1582,6 +1589,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=28"></script>
+<script src="js/app.js?v=29"></script>
 </body>
 </html>
