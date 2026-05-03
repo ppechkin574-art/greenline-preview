@@ -2251,3 +2251,70 @@ function repeatOrder(serviceName, btn) {
     openServiceDetail(serviceName, imgWrap, 'orders');
   }
 }
+
+/* ===== PRICE CALCULATOR (главная страница, после каталога) =====
+   В будущем тарифы и параметры приходят из админки (см. CONTEXT.md).
+   Сейчас — статично, через data-* атрибуты на чипах.
+*/
+var pcState = {
+  service: 'Покос травы',
+  rate: 1500,
+  area: 4,
+  areaMin: 1,
+  areaMax: 50,
+  areaStep: 1
+};
+
+function pcSelectService(btn) {
+  if (!btn) return;
+  var chips = document.querySelectorAll('#pc-services .pc-service-chip');
+  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('pc-active');
+  btn.classList.add('pc-active');
+  pcState.service = btn.getAttribute('data-svc') || pcState.service;
+  pcState.rate = parseInt(btn.getAttribute('data-rate'), 10) || pcState.rate;
+  pcUpdatePrice();
+}
+
+function pcChangeArea(delta) {
+  var next = pcState.area + (delta * pcState.areaStep);
+  if (next < pcState.areaMin) next = pcState.areaMin;
+  if (next > pcState.areaMax) next = pcState.areaMax;
+  pcState.area = next;
+  var numEl = document.getElementById('pc-area-num');
+  if (numEl) numEl.textContent = next;
+  pcUpdatePrice();
+}
+
+function pcFormatPrice(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₸';
+}
+
+function pcUpdatePrice() {
+  var price = pcState.rate * pcState.area;
+  var el = document.getElementById('pc-result-price');
+  if (el) el.textContent = '~ ' + pcFormatPrice(price);
+}
+
+function pcOrderFromCalc() {
+  if (typeof orderState !== 'undefined') {
+    orderState.area = pcState.area;
+  }
+  if (typeof openServiceDetail === 'function') {
+    openServiceDetail(pcState.service, null, 'home');
+    // дополняем площадь из калькулятора (openServiceDetail сбрасывает в 4)
+    setTimeout(function() {
+      try {
+        if (typeof orderState !== 'undefined') orderState.area = pcState.area;
+        var slider = document.getElementById('orderAreaSlider');
+        if (slider) slider.value = pcState.area;
+        var areaVal = document.getElementById('orderAreaVal');
+        if (areaVal) areaVal.textContent = pcState.area;
+        if (typeof updateOrderState === 'function') updateOrderState();
+      } catch(e) {}
+    }, 0);
+  }
+}
+
+window.pcSelectService = pcSelectService;
+window.pcChangeArea = pcChangeArea;
+window.pcOrderFromCalc = pcOrderFromCalc;

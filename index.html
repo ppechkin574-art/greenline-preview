@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=43">
+<link rel="stylesheet" href="css/styles.css?v=44">
 </head>
 <body>
 <div class="device-stage">
@@ -438,6 +438,48 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Price calculator -->
+    <section class="section home-reveal" style="padding-top: 8px;">
+      <div class="ba-card price-calc-card">
+        <div class="home-section-head">
+          <h3 class="home-section-title">Калькулятор цены</h3>
+        </div>
+        <div class="home-section-sub">Узнайте стоимость за пару секунд</div>
+
+        <div class="pc-field-label">Услуга</div>
+        <div class="pc-services" id="pc-services">
+          <button type="button" class="pc-service-chip pc-active" data-svc="Покос травы" data-rate="1500" onclick="pcSelectService(this)">Покос</button>
+          <button type="button" class="pc-service-chip" data-svc="Стрижка газона" data-rate="2000" onclick="pcSelectService(this)">Стрижка</button>
+          <button type="button" class="pc-service-chip" data-svc="Вспашка" data-rate="3000" onclick="pcSelectService(this)">Вспашка</button>
+          <button type="button" class="pc-service-chip" data-svc="Посадка газона" data-rate="5000" onclick="pcSelectService(this)">Посадка</button>
+        </div>
+
+        <div class="pc-field-label">Площадь</div>
+        <div class="pc-area">
+          <button type="button" class="pc-step-btn" onclick="pcChangeArea(-1)" aria-label="Уменьшить">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8"/></svg>
+          </button>
+          <div class="pc-area-value">
+            <span class="pc-area-num" id="pc-area-num">4</span>
+            <span class="pc-area-unit">сот.</span>
+          </div>
+          <button type="button" class="pc-step-btn" onclick="pcChangeArea(1)" aria-label="Увеличить">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8M8 4v8"/></svg>
+          </button>
+        </div>
+
+        <div class="pc-result">
+          <div class="pc-result-label">Примерная цена</div>
+          <div class="pc-result-price" id="pc-result-price">~ 6 000 ₸</div>
+        </div>
+
+        <button type="button" class="pc-cta" onclick="pcOrderFromCalc()">
+          <span>Заказать</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+        </button>
       </div>
     </section>
 
@@ -1883,6 +1925,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=43"></script>
+<script src="js/app.js?v=44"></script>
 </body>
 </html>
