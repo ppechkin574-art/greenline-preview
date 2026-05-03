@@ -4640,14 +4640,14 @@ body {
 }
 
 /* Timeline line: вертикальная пунктирная между шагами.
-   Цвет управляется --tl-color: серый = pending, зелёный = done */
+   Цвет управляется --tl-color: серый = pending, зелёный = done.
+   Line только МЕЖДУ шагами, не уходит за последний шаг (Фото). */
 .order-section::after,
+.order-section::before,
 .order-price-inline::after {
   content: '';
   position: absolute;
-  left: 32px; /* 16 (padding) + 16 (half of step-num 32px) */
-  top: 56px;  /* 18 (padding) + 32 (step-num) + 6 (gap) */
-  bottom: -14px; /* extend into 12px gap */
+  left: 32px;
   width: 2px;
   background-image: linear-gradient(
     to bottom,
@@ -4663,9 +4663,26 @@ body {
   z-index: 0;
   transition: background-image 0.25s;
 }
-/* Последняя секция (Фото) — линию убираем, она уходит в никуда */
-.order-section:last-of-type::after { display: none; }
-/* Inline-плашка цены — линия проходит через неё, без top:56px */
+
+/* ::after — линия ВНИЗ от step-num до низа секции + 14px (в gap) */
+.order-section::after {
+  top: 56px;
+  bottom: -14px;
+}
+/* ::before — линия ВВЕРХ от step-num через padding-top + 14px gap */
+.order-section::before {
+  top: -14px;
+  height: 70px; /* 14 gap + 18 padding + 32 step-num + 6 ниже центра */
+}
+
+/* Первая секция (параметр) — без линии вверху */
+.order-form > .order-section:first-of-type::before { display: none !important; }
+
+/* ПОСЛЕДНЯЯ секция (Фото = order-section-optional) — без линии вниз.
+   Используем класс, не :last-of-type (надёжнее, работает всегда) */
+.order-section.order-section-optional::after { display: none !important; }
+
+/* Inline-плашка цены — линия проходит через неё насквозь */
 .order-price-inline::after {
   top: -14px;
   bottom: -14px;
