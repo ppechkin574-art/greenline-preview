@@ -5352,12 +5352,14 @@ body {
   position: relative;
   border: 2px solid #ECF1EC;
   border-radius: 14px;
-  padding: 10px 10px 12px;
+  padding: 8px;
   background: #ffffff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: transform 0.12s, border-color 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: column;
 }
 .pc2-param-card:active { transform: scale(0.98); }
 .pc2-param-card.pc2-selected {
@@ -5366,37 +5368,69 @@ body {
 }
 .pc2-param-card-img {
   width: 100%;
-  aspect-ratio: 16 / 11;
+  aspect-ratio: 4 / 3;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #F4F6F4;
 }
 .pc2-param-card-img img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
 }
-.pc2-param-card-img svg {
-  width: 38%; height: 38%;
+.pc2-param-card-img-fallback svg {
+  width: 36%; height: 36%;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+}
+
+/* Body row: icon-bubble + text-stack */
+.pc2-param-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0 4px 4px;
+}
+.pc2-param-card-bubble {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #E8F5E8 0%, #D8EBD8 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #DCEEDC;
+}
+.pc2-param-card-bubble svg {
+  width: 16px; height: 16px;
+  /* SVG-иконки вытянуты для белого fill — перекрашиваем в зелёный */
+  filter:
+    brightness(0)
+    saturate(100%)
+    invert(38%)
+    sepia(38%)
+    saturate(594%)
+    hue-rotate(78deg)
+    brightness(94%)
+    contrast(89%);
+}
+.pc2-param-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 .pc2-param-card-title {
   font-size: 13px;
   font-weight: 700;
   color: #0E1A0E;
   letter-spacing: -0.01em;
-  margin: 0 0 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.pc2-param-card-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
+  line-height: 1.2;
 }
 .pc2-param-card-sub {
   font-size: 11px;
@@ -5404,27 +5438,36 @@ body {
   color: #6F7B6F;
   line-height: 1.3;
 }
-/* Чекмарк-бейдж в углу выбранной карточки */
+
+/* Чекмарк-бейдж в углу выбранной карточки (на фото) */
 .pc2-param-card-check {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 22px;
-  height: 22px;
+  top: 14px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 55%, #1F6B1F 100%);
-  display: none;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(255, 255, 255, 1);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    0 3px 8px -2px rgba(46, 139, 46, 0.45);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.18);
+  transition: background 0.18s, border-color 0.18s;
 }
 .pc2-param-card-check svg {
-  width: 12px; height: 12px;
+  width: 14px; height: 14px;
+  stroke: transparent;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+  transition: stroke 0.18s;
 }
-.pc2-param-card.pc2-selected .pc2-param-card-check { display: inline-flex; }
+.pc2-param-card.pc2-selected .pc2-param-card-check {
+  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 55%, #1F6B1F 100%);
+  border-color: #ffffff;
+}
+.pc2-param-card.pc2-selected .pc2-param-card-check svg {
+  stroke: #ffffff;
+}
 
 /* Площадь — слайдер */
 .pc2-area-section { margin-bottom: 18px; }

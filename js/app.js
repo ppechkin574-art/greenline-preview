@@ -2282,7 +2282,9 @@ function pc2IconSvg(kind) {
   return '<svg viewBox="0 0 24 24" fill="'+fill+'"><circle cx="12" cy="12" r="6"/></svg>';
 }
 
-/* Каталог услуг калькулятора. ВСЁ конфигурится через админку. */
+/* Каталог услуг калькулятора. ВСЁ конфигурится через админку.
+   Поле img — путь к фото опции. Если null/отсутствует, используется
+   градиент-плейсхолдер (grad + icon). Админ загружает реальные фото. */
 var PC2_SERVICES = {
   'Покос травы': {
     rate: 1500, minPrice: 8000, areaUnit: 'соток', areaUnitShort: 'сот.',
@@ -2290,10 +2292,10 @@ var PC2_SERVICES = {
     paramTitle: 'Как сейчас выглядит ваш участок?',
     paramSub: 'Выберите вариант, похожий на ваш',
     options: [
-      { id: 'light',  title: 'Лёгкая стрижка',     sub: 'Трава до 10–15 см',          mul: 1.0, grad: 'light',  icon: 'grass' },
-      { id: 'medium', title: 'Средняя зарощенность', sub: 'Трава 20–40 см',           mul: 1.3, grad: 'medium', icon: 'grass' },
-      { id: 'heavy',  title: 'Сильно заросший',    sub: 'Высокая трава, бурьян',      mul: 1.6, grad: 'heavy',  icon: 'bush' },
-      { id: 'extreme',title: 'Запущенный участок', sub: 'Кусты, мусор, давно не ухожен', mul: 2.0, grad: 'hard',  icon: 'tree' }
+      { id: 'light',  title: 'Лёгкая стрижка',     sub: 'Трава до 10–15 см',             mul: 1.0, grad: 'light',  icon: 'grass', img: 'img/a993e26b12.png' },
+      { id: 'medium', title: 'Средняя зарощенность', sub: 'Трава 20–40 см',              mul: 1.3, grad: 'medium', icon: 'grass', img: 'img/4eecf9d329.png' },
+      { id: 'heavy',  title: 'Сильно заросший',    sub: 'Высокая трава, бурьян',         mul: 1.6, grad: 'heavy',  icon: 'bush',  img: 'img/bfd86991f4.png' },
+      { id: 'extreme',title: 'Запущенный участок', sub: 'Кусты, мусор, давно не ухожен', mul: 2.0, grad: 'hard',   icon: 'tree',  img: 'img/c300d3358f.png' }
     ]
   },
   'Стрижка газона': {
@@ -2302,10 +2304,10 @@ var PC2_SERVICES = {
     paramTitle: 'Как часто стригли газон?',
     paramSub: 'От этого зависит сложность работы',
     options: [
-      { id: 'regular',  title: 'Регулярный уход',  sub: 'Раз в 1–2 недели',     mul: 1.0, grad: 'light',  icon: 'leaf' },
-      { id: 'lapsed',   title: 'Давно не стригли', sub: '3–4 недели без ухода', mul: 1.3, grad: 'medium', icon: 'grass' },
-      { id: 'neglected',title: 'Запущенный газон', sub: '1–2 месяца без ухода', mul: 1.6, grad: 'heavy',  icon: 'bush' },
-      { id: 'rough',    title: 'Тяжёлый случай',   sub: 'Газон превратился в луг', mul: 2.0, grad: 'hard',  icon: 'tree' }
+      { id: 'regular',  title: 'Регулярный уход',  sub: 'Раз в 1–2 недели',     mul: 1.0, grad: 'light',  icon: 'leaf',  img: 'img/4eecf9d329.png' },
+      { id: 'lapsed',   title: 'Давно не стригли', sub: '3–4 недели без ухода', mul: 1.3, grad: 'medium', icon: 'grass', img: 'img/8ed73f0d79.png' },
+      { id: 'neglected',title: 'Запущенный газон', sub: '1–2 месяца без ухода', mul: 1.6, grad: 'heavy',  icon: 'bush',  img: 'img/bfd86991f4.png' },
+      { id: 'rough',    title: 'Тяжёлый случай',   sub: 'Газон превратился в луг', mul: 2.0, grad: 'hard',  icon: 'tree',  img: null }
     ]
   },
   'Вспашка': {
@@ -2314,10 +2316,10 @@ var PC2_SERVICES = {
     paramTitle: 'Какая у вас почва?',
     paramSub: 'Чем плотнее — тем дольше работа',
     options: [
-      { id: 'soft',    title: 'Мягкая почва',    sub: 'Рыхлая, окультуренная',   mul: 1.0, grad: 'light',  icon: 'plow' },
-      { id: 'medium',  title: 'Средняя плотность', sub: 'Огород, давно копали',  mul: 1.3, grad: 'medium', icon: 'plow' },
-      { id: 'hard',    title: 'Твёрдая почва',   sub: 'Давно не пахали, плотная', mul: 1.6, grad: 'heavy',  icon: 'plow' },
-      { id: 'virgin',  title: 'Целина',          sub: 'Первичная вспашка',        mul: 2.0, grad: 'hard',  icon: 'plow' }
+      { id: 'soft',    title: 'Мягкая почва',     sub: 'Рыхлая, окультуренная',     mul: 1.0, grad: 'light',  icon: 'plow', img: 'img/c7ea20cb93.png' },
+      { id: 'medium',  title: 'Средняя плотность',sub: 'Огород, давно копали',      mul: 1.3, grad: 'medium', icon: 'plow', img: null },
+      { id: 'hard',    title: 'Твёрдая почва',    sub: 'Давно не пахали, плотная',  mul: 1.6, grad: 'heavy',  icon: 'plow', img: null },
+      { id: 'virgin',  title: 'Целина',           sub: 'Первичная вспашка',         mul: 2.0, grad: 'hard',   icon: 'plow', img: null }
     ]
   },
   'Посадка газона': {
@@ -2326,10 +2328,10 @@ var PC2_SERVICES = {
     paramTitle: 'Какой газон сажаем?',
     paramSub: 'Тип посадки сильно влияет на цену',
     options: [
-      { id: 'seed-basic', title: 'Посевной обычный', sub: 'Семена, базовая смесь',     mul: 1.0, grad: 'light',  icon: 'seed' },
-      { id: 'seed-premium', title: 'Посевной премиум', sub: 'Спортивная / декоративная', mul: 1.4, grad: 'medium', icon: 'seed' },
-      { id: 'roll-basic', title: 'Рулонный',         sub: 'Готовый газон, обычный',    mul: 2.5, grad: 'heavy',  icon: 'roll' },
-      { id: 'roll-premium', title: 'Рулонный премиум', sub: 'Элитные сорта',           mul: 3.0, grad: 'hard',  icon: 'roll' }
+      { id: 'seed-basic',   title: 'Посевной обычный', sub: 'Семена, базовая смесь',     mul: 1.0, grad: 'light',  icon: 'seed', img: 'img/0d19d8e209.png' },
+      { id: 'seed-premium', title: 'Посевной премиум',  sub: 'Спортивная / декоративная',mul: 1.4, grad: 'medium', icon: 'seed', img: null },
+      { id: 'roll-basic',   title: 'Рулонный',         sub: 'Готовый газон, обычный',    mul: 2.5, grad: 'heavy',  icon: 'roll', img: null },
+      { id: 'roll-premium', title: 'Рулонный премиум',  sub: 'Элитные сорта',            mul: 3.0, grad: 'hard',   icon: 'roll', img: null }
     ]
   }
 };
@@ -2366,13 +2368,24 @@ function pc2RenderParams() {
   for (var i = 0; i < svc.options.length; i++) {
     var o = svc.options[i];
     var selected = (o.id === pc2State.optionId) ? ' pc2-selected' : '';
-    var bg = PC2_GRADIENTS[o.grad] || PC2_GRADIENTS.light;
+    var imgBlock;
+    if (o.img) {
+      imgBlock = '<div class="pc2-param-card-img"><img src="' + o.img + '" alt=""></div>';
+    } else {
+      var bg = PC2_GRADIENTS[o.grad] || PC2_GRADIENTS.light;
+      imgBlock = '<div class="pc2-param-card-img pc2-param-card-img-fallback" style="background:' + bg + ';">' + pc2IconSvg(o.icon) + '</div>';
+    }
     html += ''
       + '<div class="pc2-param-card' + selected + '" data-opt="' + o.id + '" onclick="pc2SelectOption(\'' + o.id + '\')">'
-      +   '<div class="pc2-param-card-img" style="background:' + bg + ';">' + pc2IconSvg(o.icon) + '</div>'
-      +   '<div class="pc2-param-card-title">' + o.title + '</div>'
-      +   '<div class="pc2-param-card-sub">' + o.sub + '</div>'
+      +   imgBlock
       +   '<span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>'
+      +   '<div class="pc2-param-card-body">'
+      +     '<span class="pc2-param-card-bubble" aria-hidden="true">' + pc2IconSvg(o.icon) + '</span>'
+      +     '<div class="pc2-param-card-text">'
+      +       '<div class="pc2-param-card-title">' + o.title + '</div>'
+      +       '<div class="pc2-param-card-sub">' + o.sub + '</div>'
+      +     '</div>'
+      +   '</div>'
       + '</div>';
   }
   grid.innerHTML = html;
