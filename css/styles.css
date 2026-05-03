@@ -5280,6 +5280,13 @@ body {
 */
 .pc2-card {
   font-family: var(--app-font);
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 22px 18px 18px;
+  border: 1px solid #ECF1EC;
+  box-shadow:
+    0 8px 24px -10px rgba(46, 139, 46, 0.18),
+    0 2px 8px -2px rgba(0, 0, 0, 0.05);
 }
 .pc2-step-label {
   font-size: 11px;
