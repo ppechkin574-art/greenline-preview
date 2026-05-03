@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=61">
+<link rel="stylesheet" href="css/styles.css?v=62">
 </head>
 <body>
 <div class="device-stage">
@@ -1046,7 +1046,42 @@
           <p class="order-step-sub" id="orderParamSub">Влияет на стоимость</p>
         </div>
       </div>
-      <div class="pc2-param-grid" id="orderParamGrid"><!-- рендерится из openServiceDetail --></div>
+      <div class="pc2-param-grid" id="orderParamGrid">
+        <!-- Static fallback (Покос травы) — гарантированный показ до запуска JS.
+             JS перерисовывает grid при смене услуги через window.serviceForm. -->
+        <div class="pc2-param-card" data-opt="light">
+          <div class="pc2-param-card-img"><img src="img/8ed73f0d79.png" alt=""></div>
+          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
+          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
+            <div class="pc2-param-card-title">Лёгкая стрижка</div>
+            <div class="pc2-param-card-sub">Трава до 10–15 см</div>
+          </div></div>
+        </div>
+        <div class="pc2-param-card" data-opt="medium">
+          <div class="pc2-param-card-img"><img src="img/4eecf9d329.png" alt=""></div>
+          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
+          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
+            <div class="pc2-param-card-title">Средняя зарощенность</div>
+            <div class="pc2-param-card-sub">Трава 20–40 см</div>
+          </div></div>
+        </div>
+        <div class="pc2-param-card" data-opt="heavy">
+          <div class="pc2-param-card-img"><img src="img/a993e26b12.png" alt=""></div>
+          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
+          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
+            <div class="pc2-param-card-title">Сильно заросший</div>
+            <div class="pc2-param-card-sub">Высокая трава, бурьян</div>
+          </div></div>
+        </div>
+        <div class="pc2-param-card" data-opt="extreme">
+          <div class="pc2-param-card-img"><img src="img/bfd86991f4.png" alt=""></div>
+          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
+          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
+            <div class="pc2-param-card-title">Запущенный участок</div>
+            <div class="pc2-param-card-sub">Кусты, мусор, давно не ухожен</div>
+          </div></div>
+        </div>
+      </div>
     </section>
 
     <!-- 2. Площадь -->
@@ -1387,6 +1422,37 @@
     refresh: function() { renderParams(); renderArea(); renderPrice(); },
     getState: function() { return { svcName: state.svcName, opt: state.opt, area: state.area }; }
   };
+
+  // Bind клики на статический fallback (если JS-render не успеет).
+  // После setService() сетка перерисовывается и binds происходят там.
+  function bindFallback() {
+    var grid = document.getElementById('orderParamGrid');
+    if (!grid) return;
+    var cards = grid.querySelectorAll('.pc2-param-card');
+    cards.forEach(function(card) {
+      if (card._bound) return;
+      card._bound = true;
+      card.addEventListener('click', function() {
+        state.opt = card.getAttribute('data-opt');
+        cards.forEach(function(c){ c.classList.remove('pc2-selected'); });
+        card.classList.add('pc2-selected');
+        renderPrice();
+        if (typeof updateOrderState === 'function') updateOrderState();
+      });
+    });
+  }
+
+  // Init с проверкой readyState (срабатывает в обоих случаях)
+  function init() {
+    bindFallback();
+    // Применить текущую дефолтную услугу — рендерит правильные данные
+    setService(state.svcName);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 
@@ -2111,6 +2177,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=61"></script>
+<script src="js/app.js?v=62"></script>
 </body>
 </html>
