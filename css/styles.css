@@ -196,10 +196,13 @@ body {
   }
 
   /* Страницы без шапки — добавляем top padding для status-bar/Island */
-  .device-frame #page-home .scroll-body,
   .device-frame #page-orders .scroll-body,
   .device-frame #page-profile .scroll-body {
     padding-top: 58px;
+  }
+  /* Home — brand-header сам отступает под Dynamic Island */
+  .device-frame #page-home .home-brand-header {
+    padding-top: 64px;
   }
 
   /* Регистрация — заголовок ниже Dynamic Island */
@@ -5099,3 +5102,153 @@ body {
   font-weight: 500;
   color: #94A094;
 }
+
+/* ===== HOME — TOP BRAND HEADER ===== */
+.home-brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+}
+.home-brand-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ===== ORDER HISTORY ===== */
+.orders-history { padding-top: 8px; }
+.order-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.order-history-item {
+  background: #ffffff;
+  border: 1px solid #ECF1EC;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  box-shadow:
+    0 4px 12px -6px rgba(46, 139, 46, 0.10),
+    0 1px 3px -1px rgba(0, 0, 0, 0.04);
+  transition: transform 0.12s, box-shadow 0.18s;
+}
+.order-history-item:active { transform: scale(0.99); }
+
+.ohi-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #F4F6F4;
+}
+.ohi-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ohi-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ohi-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ohi-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0E1A0E;
+  letter-spacing: -0.015em;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ohi-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+.ohi-status svg { width: 10px; height: 10px; }
+.ohi-status-done {
+  background: rgba(46, 139, 46, 0.10);
+  color: #2E8B2E;
+  border: 1px solid rgba(46, 139, 46, 0.20);
+}
+.ohi-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6F7B6F;
+}
+.ohi-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.ohi-meta-item svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+.ohi-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+.ohi-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1F6B1F;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.ohi-repeat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #F0FAF0;
+  color: #2E8B2E;
+  border: 1px solid #DCEEDC;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.12s;
+  min-height: 32px;
+}
+.ohi-repeat:active { background: #E0F4E0; transform: scale(0.96); }
+.ohi-repeat svg { width: 12px; height: 12px; }

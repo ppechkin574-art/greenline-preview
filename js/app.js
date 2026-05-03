@@ -2237,3 +2237,17 @@ document.addEventListener('click', function(e) {
     dd.classList.remove('open');
   }
 });
+
+/* ============================================================
+   ORDER HISTORY — "Заказать снова"
+   ============================================================ */
+function repeatOrder(serviceName, btn) {
+  // На этапе 2: подтянуть прошлые параметры (площадь/адрес) из history-API
+  // Сейчас — просто открываем форму заказа с этой услугой
+  // Передаём элемент истории как tileEl (для img.src в hero), используем .ohi-photo img
+  var tileEl = btn ? btn.closest('.order-history-item') : null;
+  var imgWrap = tileEl ? tileEl.querySelector('.ohi-photo') : null;
+  if (typeof openServiceDetail === 'function') {
+    openServiceDetail(serviceName, imgWrap, 'orders');
+  }
+}

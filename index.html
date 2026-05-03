@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=40">
+<link rel="stylesheet" href="css/styles.css?v=41">
 </head>
 <body>
 <div class="device-stage">
@@ -226,6 +226,11 @@
 <div id="page-home" class="page">
 
   <div class="scroll-body" id="homeScrollBody">
+
+    <!-- Brand header (top-centered) -->
+    <div class="home-brand-header">
+      <span class="home-brand-text">GreenLine</span>
+    </div>
 
     <!-- Personal discount with countdown -->
     <section class="section home-discount-wrap home-reveal">
@@ -667,6 +672,109 @@
           </div>
         </div>
       </article>
+    </section>
+
+    <!-- Order history -->
+    <section class="orders-section orders-history">
+      <div class="orders-section-header">
+        <h2 class="orders-section-title">История заказов</h2>
+      </div>
+      <div class="order-history-list">
+
+        <article class="order-history-item">
+          <div class="ohi-photo"><img src="img/a993e26b12.png" alt=""></div>
+          <div class="ohi-body">
+            <div class="ohi-top-row">
+              <h3 class="ohi-title">Покос травы</h3>
+              <span class="ohi-status ohi-status-done">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.5 2.5L9.5 4"/></svg>
+                Завершён
+              </span>
+            </div>
+            <div class="ohi-meta">
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="8" height="7" rx="1.5"/><path d="M4 2v2M8 2v2"/></svg>
+                12 апр
+              </span>
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5C4 1.5 2.5 3 2.5 5c0 2.5 3.5 5.5 3.5 5.5s3.5-3 3.5-5.5c0-2-1.5-3.5-3.5-3.5z"/><circle cx="6" cy="5" r="1.2"/></svg>
+                Самал 1
+              </span>
+              <span class="ohi-meta-item">4 сот.</span>
+            </div>
+            <div class="ohi-bottom-row">
+              <span class="ohi-price">~ 6 000 ₸</span>
+              <button class="ohi-repeat" type="button" onclick="repeatOrder('Покос травы', this)">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7a5 5 0 018-3M12 7a5 5 0 01-8 3"/><path d="M9 4h2.5V1.5M5 10H2.5V12.5"/></svg>
+                Заказать снова
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="order-history-item">
+          <div class="ohi-photo"><img src="img/4eecf9d329.png" alt=""></div>
+          <div class="ohi-body">
+            <div class="ohi-top-row">
+              <h3 class="ohi-title">Стрижка газона</h3>
+              <span class="ohi-status ohi-status-done">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.5 2.5L9.5 4"/></svg>
+                Завершён
+              </span>
+            </div>
+            <div class="ohi-meta">
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="8" height="7" rx="1.5"/><path d="M4 2v2M8 2v2"/></svg>
+                28 марта
+              </span>
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5C4 1.5 2.5 3 2.5 5c0 2.5 3.5 5.5 3.5 5.5s3.5-3 3.5-5.5c0-2-1.5-3.5-3.5-3.5z"/><circle cx="6" cy="5" r="1.2"/></svg>
+                Самал 1
+              </span>
+              <span class="ohi-meta-item">4 сот.</span>
+            </div>
+            <div class="ohi-bottom-row">
+              <span class="ohi-price">~ 8 000 ₸</span>
+              <button class="ohi-repeat" type="button" onclick="repeatOrder('Стрижка газона', this)">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7a5 5 0 018-3M12 7a5 5 0 01-8 3"/><path d="M9 4h2.5V1.5M5 10H2.5V12.5"/></svg>
+                Заказать снова
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="order-history-item">
+          <div class="ohi-photo"><img src="img/c7ea20cb93.png" alt=""></div>
+          <div class="ohi-body">
+            <div class="ohi-top-row">
+              <h3 class="ohi-title">Вспашка</h3>
+              <span class="ohi-status ohi-status-done">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.5 2.5L9.5 4"/></svg>
+                Завершён
+              </span>
+            </div>
+            <div class="ohi-meta">
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="8" height="7" rx="1.5"/><path d="M4 2v2M8 2v2"/></svg>
+                15 марта
+              </span>
+              <span class="ohi-meta-item">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5C4 1.5 2.5 3 2.5 5c0 2.5 3.5 5.5 3.5 5.5s3.5-3 3.5-5.5c0-2-1.5-3.5-3.5-3.5z"/><circle cx="6" cy="5" r="1.2"/></svg>
+                Дача · Сатпаева
+              </span>
+              <span class="ohi-meta-item">10 сот.</span>
+            </div>
+            <div class="ohi-bottom-row">
+              <span class="ohi-price">~ 30 000 ₸</span>
+              <button class="ohi-repeat" type="button" onclick="repeatOrder('Вспашка', this)">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7a5 5 0 018-3M12 7a5 5 0 01-8 3"/><path d="M9 4h2.5V1.5M5 10H2.5V12.5"/></svg>
+                Заказать снова
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </section>
 
   </div>
@@ -1766,6 +1874,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=40"></script>
+<script src="js/app.js?v=41"></script>
 </body>
 </html>
