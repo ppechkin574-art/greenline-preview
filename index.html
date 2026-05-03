@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=56">
+<link rel="stylesheet" href="css/styles.css?v=57">
 </head>
 <body>
 <div class="device-stage">
@@ -1039,7 +1039,6 @@
       <!-- Шаг 2: визуальный параметр -->
       <div class="pc2-param-section">
         <div class="pc2-param-title" id="calc-param-title">Как сейчас выглядит ваш участок?</div>
-        <div class="pc2-param-sub" id="calc-param-sub">Выберите вариант, похожий на ваш</div>
         <div class="pc2-param-grid" id="calc-param-grid"><!-- наполняется inline JS ниже --></div>
       </div>
 
@@ -1136,11 +1135,9 @@
   function renderCards() {
     var grid = document.getElementById('calc-param-grid');
     var titleEl = document.getElementById('calc-param-title');
-    var subEl = document.getElementById('calc-param-sub');
     if (!grid) return;
     var s = SERVICES[state.svc];
-    titleEl.textContent = s.pTitle;
-    subEl.textContent = s.pSub;
+    if (titleEl) titleEl.textContent = s.pTitle;
     var html = '';
     for (var i = 0; i < s.opts.length; i++) {
       var o = s.opts[i];
@@ -2147,6 +2144,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=56"></script>
+<script src="js/app.js?v=57"></script>
 </body>
 </html>
