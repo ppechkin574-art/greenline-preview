@@ -2252,69 +2252,233 @@ function repeatOrder(serviceName, btn) {
   }
 }
 
-/* ===== PRICE CALCULATOR (главная страница, после каталога) =====
-   В будущем тарифы и параметры приходят из админки (см. CONTEXT.md).
-   Сейчас — статично, через data-* атрибуты на чипах.
-*/
-var pcState = {
-  service: 'Покос травы',
-  rate: 1500,
-  area: 4,
-  areaMin: 1,
-  areaMax: 50,
-  areaStep: 1
+/* ===== PRICE CALCULATOR v2 (главная) ============================
+   Структура: услуга → визуальный параметр (зависит от услуги) →
+   площадь (slider) → цена с min-floor + длительность.
+
+   Все данные ниже в будущем приходят из админки (см. CONTEXT.md):
+   тарифы, min-prices, мультипликаторы опций, картинки, тексты,
+   единицы измерения, диапазоны площади и длительности.
+================================================================== */
+
+/* Цветовые градиенты для иконок-плейсхолдеров (заменятся на фото) */
+var PC2_GRADIENTS = {
+  light:  'linear-gradient(135deg, #C8F0C8 0%, #8FD68F 100%)',
+  medium: 'linear-gradient(135deg, #88C988 0%, #4DA84D 100%)',
+  heavy:  'linear-gradient(135deg, #4DA84D 0%, #1F6B1F 100%)',
+  hard:   'linear-gradient(135deg, #6B5B4A 0%, #3F2F22 100%)'
 };
 
-function pcSelectService(btn) {
-  if (!btn) return;
-  var chips = document.querySelectorAll('#pc-services .pc-service-chip');
-  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('pc-active');
-  btn.classList.add('pc-active');
-  pcState.service = btn.getAttribute('data-svc') || pcState.service;
-  pcState.rate = parseInt(btn.getAttribute('data-rate'), 10) || pcState.rate;
-  pcUpdatePrice();
+/* Простые SVG-иконки для плейсхолдеров (трава, бурьян, кусты, грунт) */
+function pc2IconSvg(kind) {
+  var fill = '#ffffff';
+  if (kind === 'leaf')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><path d="M17 3c-7 0-11 4-11 11 0 5 4 8 8 8 1-3 1-6 1-9 0-2 1-4 2-5 1-1 2-3 0-5z"/></svg>';
+  if (kind === 'grass') return '<svg viewBox="0 0 24 24" fill="'+fill+'"><path d="M4 20l3-10 1 6 2-12 2 14 1-8 2 10z" stroke="'+fill+'" stroke-width="1" stroke-linejoin="round"/></svg>';
+  if (kind === 'bush')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><circle cx="8" cy="14" r="5"/><circle cx="16" cy="13" r="6"/><circle cx="12" cy="17" r="5"/></svg>';
+  if (kind === 'plow')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><path d="M3 18h18M3 14h18M3 10h18M3 6h18" stroke="'+fill+'" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  if (kind === 'tree')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><path d="M12 2l5 7h-3l4 6h-3l3 5H6l3-5H6l4-6H7z"/></svg>';
+  if (kind === 'seed')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><path d="M12 3c-3 4-3 9 0 13 3-4 3-9 0-13z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>';
+  if (kind === 'roll')  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><rect x="3" y="9" width="18" height="6" rx="3"/><circle cx="6" cy="12" r="1.5" fill="#2E8B2E"/></svg>';
+  return '<svg viewBox="0 0 24 24" fill="'+fill+'"><circle cx="12" cy="12" r="6"/></svg>';
 }
 
-function pcChangeArea(delta) {
-  var next = pcState.area + (delta * pcState.areaStep);
-  if (next < pcState.areaMin) next = pcState.areaMin;
-  if (next > pcState.areaMax) next = pcState.areaMax;
-  pcState.area = next;
-  var numEl = document.getElementById('pc-area-num');
-  if (numEl) numEl.textContent = next;
-  pcUpdatePrice();
-}
-
-function pcFormatPrice(n) {
-  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₸';
-}
-
-function pcUpdatePrice() {
-  var price = pcState.rate * pcState.area;
-  var el = document.getElementById('pc-result-price');
-  if (el) el.textContent = '~ ' + pcFormatPrice(price);
-}
-
-function pcOrderFromCalc() {
-  if (typeof orderState !== 'undefined') {
-    orderState.area = pcState.area;
+/* Каталог услуг калькулятора. ВСЁ конфигурится через админку. */
+var PC2_SERVICES = {
+  'Покос травы': {
+    rate: 1500, minPrice: 8000, areaUnit: 'соток', areaUnitShort: 'сот.',
+    areaMin: 1, areaMax: 20, areaDefault: 5, hoursPerUnit: 0.25,
+    paramTitle: 'Как сейчас выглядит ваш участок?',
+    paramSub: 'Выберите вариант, похожий на ваш',
+    options: [
+      { id: 'light',  title: 'Лёгкая стрижка',     sub: 'Трава до 10–15 см',          mul: 1.0, grad: 'light',  icon: 'grass' },
+      { id: 'medium', title: 'Средняя зарощенность', sub: 'Трава 20–40 см',           mul: 1.3, grad: 'medium', icon: 'grass' },
+      { id: 'heavy',  title: 'Сильно заросший',    sub: 'Высокая трава, бурьян',      mul: 1.6, grad: 'heavy',  icon: 'bush' },
+      { id: 'extreme',title: 'Запущенный участок', sub: 'Кусты, мусор, давно не ухожен', mul: 2.0, grad: 'hard',  icon: 'tree' }
+    ]
+  },
+  'Стрижка газона': {
+    rate: 2000, minPrice: 6000, areaUnit: 'соток', areaUnitShort: 'сот.',
+    areaMin: 1, areaMax: 20, areaDefault: 5, hoursPerUnit: 0.20,
+    paramTitle: 'Как часто стригли газон?',
+    paramSub: 'От этого зависит сложность работы',
+    options: [
+      { id: 'regular',  title: 'Регулярный уход',  sub: 'Раз в 1–2 недели',     mul: 1.0, grad: 'light',  icon: 'leaf' },
+      { id: 'lapsed',   title: 'Давно не стригли', sub: '3–4 недели без ухода', mul: 1.3, grad: 'medium', icon: 'grass' },
+      { id: 'neglected',title: 'Запущенный газон', sub: '1–2 месяца без ухода', mul: 1.6, grad: 'heavy',  icon: 'bush' },
+      { id: 'rough',    title: 'Тяжёлый случай',   sub: 'Газон превратился в луг', mul: 2.0, grad: 'hard',  icon: 'tree' }
+    ]
+  },
+  'Вспашка': {
+    rate: 3000, minPrice: 12000, areaUnit: 'соток', areaUnitShort: 'сот.',
+    areaMin: 1, areaMax: 30, areaDefault: 5, hoursPerUnit: 0.40,
+    paramTitle: 'Какая у вас почва?',
+    paramSub: 'Чем плотнее — тем дольше работа',
+    options: [
+      { id: 'soft',    title: 'Мягкая почва',    sub: 'Рыхлая, окультуренная',   mul: 1.0, grad: 'light',  icon: 'plow' },
+      { id: 'medium',  title: 'Средняя плотность', sub: 'Огород, давно копали',  mul: 1.3, grad: 'medium', icon: 'plow' },
+      { id: 'hard',    title: 'Твёрдая почва',   sub: 'Давно не пахали, плотная', mul: 1.6, grad: 'heavy',  icon: 'plow' },
+      { id: 'virgin',  title: 'Целина',          sub: 'Первичная вспашка',        mul: 2.0, grad: 'hard',  icon: 'plow' }
+    ]
+  },
+  'Посадка газона': {
+    rate: 5000, minPrice: 15000, areaUnit: 'соток', areaUnitShort: 'сот.',
+    areaMin: 1, areaMax: 20, areaDefault: 5, hoursPerUnit: 0.50,
+    paramTitle: 'Какой газон сажаем?',
+    paramSub: 'Тип посадки сильно влияет на цену',
+    options: [
+      { id: 'seed-basic', title: 'Посевной обычный', sub: 'Семена, базовая смесь',     mul: 1.0, grad: 'light',  icon: 'seed' },
+      { id: 'seed-premium', title: 'Посевной премиум', sub: 'Спортивная / декоративная', mul: 1.4, grad: 'medium', icon: 'seed' },
+      { id: 'roll-basic', title: 'Рулонный',         sub: 'Готовый газон, обычный',    mul: 2.5, grad: 'heavy',  icon: 'roll' },
+      { id: 'roll-premium', title: 'Рулонный премиум', sub: 'Элитные сорта',           mul: 3.0, grad: 'hard',  icon: 'roll' }
+    ]
   }
+};
+
+var pc2State = {
+  service: 'Покос травы',
+  optionId: 'light',
+  area: 5
+};
+
+function pc2FormatPrice(n) {
+  return String(Math.round(n / 100) * 100).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function pc2GetService() { return PC2_SERVICES[pc2State.service]; }
+function pc2GetOption() {
+  var svc = pc2GetService();
+  if (!svc) return null;
+  for (var i = 0; i < svc.options.length; i++) {
+    if (svc.options[i].id === pc2State.optionId) return svc.options[i];
+  }
+  return svc.options[0];
+}
+
+function pc2RenderParams() {
+  var svc = pc2GetService();
+  var grid = document.getElementById('pc2-param-grid');
+  var titleEl = document.getElementById('pc2-param-title');
+  var subEl = document.getElementById('pc2-param-sub');
+  if (!grid || !svc) return;
+  if (titleEl) titleEl.textContent = svc.paramTitle;
+  if (subEl) subEl.textContent = svc.paramSub;
+  var html = '';
+  for (var i = 0; i < svc.options.length; i++) {
+    var o = svc.options[i];
+    var selected = (o.id === pc2State.optionId) ? ' pc2-selected' : '';
+    var bg = PC2_GRADIENTS[o.grad] || PC2_GRADIENTS.light;
+    html += ''
+      + '<div class="pc2-param-card' + selected + '" data-opt="' + o.id + '" onclick="pc2SelectOption(\'' + o.id + '\')">'
+      +   '<div class="pc2-param-card-img" style="background:' + bg + ';">' + pc2IconSvg(o.icon) + '</div>'
+      +   '<div class="pc2-param-card-title">' + o.title + '</div>'
+      +   '<div class="pc2-param-card-sub">' + o.sub + '</div>'
+      +   '<span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>'
+      + '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function pc2RenderArea() {
+  var svc = pc2GetService();
+  if (!svc) return;
+  var slider = document.getElementById('pc2-slider');
+  var numEl = document.getElementById('pc2-area-num');
+  var unitEl = document.getElementById('pc2-area-unit');
+  if (slider) {
+    slider.min = svc.areaMin;
+    slider.max = svc.areaMax;
+    slider.value = pc2State.area;
+    pc2UpdateSliderFill();
+  }
+  if (numEl) numEl.textContent = pc2State.area;
+  if (unitEl) unitEl.textContent = svc.areaUnit;
+}
+
+function pc2UpdateSliderFill() {
+  var slider = document.getElementById('pc2-slider');
+  if (!slider) return;
+  var min = parseFloat(slider.min) || 0;
+  var max = parseFloat(slider.max) || 100;
+  var v = parseFloat(slider.value) || 0;
+  var pct = ((v - min) / (max - min)) * 100;
+  slider.style.setProperty('--pc2-fill', pct + '%');
+}
+
+function pc2RenderPrice() {
+  var svc = pc2GetService();
+  var opt = pc2GetOption();
+  if (!svc || !opt) return;
+  var basePrice = svc.rate * pc2State.area * opt.mul;
+  var price = Math.max(basePrice, svc.minPrice);
+  var priceMax = Math.max(price * 1.5, svc.minPrice + 4000);
+  var priceEl = document.getElementById('pc2-price-value');
+  if (priceEl) {
+    priceEl.textContent = pc2FormatPrice(price) + ' – ' + pc2FormatPrice(priceMax) + ' ₸';
+  }
+  // длительность: hoursPerUnit * area * сложность (по mul)
+  var hours = svc.hoursPerUnit * pc2State.area * Math.sqrt(opt.mul);
+  var hFrom = Math.max(1, Math.floor(hours));
+  var hTo = Math.max(hFrom + 1, Math.ceil(hours + 0.5));
+  var durEl = document.getElementById('pc2-duration-text');
+  if (durEl) durEl.textContent = '~ ' + hFrom + '–' + hTo + ' ч работы';
+}
+
+function pc2RenderAll() { pc2RenderParams(); pc2RenderArea(); pc2RenderPrice(); }
+
+function pc2SelectService(btn) {
+  if (!btn) return;
+  var svcName = btn.getAttribute('data-svc');
+  var svc = PC2_SERVICES[svcName];
+  if (!svc) return;
+  var chips = document.querySelectorAll('#pc2-services .pc2-svc-chip');
+  for (var i = 0; i < chips.length; i++) chips[i].classList.remove('pc2-active');
+  btn.classList.add('pc2-active');
+  pc2State.service = svcName;
+  pc2State.optionId = svc.options[0].id;
+  pc2State.area = svc.areaDefault;
+  pc2RenderAll();
+}
+
+function pc2SelectOption(optId) {
+  pc2State.optionId = optId;
+  var cards = document.querySelectorAll('#pc2-param-grid .pc2-param-card');
+  for (var i = 0; i < cards.length; i++) {
+    if (cards[i].getAttribute('data-opt') === optId) cards[i].classList.add('pc2-selected');
+    else cards[i].classList.remove('pc2-selected');
+  }
+  pc2RenderPrice();
+}
+
+function pc2OnSlider(val) {
+  pc2State.area = parseInt(val, 10) || 1;
+  var numEl = document.getElementById('pc2-area-num');
+  if (numEl) numEl.textContent = pc2State.area;
+  pc2UpdateSliderFill();
+  pc2RenderPrice();
+}
+
+function pc2Order() {
   if (typeof openServiceDetail === 'function') {
-    openServiceDetail(pcState.service, null, 'home');
-    // дополняем площадь из калькулятора (openServiceDetail сбрасывает в 4)
+    openServiceDetail(pc2State.service, null, 'home');
     setTimeout(function() {
       try {
-        if (typeof orderState !== 'undefined') orderState.area = pcState.area;
+        if (typeof orderState !== 'undefined') orderState.area = pc2State.area;
         var slider = document.getElementById('orderAreaSlider');
-        if (slider) slider.value = pcState.area;
+        if (slider) slider.value = pc2State.area;
         var areaVal = document.getElementById('orderAreaVal');
-        if (areaVal) areaVal.textContent = pcState.area;
+        if (areaVal) areaVal.textContent = pc2State.area;
         if (typeof updateOrderState === 'function') updateOrderState();
       } catch(e) {}
     }, 0);
   }
 }
 
-window.pcSelectService = pcSelectService;
-window.pcChangeArea = pcChangeArea;
-window.pcOrderFromCalc = pcOrderFromCalc;
+window.pc2SelectService = pc2SelectService;
+window.pc2SelectOption = pc2SelectOption;
+window.pc2OnSlider = pc2OnSlider;
+window.pc2Order = pc2Order;
+
+/* Init после загрузки DOM */
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('pc2-param-grid')) pc2RenderAll();
+});
