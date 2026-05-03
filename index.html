@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=59">
+<link rel="stylesheet" href="css/styles.css?v=60">
 </head>
 <body>
 <div class="device-stage">
@@ -392,7 +392,7 @@
 
     <!-- Калькулятор цены — entry CTA на отдельную страницу -->
     <section class="section home-reveal home-block">
-      <button type="button" class="home-calc-entry" onclick="showPage('calculator')">
+      <button type="button" class="home-calc-entry" onclick="window._serviceCameAsCalc = true; if (window.servicePageOpen) window.servicePageOpen({phase:'calc'}); else showPage('service');">
         <span class="home-calc-entry-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="3" width="14" height="18" rx="2"/>
@@ -1014,20 +1014,22 @@
 
 
 
-<!-- ===== CALCULATOR PAGE (полностью самодостаточная, inline JS) ===== -->
-<div id="page-calculator" class="page">
+<!-- ===== UNIFIED SERVICE PAGE (calc + booking, две фазы) ===== -->
+<div id="page-service" class="page" data-phase="calc">
+  <!-- Sticky header (заголовок и подзаголовок меняются по фазе) -->
   <div class="header header-clean header-with-back">
-    <button class="page-back" type="button" onclick="goToHome()" aria-label="Назад">
+    <button class="page-back" type="button" onclick="serviceBackBtn()" aria-label="Назад">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <div class="header-title-stack">
-      <div class="header-title">Калькулятор цены</div>
+      <div class="header-title" id="svc-hdr-title">Покос травы</div>
+      <div class="header-subtitle" id="svc-hdr-phase">Расчёт</div>
     </div>
   </div>
-  <div class="scroll-body" style="padding-left: 16px; padding-right: 16px;">
-    <div class="ba-card pc2-card" id="calc-root" style="margin: 12px 0 24px;">
+  <div class="scroll-body service-scroll-body" style="padding-left: 16px; padding-right: 16px;">
 
-      <!-- Шаг 1: услуга -->
+    <!-- ===== CALC PHASE: чипы услуг + виз. параметр + площадь + price card ===== -->
+    <div class="ba-card pc2-card phase-only-calc" id="calc-root" style="margin: 12px 0 12px;">
       <div class="pc2-step-label">Тип услуги</div>
       <div class="pc2-services" id="calc-svc-row">
         <button type="button" class="pc2-svc-chip pc2-active" data-svc="mow">Покос</button>
@@ -1036,13 +1038,11 @@
         <button type="button" class="pc2-svc-chip" data-svc="plant">Посадка</button>
       </div>
 
-      <!-- Шаг 2: визуальный параметр -->
       <div class="pc2-param-section">
         <div class="pc2-param-title" id="calc-param-title">Как сейчас выглядит ваш участок?</div>
-        <div class="pc2-param-grid" id="calc-param-grid"><!-- наполняется inline JS ниже --></div>
+        <div class="pc2-param-grid" id="calc-param-grid"></div>
       </div>
 
-      <!-- Шаг 3: площадь -->
       <div class="pc2-area-section">
         <div class="pc2-area-head">
           <div class="pc2-area-title">Площадь участка</div>
@@ -1059,7 +1059,6 @@
         </div>
       </div>
 
-      <!-- Результат -->
       <div class="pc2-price-card">
         <div class="pc2-price-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1077,10 +1076,151 @@
           <div class="pc2-price-note">Точная стоимость уточняется мастером после осмотра</div>
         </div>
       </div>
+    </div>
 
-      <button type="button" class="pc-cta" id="calc-cta">
+    <!-- ===== BOOKING PHASE: hero + виз. параметр + адрес + дата + контакты + фото ===== -->
+    <div class="phase-only-booking">
+      <!-- Hero компактный (только в booking) -->
+      <div class="order-hero order-hero-compact" style="margin: 12px 0 0;">
+        <img id="bk-hero-img" src="img/a993e26b12.png" alt="">
+        <div class="order-hero-overlay">
+          <p class="order-hero-sub" id="bk-hero-sub">Быстро и аккуратно скосим траву</p>
+        </div>
+      </div>
+
+      <!-- Виз. параметр (item 2=в — полноценный шаг в booking) -->
+      <div class="ba-card pc2-card" style="margin: 12px 0 12px;">
+        <div class="pc2-param-section" style="margin-bottom: 0;">
+          <div class="pc2-param-title" id="bk-param-title">Как сейчас выглядит ваш участок?</div>
+          <div class="pc2-param-grid" id="bk-param-grid"></div>
+        </div>
+      </div>
+
+      <!-- Существующие booking-секции (адрес, дата, контакты, фото) -->
+      <div class="order-form" style="padding: 0; gap: 12px;">
+
+        <!-- 1. Адрес -->
+        <section class="order-section">
+          <div class="order-step-header">
+            <span class="order-step-num">1</span>
+            <div class="order-step-text">
+              <h3 class="order-step-title">Адрес участка <span class="order-required">*</span></h3>
+              <p class="order-step-sub">Куда подъехать команде</p>
+            </div>
+          </div>
+          <div class="order-input-wrap">
+            <span class="order-input-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg>
+            </span>
+            <input class="order-input" type="text" id="orderAddress" placeholder="Например: мкр. Самал 1, кв. 45" oninput="onOrderInputChange()">
+          </div>
+        </section>
+
+        <!-- 2. Дата и время -->
+        <section class="order-section">
+          <div class="order-step-header">
+            <span class="order-step-num">2</span>
+            <div class="order-step-text">
+              <h3 class="order-step-title">Дата и время <span class="order-required">*</span></h3>
+              <p class="order-step-sub">Когда команде приехать</p>
+            </div>
+          </div>
+          <div class="order-date-block">
+            <div class="order-date-label">Дата</div>
+            <div class="order-date-row" id="orderDateRow"></div>
+          </div>
+          <div class="order-time-block">
+            <div class="order-date-label">Время</div>
+            <div class="order-time-grid" id="orderTimeGrid"></div>
+          </div>
+        </section>
+
+        <!-- 3. Контакты -->
+        <section class="order-section">
+          <div class="order-step-header">
+            <span class="order-step-num">3</span>
+            <div class="order-step-text">
+              <h3 class="order-step-title">Ваши контакты</h3>
+              <p class="order-step-sub">Подтягиваются из аккаунта</p>
+            </div>
+          </div>
+          <div class="order-contact-card" id="orderContactCard">
+            <div class="order-contact-row">
+              <span class="order-contact-icon">
+                <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg>
+              </span>
+              <div class="order-contact-info">
+                <div class="order-contact-label">Имя</div>
+                <div class="order-contact-value" id="orderContactName">Жахангир</div>
+              </div>
+              <button class="order-contact-edit" type="button" onclick="editOrderContact('name')" aria-label="Изменить имя">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+              </button>
+            </div>
+            <div class="order-contact-row">
+              <span class="order-contact-icon">
+                <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
+              </span>
+              <div class="order-contact-info">
+                <div class="order-contact-label">Телефон</div>
+                <div class="order-contact-value" id="orderContactPhone">+7 778 794 37 60</div>
+              </div>
+              <button class="order-contact-edit" type="button" onclick="editOrderContact('phone')" aria-label="Изменить номер">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Фото (опционально) -->
+        <section class="order-section order-section-optional">
+          <div class="order-step-header">
+            <span class="order-step-num order-step-num-optional">4</span>
+            <div class="order-step-text">
+              <h3 class="order-step-title">Фото участка <span class="order-optional-tag">опционально</span></h3>
+              <p class="order-step-sub">Поможет точнее оценить работу</p>
+            </div>
+          </div>
+          <div class="order-photo-upload" onclick="document.getElementById('photoInput').click()">
+            <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+            <div id="photoPreview" class="order-photo-empty">
+              <span class="order-photo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+              </span>
+              <div class="order-photo-text">Добавить фото</div>
+              <div class="order-photo-sub">Камера или галерея</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Скрытый area-slider для совместимости с existing booking JS (orderState.area) -->
+        <input type="range" id="orderAreaSlider" min="1" max="30" value="5" style="display:none;" oninput="updateOrderArea(this.value)">
+        <span id="orderAreaVal" style="display:none;">5</span>
+      </div>
+    </div>
+
+    <!-- Spacer чтобы sticky-bar не перекрывал контент -->
+    <div style="height: 24px;"></div>
+
+  </div>
+
+  <!-- Sticky bottom bar — содержимое по фазе -->
+  <div class="service-bottom-bar">
+    <!-- Calc phase: button "Продолжить бронь" -->
+    <button type="button" class="service-bottom-cta phase-only-calc" id="calc-continue-btn">
+      <span>Продолжить бронь</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+    </button>
+
+    <!-- Booking phase: price summary + Заказать -->
+    <div class="service-bottom-booking phase-only-booking">
+      <div class="service-bottom-price">
+        <div class="service-bottom-price-label">Примерная цена</div>
+        <div class="service-bottom-price-val" id="bk-price-val">8 000 – 12 000 ₸</div>
+      </div>
+      <button type="button" class="service-bottom-cta service-bottom-cta-compact" id="orderSubmitBtn" onclick="submitOrder()" disabled>
         <span>Заказать</span>
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
       </button>
     </div>
   </div>
@@ -1201,7 +1341,14 @@
     if (durEl) durEl.textContent = '~ ' + hFrom + '–' + hTo + ' ч работы';
   }
 
-  function renderAll() { renderCards(); renderArea(); renderPrice(); }
+  function renderAll() {
+    renderCards();
+    renderArea();
+    renderPrice();
+    // Header title всегда отражает текущую услугу
+    var titleEl = document.getElementById('svc-hdr-title');
+    if (titleEl && SERVICES[state.svc]) titleEl.textContent = SERVICES[state.svc].name;
+  }
 
   // Bind chips
   function bindChips() {
@@ -1230,32 +1377,157 @@
     });
   }
 
-  // Bind CTA
-  function bindCta() {
-    var cta = document.getElementById('calc-cta');
-    if (!cta) return;
-    cta.addEventListener('click', function() {
-      var s = SERVICES[state.svc];
-      if (typeof openServiceDetail === 'function') {
-        openServiceDetail(s.name, null, 'home');
-        setTimeout(function() {
-          try {
-            if (typeof orderState !== 'undefined') orderState.area = state.area;
-            var sl = document.getElementById('orderAreaSlider');
-            if (sl) sl.value = state.area;
-            var av = document.getElementById('orderAreaVal');
-            if (av) av.textContent = state.area;
-            if (typeof updateOrderState === 'function') updateOrderState();
-          } catch(e) {}
-        }, 0);
+  // ===== ФАЗЫ: calc <-> booking ======================================
+  function setPhase(phase) {
+    var page = document.getElementById('page-service');
+    if (!page) return;
+    page.setAttribute('data-phase', phase);
+    var titleEl = document.getElementById('svc-hdr-title');
+    var phaseEl = document.getElementById('svc-hdr-phase');
+    if (titleEl) titleEl.textContent = SERVICES[state.svc].name;
+    if (phaseEl) phaseEl.textContent = (phase === 'calc') ? 'Расчёт' : 'Бронь';
+    // Скролл наверх (плавно при переключении из calc → booking)
+    var sb = page.querySelector('.scroll-body');
+    if (sb) sb.scrollTop = 0;
+    if (phase === 'booking') {
+      // Анимация появления booking-секций (item 4=в — slide reveal)
+      var blocks = page.querySelectorAll('.phase-only-booking');
+      blocks.forEach(function(b, i) {
+        b.style.animation = 'svcSlideIn 0.35s ease ' + (i * 0.05) + 's both';
+      });
+      // Прокинуть state в orderState (площадь, услуга) для existing booking JS
+      if (typeof orderState !== 'undefined') {
+        orderState.service = SERVICES[state.svc].name;
+        orderState.area = state.area;
       }
+      // Hero img
+      var hero = document.getElementById('bk-hero-img');
+      var sub = document.getElementById('bk-hero-sub');
+      if (hero) {
+        var firstOpt = SERVICES[state.svc].opts[0];
+        hero.src = firstOpt && firstOpt.img ? firstOpt.img : 'img/a993e26b12.png';
+      }
+      if (sub) sub.textContent = SERVICES[state.svc].name;
+      // Render booking visual params
+      renderBkParams();
+      // Update sticky bar price
+      updateBookingPrice();
+      // Render dates/times через existing функции
+      if (typeof renderOrderDates === 'function') {
+        try { renderOrderDates(); } catch(e) {}
+      }
+      if (typeof renderOrderTimes === 'function') {
+        try { renderOrderTimes(); } catch(e) {}
+      }
+      // Update existing orderState UI (имя/телефон из localStorage)
+      try {
+        var savedName = localStorage.getItem('gl_name') || 'Друг';
+        var savedPhone = localStorage.getItem('gl_phone') || '';
+        var nameNode = document.getElementById('orderContactName');
+        var phoneNode = document.getElementById('orderContactPhone');
+        if (nameNode) nameNode.textContent = savedName;
+        if (phoneNode) phoneNode.textContent = savedPhone || 'Не указан';
+        if (typeof orderState !== 'undefined') {
+          orderState.name = savedName;
+          orderState.phone = savedPhone;
+        }
+      } catch(e) {}
+      // Запустить existing валидатор (включит/выключит кнопку Заказать)
+      if (typeof updateOrderState === 'function') {
+        try { updateOrderState(); } catch(e) {}
+      }
+    }
+  }
+
+  // Render visual params в booking-блок
+  function renderBkParams() {
+    var grid = document.getElementById('bk-param-grid');
+    var titleEl = document.getElementById('bk-param-title');
+    if (!grid) return;
+    var s = SERVICES[state.svc];
+    if (titleEl) titleEl.textContent = s.pTitle;
+    var html = '';
+    for (var i = 0; i < s.opts.length; i++) {
+      var o = s.opts[i];
+      var sel = (o.id === state.opt) ? ' pc2-selected' : '';
+      var img;
+      if (o.img) {
+        img = '<div class="pc2-param-card-img"><img src="' + o.img + '" alt=""></div>';
+      } else {
+        img = '<div class="pc2-param-card-img" style="background:linear-gradient(135deg, #C8F0C8 0%, #4DA84D 100%);"></div>';
+      }
+      html += '<div class="pc2-param-card' + sel + '" data-opt="' + o.id + '">'
+        + img
+        + '<span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>'
+        + '<div class="pc2-param-card-body"><div class="pc2-param-card-text">'
+        + '<div class="pc2-param-card-title">' + o.t + '</div>'
+        + '<div class="pc2-param-card-sub">' + o.s + '</div>'
+        + '</div></div>'
+        + '</div>';
+    }
+    grid.innerHTML = html;
+    // Bind clicks: смена параметра в booking меняет state и пересчитывает sticky-цену
+    var cards = grid.querySelectorAll('.pc2-param-card');
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        state.opt = card.getAttribute('data-opt');
+        cards.forEach(function(c){ c.classList.remove('pc2-selected'); });
+        card.classList.add('pc2-selected');
+        updateBookingPrice();
+      });
     });
   }
+
+  function updateBookingPrice() {
+    var s = SERVICES[state.svc];
+    var o = null;
+    for (var i = 0; i < s.opts.length; i++) if (s.opts[i].id === state.opt) o = s.opts[i];
+    if (!o) o = s.opts[0];
+    var base = s.rate * state.area * o.m;
+    var price = Math.max(base, s.min);
+    var priceMax = Math.max(price * 1.5, s.min + 4000);
+    var el = document.getElementById('bk-price-val');
+    if (el) el.textContent = fmt(price) + ' – ' + fmt(priceMax) + ' ₸';
+  }
+
+  // ===== Continue button (calc → booking) ============================
+  function bindContinue() {
+    var btn = document.getElementById('calc-continue-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      setPhase('booking');
+    });
+  }
+
+  // ===== Public API для showPage ===============================
+  function openInPhase(phase, prefillSvcKey) {
+    if (prefillSvcKey && SERVICES[prefillSvcKey]) {
+      state.svc = prefillSvcKey;
+      state.opt = SERVICES[prefillSvcKey].opts[0].id;
+      // sync chip active state
+      var chips = document.querySelectorAll('#calc-svc-row .pc2-svc-chip');
+      chips.forEach(function(c) {
+        c.classList.toggle('pc2-active', c.getAttribute('data-svc') === prefillSvcKey);
+      });
+    }
+    renderAll();
+    setPhase(phase || 'calc');
+  }
+
+  // Карта: имя услуги (русское) → ключ
+  var SVC_NAME_TO_KEY = {
+    'Покос травы': 'mow',
+    'Стрижка газона': 'cut',
+    'Вспашка': 'till',
+    'Посадка газона': 'plant',
+    'Посадка растений': 'plant', // мап на ближайшее
+    'Топиарная обрезка': 'cut'    // мап на ближайшее
+  };
 
   function init() {
     bindChips();
     bindSlider();
-    bindCta();
+    bindContinue();
     renderAll();
   }
 
@@ -1264,171 +1536,37 @@
   } else {
     init();
   }
-  // Экспортируем renderAll, чтобы showPage мог пересчитать при показе
+  // Public API
   window.calcRefresh = renderAll;
+  window.servicePageOpen = function(opts) {
+    opts = opts || {};
+    var svcKey = opts.svcKey;
+    if (!svcKey && opts.svcName) svcKey = SVC_NAME_TO_KEY[opts.svcName];
+    if (!svcKey) svcKey = state.svc;
+    openInPhase(opts.phase || 'calc', svcKey);
+  };
+  window.servicePageBack = function() {
+    var page = document.getElementById('page-service');
+    var current = page ? page.getAttribute('data-phase') : 'calc';
+    if (current === 'booking') {
+      // если из booking — возвращаемся в calc (если фаза была)
+      // или на home, если был прямой вход booking
+      if (window._serviceCameAsCalc) {
+        setPhase('calc');
+      } else {
+        if (typeof goToHome === 'function') goToHome();
+      }
+    } else {
+      if (typeof goToHome === 'function') goToHome();
+    }
+  };
+  // serviceBackBtn — back-кнопка в header
+  window.serviceBackBtn = window.servicePageBack;
+  // Экспорт price update — чтобы existing booking JS мог его дёргать при изменении состояния
+  window.serviceUpdateBookingPrice = updateBookingPrice;
 })();
 </script>
 
-<div id="page-service-detail" class="page">
-  <!-- Sticky header — всегда виден при скролле -->
-  <div class="header header-clean header-with-back">
-    <button class="page-back" type="button" onclick="detailGoBack()" aria-label="Назад">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </button>
-    <div class="header-title-stack">
-      <div class="header-title" id="detailTitle">Покос травы</div>
-    </div>
-  </div>
-  <div class="scroll-body">
-  <!-- Компактный hero (только превью услуги, без заголовка — он в header) -->
-  <div class="order-hero order-hero-compact">
-    <img id="detailHeroImg" src="img/a993e26b12.png" alt="">
-    <div class="order-hero-overlay">
-      <p class="order-hero-sub" id="detailSub">Быстро и аккуратно скосим траву</p>
-    </div>
-  </div>
-
-  <div class="order-form">
-
-    <!-- 1. Площадь -->
-    <section class="order-section">
-      <div class="order-step-header">
-        <span class="order-step-num">1</span>
-        <div class="order-step-text">
-          <h3 class="order-step-title">Площадь участка <span class="order-required">*</span></h3>
-          <p class="order-step-sub">Передвиньте бегунок</p>
-        </div>
-      </div>
-      <div class="order-area-card">
-        <div class="order-area-display">
-          <span class="oad-num" id="orderAreaVal">4</span>
-          <span class="oad-unit">соток</span>
-        </div>
-        <input type="range" class="order-area-slider" min="1" max="30" value="4" step="1" id="orderAreaSlider" oninput="updateOrderArea(this.value)">
-        <div class="order-area-marks">
-          <span>1 сотка</span>
-          <span>30 соток</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. Адрес -->
-    <section class="order-section">
-      <div class="order-step-header">
-        <span class="order-step-num">2</span>
-        <div class="order-step-text">
-          <h3 class="order-step-title">Адрес участка <span class="order-required">*</span></h3>
-          <p class="order-step-sub">Куда подъехать команде</p>
-        </div>
-      </div>
-      <div class="order-input-wrap">
-        <span class="order-input-icon">
-          <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg>
-        </span>
-        <input class="order-input" type="text" id="orderAddress" placeholder="Например: мкр. Самал 1, кв. 45" oninput="onOrderInputChange()">
-      </div>
-    </section>
-
-    <!-- 3. Дата и время -->
-    <section class="order-section">
-      <div class="order-step-header">
-        <span class="order-step-num">3</span>
-        <div class="order-step-text">
-          <h3 class="order-step-title">Дата и время <span class="order-required">*</span></h3>
-          <p class="order-step-sub">Когда команде приехать</p>
-        </div>
-      </div>
-      <div class="order-date-block">
-        <div class="order-date-label">Дата</div>
-        <div class="order-date-row" id="orderDateRow"></div>
-      </div>
-      <div class="order-time-block">
-        <div class="order-date-label">Время</div>
-        <div class="order-time-grid" id="orderTimeGrid"></div>
-      </div>
-    </section>
-
-    <!-- 4. Контакты (автозаполнение) -->
-    <section class="order-section">
-      <div class="order-step-header">
-        <span class="order-step-num">4</span>
-        <div class="order-step-text">
-          <h3 class="order-step-title">Ваши контакты</h3>
-          <p class="order-step-sub">Подтягиваются из аккаунта</p>
-        </div>
-      </div>
-      <div class="order-contact-card" id="orderContactCard">
-        <div class="order-contact-row">
-          <span class="order-contact-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg>
-          </span>
-          <div class="order-contact-info">
-            <div class="order-contact-label">Имя</div>
-            <div class="order-contact-value" id="orderContactName">Жахангир</div>
-          </div>
-          <button class="order-contact-edit" type="button" onclick="editOrderContact('name')" aria-label="Изменить имя">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
-          </button>
-        </div>
-        <div class="order-contact-row">
-          <span class="order-contact-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4l3-1.5 1.5 3-1.5 1c.8 1.7 2 3 3.7 3.7l1-1.5 3 1.5-1.5 3a8 8 0 01-9-9z"/></svg>
-          </span>
-          <div class="order-contact-info">
-            <div class="order-contact-label">Телефон</div>
-            <div class="order-contact-value" id="orderContactPhone">+7 778 794 37 60</div>
-          </div>
-          <button class="order-contact-edit" type="button" onclick="editOrderContact('phone')" aria-label="Изменить номер">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2-8 8-2.5.5.5-2.5 8-8z"/></svg>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. Фото (опциональное) -->
-    <section class="order-section order-section-optional">
-      <div class="order-step-header">
-        <span class="order-step-num order-step-num-optional">5</span>
-        <div class="order-step-text">
-          <h3 class="order-step-title">Фото участка <span class="order-optional-tag">опционально</span></h3>
-          <p class="order-step-sub">Поможет точнее оценить работу</p>
-        </div>
-      </div>
-      <div class="order-photo-upload" onclick="document.getElementById('photoInput').click()">
-        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-        <div id="photoPreview" class="order-photo-empty">
-          <span class="order-photo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
-          </span>
-          <div class="order-photo-text">Добавить фото</div>
-          <div class="order-photo-sub">Камера или галерея</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Price preview (показывается когда все обязательные поля заполнены) -->
-    <section class="order-price-preview" id="orderPricePreview" hidden>
-      <div class="order-price-row">
-        <div>
-          <div class="order-price-label">Примерная стоимость</div>
-          <div class="order-price-note">Окончательную цену озвучит мастер на месте</div>
-        </div>
-        <div class="order-price-value">~&nbsp;<span id="orderPriceVal">0</span>&nbsp;₸</div>
-      </div>
-    </section>
-
-    <!-- Submit -->
-    <div class="order-submit-wrap">
-      <button class="order-submit" id="orderSubmitBtn" type="button" disabled onclick="submitOrder()">
-        <span class="order-submit-text">Заказать</span>
-        <svg class="order-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
-      <div class="order-privacy">🔒 Мы не передаём ваши данные третьим лицам</div>
-    </div>
-
-  </div>
-  </div>
-</div>
 
 <!-- PROFILE SUB PAGES -->
 <div id="page-profile-addresses" class="page">
@@ -2151,6 +2289,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=59"></script>
+<script src="js/app.js?v=60"></script>
 </body>
 </html>

@@ -29,9 +29,9 @@ function showPage(name) {
   const el = document.getElementById('page-' + name);
   if (el) { el.classList.add('active'); } else { document.getElementById('page-home').classList.add('active'); }
   window.scrollTo(0,0);
-  // Hide bottom nav on register and admin pages
+  // Hide bottom nav on register, admin, and service (focused flow) pages
   const nav = document.getElementById('bottomNav');
-  if (nav) nav.style.display = (name === 'register' || name === 'admin') ? 'none' : 'flex';
+  if (nav) nav.style.display = (name === 'register' || name === 'admin' || name === 'service') ? 'none' : 'flex';
   // Подсветить активную вкладку нижнего бара (если функция уже определена)
   if (typeof updateBottomNavActive === 'function') updateBottomNavActive(name);
   // Обновить приветствие на главной (имя из localStorage)
@@ -50,20 +50,15 @@ function showPage(name) {
     renderGallery(f);
     setTimeout(function(){ renderGallery(f); }, 100);
   }
-  // Калькулятор: пересчитать при показе (inline-script регистрирует window.calcRefresh)
-  if (name === 'calculator' && typeof window.calcRefresh === 'function') {
+  // Унифицированная страница услуги (calc + booking фазы)
+  if (name === 'service' && typeof window.calcRefresh === 'function') {
     window.calcRefresh();
     setTimeout(function(){ if (typeof window.calcRefresh === 'function') window.calcRefresh(); }, 50);
-  }
-  // Service-detail: гарантированный рендер дат и времени при показе
-  if (name === 'service-detail') {
     if (typeof renderOrderDates === 'function') {
-      try { renderOrderDates(); } catch(e) {}
-      setTimeout(function(){ try { renderOrderDates(); } catch(e) {} }, 50);
+      setTimeout(function(){ try { renderOrderDates(); } catch(e) {} }, 60);
     }
     if (typeof renderOrderTimes === 'function') {
-      try { renderOrderTimes(); } catch(e) {}
-      setTimeout(function(){ try { renderOrderTimes(); } catch(e) {} }, 50);
+      setTimeout(function(){ try { renderOrderTimes(); } catch(e) {} }, 60);
     }
   }
 }
@@ -854,7 +849,11 @@ function openServiceDetail(name, tileEl, fromPage) {
   // САМОЕ ВАЖНОЕ — переключаем страницу первым делом, чтобы даже если
   // что-то ниже упадёт, пользователь увидит экран заказа
   window._detailFromPage = fromPage || 'home';
-  showPage('service-detail');
+  window._serviceCameAsCalc = false; // прямой вход = booking
+  showPage('service');
+  if (typeof window.servicePageOpen === 'function') {
+    window.servicePageOpen({ phase: 'booking', svcName: name });
+  }
 
   try {
     var imgSrc = null;
@@ -1003,19 +1002,14 @@ function updateOrderState() {
   var validTime = !!orderState.time;
   var allValid = validArea && validAddr && validDate && validTime;
 
-  // Price preview
-  var preview = document.getElementById('orderPricePreview');
-  var priceEl = document.getElementById('orderPriceVal');
-  if (allValid && preview && priceEl) {
-    priceEl.textContent = _formatPriceKZT(calcOrderPrice());
-    preview.hidden = false;
-  } else if (preview) {
-    preview.hidden = true;
-  }
-
-  // Submit button
+  // Submit button (в sticky bar новой unified страницы)
   var btn = document.getElementById('orderSubmitBtn');
   if (btn) btn.disabled = !allValid;
+
+  // Sticky-плашка цены — обновляется через inline-API страницы service
+  if (typeof window.serviceUpdateBookingPrice === 'function') {
+    try { window.serviceUpdateBookingPrice(); } catch(e) {}
+  }
 }
 
 function submitOrder() {
