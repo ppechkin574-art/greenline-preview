@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=75">
+<link rel="stylesheet" href="css/styles.css?v=76">
 </head>
 <body>
 <div class="device-stage">
@@ -2213,6 +2213,303 @@
 </div>
 </div>
 </div>
+
+<!-- ===== UI KIT PANEL (sidebar справа от телефона) ===== -->
+<aside class="uikit-panel" aria-label="UI Kit">
+  <header class="uikit-header">
+    <div class="uikit-header-title">UI Kit · GreenLine</div>
+    <div class="uikit-header-sub">Все компоненты. Переключается с темой приложения.</div>
+  </header>
+
+  <!-- 1. ЦВЕТА -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Цвета</h3>
+      <span class="uikit-section-meta">12 токенов · brand + neutrals + accents</span>
+    </div>
+    <div class="uikit-color-grid">
+      <div class="uikit-swatch" style="--c:#4ADE4A"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Light Green</span><code>#4ADE4A</code></div>
+      <div class="uikit-swatch" style="--c:#3DA83D"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Mid Green</span><code>#3DA83D</code></div>
+      <div class="uikit-swatch" style="--c:#2E8B2E"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Brand</span><code>#2E8B2E</code></div>
+      <div class="uikit-swatch" style="--c:#1F6B1F"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Deep Green</span><code>#1F6B1F</code></div>
+      <div class="uikit-swatch" style="--c:#0E1A0E;border:1px solid #2A3E2A"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Text Primary</span><code>#0E1A0E</code></div>
+      <div class="uikit-swatch" style="--c:#4A6A4A"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Text Secondary</span><code>#4A6A4A</code></div>
+      <div class="uikit-swatch" style="--c:#6F7B6F"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Muted</span><code>#6F7B6F</code></div>
+      <div class="uikit-swatch" style="--c:#94A094"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Hint</span><code>#94A094</code></div>
+      <div class="uikit-swatch" style="--c:#DCEEDC"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Border</span><code>#DCEEDC</code></div>
+      <div class="uikit-swatch" style="--c:#F0FAF0"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Surface</span><code>#F0FAF0</code></div>
+      <div class="uikit-swatch" style="--c:#FF8C42"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Accent Orange</span><code>#FF8C42</code></div>
+      <div class="uikit-swatch" style="--c:#E53935"><span class="uikit-swatch-dot"></span><span class="uikit-swatch-name">Danger</span><code>#E53935</code></div>
+    </div>
+  </section>
+
+  <!-- 2. ТИПОГРАФИКА -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Типографика</h3>
+      <span class="uikit-section-meta">SF Pro / Roboto / system</span>
+    </div>
+    <div class="uikit-type-list">
+      <div class="uikit-type-item">
+        <div style="font-size:28px;font-weight:800;letter-spacing:-0.025em;color:#0E1A0E;">Page Hero</div>
+        <code>28px · 800 · -0.025em · H1</code>
+      </div>
+      <div class="uikit-type-item">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#0E1A0E;">Section Title</div>
+        <code>22px · 800 · -0.02em · H2</code>
+      </div>
+      <div class="uikit-type-item">
+        <div style="font-size:19px;font-weight:800;letter-spacing:-0.02em;color:#0E1A0E;">Block Title</div>
+        <code>19px · 800 · -0.02em · H3</code>
+      </div>
+      <div class="uikit-type-item">
+        <div style="font-size:16px;font-weight:800;letter-spacing:-0.015em;color:#0E1A0E;">Step / Card Title</div>
+        <code>16px · 800 · -0.015em · H4</code>
+      </div>
+      <div class="uikit-type-item">
+        <div style="font-size:14px;font-weight:500;color:#4A6A4A;">Body — обычный текст для абзацев и описаний</div>
+        <code>14px · 500 · body</code>
+      </div>
+      <div class="uikit-type-item">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#6F7B6F;text-transform:uppercase;">Caption / Eyebrow</div>
+        <code>11px · 700 · 0.08em · uppercase</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. КНОПКИ -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Кнопки</h3>
+      <span class="uikit-section-meta">5 вариантов · 3 состояния</span>
+    </div>
+    <div class="uikit-rows">
+      <div class="uikit-row">
+        <button class="kit-btn kit-btn-primary">Primary CTA</button>
+        <button class="kit-btn kit-btn-primary kit-state-active">Active</button>
+        <button class="kit-btn kit-btn-primary" disabled>Disabled</button>
+        <code>.kit-btn-primary · 3D зелёный градиент</code>
+      </div>
+      <div class="uikit-row">
+        <button class="kit-btn kit-btn-secondary">Secondary</button>
+        <button class="kit-btn kit-btn-secondary kit-state-active">Active</button>
+        <code>.kit-btn-secondary · мягкий серый</code>
+      </div>
+      <div class="uikit-row">
+        <button class="kit-btn kit-btn-outline">Outline</button>
+        <button class="kit-btn kit-btn-outline kit-state-active">Active</button>
+        <code>.kit-btn-outline · бренд-бордер на белом</code>
+      </div>
+      <div class="uikit-row">
+        <button class="kit-btn kit-btn-danger">Danger</button>
+        <code>.kit-btn-danger · удаление / отмена</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 3D ИКОНКИ -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">3D-иконки</h3>
+      <span class="uikit-section-meta">фирменный recipe · gradient + insets + sphere shine</span>
+    </div>
+    <div class="uikit-icon-row">
+      <div class="kit-3d-icon kit-3d-icon-sm"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><path d="M6 1.5C4 1.5 2.5 3 2.5 5c0 2.5 3.5 5.5 3.5 5.5s3.5-3 3.5-5.5c0-2-1.5-3.5-3.5-3.5z"/><circle cx="6" cy="5" r="1.2" fill="#fff"/></svg></div>
+      <div class="kit-3d-icon kit-3d-icon-md"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h6"/></svg></div>
+      <div class="kit-3d-icon kit-3d-icon-lg"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></div>
+      <div class="kit-3d-icon kit-3d-icon-circle"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg></div>
+      <code>32 · 38 · 46 · 32(круг)</code>
+    </div>
+  </section>
+
+  <!-- 5. ЧИПЫ -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Чипы</h3>
+      <span class="uikit-section-meta">услуга, дата, время, фильтр</span>
+    </div>
+    <div class="uikit-rows">
+      <div class="uikit-row">
+        <button class="kit-svc-chip">Покос</button>
+        <button class="kit-svc-chip kit-state-active">Стрижка</button>
+        <code>.pc2-svc-chip · услуга</code>
+      </div>
+      <div class="uikit-row">
+        <button class="kit-date-chip"><span>Сегодня</span><b>3</b><i>май</i></button>
+        <button class="kit-date-chip kit-state-active"><span>Вт</span><b>5</b><i>май</i></button>
+        <code>.order-date-chip · дата</code>
+      </div>
+      <div class="uikit-row">
+        <button class="kit-time-chip">10:00</button>
+        <button class="kit-time-chip kit-state-active">14:00</button>
+        <code>.order-time-chip · время</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. КАРТОЧКИ -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Карточки</h3>
+      <span class="uikit-section-meta">базовая, шаг формы, отзыв</span>
+    </div>
+    <div class="uikit-rows">
+      <div class="kit-card kit-card-base">
+        <div style="font-weight:800;font-size:14px;color:#0E1A0E;">Базовая карточка</div>
+        <div style="font-size:12px;color:#6F7B6F;margin-top:2px;">white · radius 18 · soft shadow</div>
+        <code style="margin-top:10px;display:block;">.ba-card</code>
+      </div>
+      <div class="kit-card kit-card-step">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span class="kit-step-num">1</span>
+          <div>
+            <div style="font-weight:800;font-size:14px;color:#0E1A0E;">Шаг формы</div>
+            <div style="font-size:11px;color:#6F7B6F;">number + title + content</div>
+          </div>
+        </div>
+        <code style="margin-top:10px;display:block;">.order-section</code>
+      </div>
+      <div class="kit-card kit-card-review">
+        <div style="font-size:11px;color:#FFB020;letter-spacing:2px;">★★★★★</div>
+        <div style="font-size:12px;color:#4A6A4A;margin-top:6px;">Отлично выполнили работу, рекомендую.</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+          <span style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4ADE4A,#2E8B2E);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;">А</span>
+          <span style="font-size:12px;font-weight:700;color:#0E1A0E;">Айгуль Н.</span>
+        </div>
+        <code style="margin-top:10px;display:block;">.review-card</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. INPUTS -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Inputs</h3>
+      <span class="uikit-section-meta">текст, slider, toggle</span>
+    </div>
+    <div class="uikit-rows">
+      <div class="uikit-row uikit-row-block">
+        <div class="kit-input-wrap">
+          <span class="kit-input-icon"><svg viewBox="0 0 16 16" fill="none" stroke="#2E8B2E" stroke-width="1.7" stroke-linecap="round"><path d="M8 1.5C5.4 1.5 3.3 3.6 3.3 6.2c0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7z"/><circle cx="8" cy="6" r="1.7"/></svg></span>
+          <input class="kit-input" placeholder="Введите адрес" value="">
+        </div>
+        <code>.order-input</code>
+      </div>
+      <div class="uikit-row uikit-row-block">
+        <input type="range" min="1" max="50" value="12" class="kit-range">
+        <code>.order-area-slider</code>
+      </div>
+      <div class="uikit-row">
+        <label class="ios-switch"><input type="checkbox"><span class="ios-switch-slider"></span></label>
+        <label class="ios-switch"><input type="checkbox" checked><span class="ios-switch-slider"></span></label>
+        <code>.ios-switch (off / on)</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. STEP INDICATORS -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Индикаторы шагов</h3>
+      <span class="uikit-section-meta">pending / active / done</span>
+    </div>
+    <div class="uikit-icon-row">
+      <span class="kit-step-num" data-state="pending">3</span>
+      <span class="kit-step-num" data-state="active">2</span>
+      <span class="kit-step-num" data-state="done"></span>
+      <code>.order-step-num[data-state]</code>
+    </div>
+  </section>
+
+  <!-- 9. БЕЙДЖИ -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Бейджи и статусы</h3>
+      <span class="uikit-section-meta">popular, услуга, статусы</span>
+    </div>
+    <div class="uikit-icon-row">
+      <span class="kit-badge kit-badge-orange">Чаще выбирают</span>
+      <span class="kit-badge kit-badge-glass">Услуга</span>
+      <span class="kit-badge kit-badge-status">В обработке</span>
+      <span class="kit-badge kit-badge-done">Завершён</span>
+      <code>.pc2-param-card-popular · .order-hero-badge</code>
+    </div>
+  </section>
+
+  <!-- 10. SUBMIT / CTA -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Submit / Главные CTA</h3>
+      <span class="uikit-section-meta">3 состояния</span>
+    </div>
+    <div class="uikit-rows">
+      <button class="kit-submit">Забронировать <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="kit-submit kit-state-active">Забронировать (active)</button>
+      <button class="kit-submit" disabled>Забронировать (disabled)</button>
+      <code>.order-submit · sticky CTA</code>
+    </div>
+  </section>
+
+  <!-- 11. BOTTOM NAV -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Bottom navigation</h3>
+      <span class="uikit-section-meta">3 таба · активный с halo</span>
+    </div>
+    <div class="kit-bottom-nav">
+      <div class="kit-bn-item kit-state-active">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>
+        <span>Главная</span>
+      </div>
+      <div class="kit-bn-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M9 14h4"/></svg>
+        <span>Заказы</span>
+      </div>
+      <div class="kit-bn-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
+        <span>Профиль</span>
+      </div>
+    </div>
+    <code>#bottomNav · фиксирован к низу телефона</code>
+  </section>
+
+  <!-- 12. EMPTY STATE -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Пустые состояния</h3>
+      <span class="uikit-section-meta">empty card</span>
+    </div>
+    <div class="kit-empty">
+      <div class="kit-3d-icon kit-3d-icon-lg" style="margin:0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h6"/></svg></div>
+      <div style="font-weight:800;font-size:15px;color:#0E1A0E;text-align:center;margin-top:8px;">Активных заказов нет</div>
+      <div style="font-size:12px;color:#6F7B6F;text-align:center;">Закажите услугу из каталога</div>
+    </div>
+    <code>.orders-empty-card</code>
+  </section>
+
+  <!-- 13. PARAM CARDS -->
+  <section class="uikit-section">
+    <div class="uikit-section-head">
+      <h3 class="uikit-section-title">Карточки параметра</h3>
+      <span class="uikit-section-meta">виз. опции в форме брони</span>
+    </div>
+    <div class="kit-param-grid">
+      <div class="kit-param-card kit-state-active">
+        <div class="kit-param-img" style="background:linear-gradient(135deg,#6FCC6F 0%,#3DA83D 100%);"><svg viewBox="0 0 64 64" fill="none"><path d="M12 50 L12 38 L16 50 M20 50 L20 36 L24 50 M28 50 L28 34 L32 50 M36 50 L36 36 L40 50 M44 50 L44 38 L48 50" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></div>
+        <div style="font-weight:700;font-size:13px;color:#0E1A0E;margin-top:8px;">Невысокая</div>
+        <div style="font-size:11px;color:#6F7B6F;">До 20 см</div>
+      </div>
+      <div class="kit-param-card">
+        <div class="kit-param-img" style="background:linear-gradient(135deg,#2E8B2E 0%,#1F6B1F 100%);"><svg viewBox="0 0 64 64" fill="none"><path d="M8 52 Q8 28 14 16 M18 52 Q14 26 22 12 M26 52 Q22 28 30 10 M34 52 Q34 24 40 14 M42 52 Q38 26 48 12 M52 52 Q52 30 58 16" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></div>
+        <div style="font-weight:700;font-size:13px;color:#0E1A0E;margin-top:8px;">Заросший</div>
+        <div style="font-size:11px;color:#6F7B6F;">30+ см</div>
+      </div>
+    </div>
+    <code>.pc2-param-card</code>
+  </section>
+
+  <footer class="uikit-footer">GreenLine Design System · v1</footer>
+</aside>
 
 <!-- ===== AI CHAT ===== -->
 
