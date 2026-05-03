@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=63">
+<link rel="stylesheet" href="css/styles.css?v=64">
 </head>
 <body>
 <div class="device-stage">
@@ -1098,10 +1098,9 @@
           <span class="oad-num" id="orderAreaVal">5</span>
           <span class="oad-unit" id="orderAreaUnit">соток</span>
         </div>
-        <input type="range" class="order-area-slider" min="1" max="20" value="5" step="1" id="orderAreaSlider" oninput="updateOrderArea(this.value)">
-        <div class="order-area-marks">
-          <span id="orderAreaMin">1 сотка</span>
-          <span id="orderAreaMax">20 соток</span>
+        <input type="range" class="order-area-slider" min="1" max="50" value="5" step="1" id="orderAreaSlider" oninput="updateOrderArea(this.value)">
+        <div class="order-area-ticks" id="orderAreaTicks">
+          <span>1</span><span>5</span><span>10</span><span>20</span><span>50</span>
         </div>
       </div>
     </section>
@@ -1149,11 +1148,30 @@
       </div>
       <div class="order-date-block">
         <div class="order-date-label">Дата</div>
-        <div class="order-date-row" id="orderDateRow"></div>
+        <div class="order-date-row" id="orderDateRow">
+          <!-- Static placeholder. JS перезаполнит actual датами. -->
+          <button type="button" class="order-date-chip"><span class="order-date-chip-dow">Сегодня</span><span class="order-date-chip-day">—</span><span class="order-date-chip-mon">…</span></button>
+          <button type="button" class="order-date-chip"><span class="order-date-chip-dow">Завтра</span><span class="order-date-chip-day">—</span><span class="order-date-chip-mon">…</span></button>
+          <button type="button" class="order-date-chip"><span class="order-date-chip-dow">Пн</span><span class="order-date-chip-day">—</span><span class="order-date-chip-mon">…</span></button>
+          <button type="button" class="order-date-chip"><span class="order-date-chip-dow">Вт</span><span class="order-date-chip-day">—</span><span class="order-date-chip-mon">…</span></button>
+          <button type="button" class="order-date-chip"><span class="order-date-chip-dow">Ср</span><span class="order-date-chip-day">—</span><span class="order-date-chip-mon">…</span></button>
+        </div>
       </div>
       <div class="order-time-block">
         <div class="order-date-label">Время</div>
-        <div class="order-time-grid" id="orderTimeGrid"></div>
+        <div class="order-time-grid" id="orderTimeGrid">
+          <!-- Static fallback time chips (всегда одинаковые слоты) -->
+          <button type="button" class="order-time-chip" data-time="09:00" onclick="selectOrderTime('09:00', this)">09:00</button>
+          <button type="button" class="order-time-chip" data-time="10:00" onclick="selectOrderTime('10:00', this)">10:00</button>
+          <button type="button" class="order-time-chip" data-time="11:00" onclick="selectOrderTime('11:00', this)">11:00</button>
+          <button type="button" class="order-time-chip" data-time="12:00" onclick="selectOrderTime('12:00', this)">12:00</button>
+          <button type="button" class="order-time-chip" data-time="13:00" onclick="selectOrderTime('13:00', this)">13:00</button>
+          <button type="button" class="order-time-chip" data-time="14:00" onclick="selectOrderTime('14:00', this)">14:00</button>
+          <button type="button" class="order-time-chip" data-time="15:00" onclick="selectOrderTime('15:00', this)">15:00</button>
+          <button type="button" class="order-time-chip" data-time="16:00" onclick="selectOrderTime('16:00', this)">16:00</button>
+          <button type="button" class="order-time-chip" data-time="17:00" onclick="selectOrderTime('17:00', this)">17:00</button>
+          <button type="button" class="order-time-chip" data-time="18:00" onclick="selectOrderTime('18:00', this)">18:00</button>
+        </div>
       </div>
     </section>
 
@@ -1236,7 +1254,7 @@
   var SERVICES = {
     'Покос травы': {
       key: 'mow', rate: 1500, min: 8000, hpu: 0.25,
-      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 20, areaDefault: 5,
+      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
       paramTitle: 'Как сейчас выглядит ваш участок?',
       paramSub: 'Влияет на стоимость',
       opts: [
@@ -1248,7 +1266,7 @@
     },
     'Стрижка газона': {
       key: 'cut', rate: 2000, min: 6000, hpu: 0.20,
-      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 20, areaDefault: 5,
+      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
       paramTitle: 'Как часто стригли газон?',
       paramSub: 'Влияет на стоимость',
       opts: [
@@ -1260,7 +1278,7 @@
     },
     'Вспашка': {
       key: 'till', rate: 3000, min: 12000, hpu: 0.40,
-      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 30, areaDefault: 5,
+      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
       paramTitle: 'Какая у вас почва?',
       paramSub: 'Влияет на стоимость',
       opts: [
@@ -1272,7 +1290,7 @@
     },
     'Посадка газона': {
       key: 'plant', rate: 5000, min: 15000, hpu: 0.50,
-      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 20, areaDefault: 5,
+      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
       paramTitle: 'Какой газон сажаем?',
       paramSub: 'Влияет на стоимость',
       opts: [
@@ -1442,11 +1460,35 @@
     });
   }
 
+  // Дополнительный bind на slider через addEventListener (надёжнее inline oninput)
+  function bindSlider() {
+    var slider = document.getElementById('orderAreaSlider');
+    if (!slider || slider._bound) return;
+    slider._bound = true;
+    slider.addEventListener('input', function() {
+      var v = parseInt(slider.value, 10) || 1;
+      state.area = v;
+      var numEl = document.getElementById('orderAreaVal');
+      if (numEl) numEl.textContent = v;
+      if (typeof orderState !== 'undefined') orderState.area = v;
+      renderPrice();
+      if (typeof updateOrderState === 'function') updateOrderState();
+    });
+  }
+
   // Init с проверкой readyState (срабатывает в обоих случаях)
   function init() {
     bindFallback();
+    bindSlider();
     // Применить текущую дефолтную услугу — рендерит правильные данные
     setService(state.svcName);
+    // Гарантированный рендер дат и времени (если функции доступны)
+    if (typeof renderOrderDates === 'function') {
+      try { renderOrderDates(); } catch(e) {}
+    }
+    if (typeof renderOrderTimes === 'function') {
+      try { renderOrderTimes(); } catch(e) {}
+    }
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -2241,6 +2283,6 @@ window.closeQuickBookSheet = closeQuickBookSheet;
 window.pickQuickBook = pickQuickBook;
 </script>
 
-<script src="js/app.js?v=62"></script>
+<script src="js/app.js?v=64"></script>
 </body>
 </html>
