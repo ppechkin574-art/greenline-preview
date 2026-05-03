@@ -5123,8 +5123,57 @@ body {
   user-select: none;
 }
 
-/* ===== ORDER HISTORY ===== */
+/* ===== ORDER HISTORY (v2 — 3D icons + summary + primary button) ===== */
 .orders-history { padding-top: 8px; }
+
+/* Summary bar — статистика по всем заказам сверху */
+.orders-history-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #F0FAF0 0%, #E2F0E2 100%);
+  border: 1px solid #DCEEDC;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+}
+.ohs-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.ohs-num {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1F6B1F;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+}
+.ohs-num small {
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 1px;
+}
+.ohs-star { color: #FFB020; margin-left: 2px; font-size: 13px; }
+.ohs-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6F7B6F;
+  letter-spacing: 0.02em;
+}
+.ohs-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(46, 139, 46, 0.18);
+}
+
+/* History list */
 .order-history-list {
   display: flex;
   flex-direction: column;
@@ -5139,7 +5188,7 @@ body {
   gap: 12px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   box-shadow:
-    0 4px 12px -6px rgba(46, 139, 46, 0.10),
+    0 6px 16px -8px rgba(46, 139, 46, 0.14),
     0 1px 3px -1px rgba(0, 0, 0, 0.04);
   transition: transform 0.12s, box-shadow 0.18s;
 }
@@ -5152,6 +5201,7 @@ body {
   overflow: hidden;
   flex-shrink: 0;
   background: #F4F6F4;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.12);
 }
 .ohi-photo img {
   width: 100%; height: 100%;
@@ -5164,13 +5214,7 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-.ohi-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 }
 .ohi-title {
   font-size: 15px;
@@ -5178,29 +5222,9 @@ body {
   color: #0E1A0E;
   letter-spacing: -0.015em;
   margin: 0;
-  flex: 1;
-  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.ohi-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 100px;
-  flex-shrink: 0;
-}
-.ohi-status svg { width: 10px; height: 10px; }
-.ohi-status-done {
-  background: rgba(46, 139, 46, 0.10);
-  color: #2E8B2E;
-  border: 1px solid rgba(46, 139, 46, 0.20);
 }
 .ohi-meta {
   display: flex;
@@ -5208,47 +5232,94 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   font-size: 12px;
-  font-weight: 500;
-  color: #6F7B6F;
+  font-weight: 600;
+  color: #4A6A4A;
 }
 .ohi-meta-item {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
 }
-.ohi-meta-item svg { width: 11px; height: 11px; flex-shrink: 0; }
+/* 3D icon mini — gradient circle с белой SVG (рецепт home, scaled down) */
+.ohi-meta-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 55%, #1F6B1F 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 2px 5px -1px rgba(46, 139, 46, 0.45);
+}
+.ohi-meta-icon::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 4px;
+  width: 6px; height: 3px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0) 100%);
+  border-radius: 3px;
+  filter: blur(1px);
+  pointer-events: none;
+}
+.ohi-meta-icon svg {
+  width: 10px; height: 10px;
+  filter: drop-shadow(0 0.5px 0.5px rgba(0, 0, 0, 0.18));
+}
 
 .ohi-bottom-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 .ohi-price {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
   color: #1F6B1F;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
+
+/* Primary 3D repeat button (gradient + inset highlights + drop-shadow) */
 .ohi-repeat {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: #F0FAF0;
-  color: #2E8B2E;
-  border: 1px solid #DCEEDC;
-  border-radius: 10px;
-  padding: 7px 12px;
+  gap: 6px;
+  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 55%, #1F6B1F 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 11px;
+  padding: 8px 14px;
   font-family: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  transition: background 0.15s, transform 0.12s;
-  min-height: 32px;
+  -webkit-user-select: none;
+  user-select: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 6px 14px -4px rgba(46, 139, 46, 0.50),
+    0 2px 4px -1px rgba(46, 139, 46, 0.22);
+  transition: transform 0.12s, box-shadow 0.2s;
+  min-height: 36px;
 }
-.ohi-repeat:active { background: #E0F4E0; transform: scale(0.96); }
-.ohi-repeat svg { width: 12px; height: 12px; }
+.ohi-repeat:active {
+  transform: scale(0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    0 2px 6px -2px rgba(46, 139, 46, 0.32);
+}
+.ohi-repeat svg {
+  width: 13px; height: 13px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+}
