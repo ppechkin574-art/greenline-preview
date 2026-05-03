@@ -5295,13 +5295,17 @@ body {
     0 8px 24px -10px rgba(46, 139, 46, 0.18),
     0 2px 8px -2px rgba(0, 0, 0, 0.05);
 }
-.pc2-step-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #6F7B6F;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0 0 8px;
+/* Единый стиль заголовков секций калькулятора (применяется ко всем
+   pc2-step-label / pc2-param-title / pc2-area-title) */
+.pc2-step-label,
+.pc2-param-title,
+.pc2-area-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0E1A0E;
+  letter-spacing: -0.015em;
+  text-transform: none;
+  margin: 0 0 12px;
 }
 
 /* Сервис-чипы */
@@ -5309,7 +5313,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 28px;
 }
 .pc2-svc-chip {
   flex: 1 1 calc(50% - 4px);
@@ -5343,14 +5347,7 @@ body {
 }
 
 /* Параметр: визуальные карточки (2x2) */
-.pc2-param-section { margin-bottom: 18px; }
-.pc2-param-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: #0E1A0E;
-  letter-spacing: -0.015em;
-  margin: 0 0 4px;
-}
+.pc2-param-section { margin-bottom: 28px; }
 .pc2-param-sub {
   font-size: 12px;
   font-weight: 500;
@@ -5483,7 +5480,7 @@ body {
 }
 
 /* Площадь — слайдер */
-.pc2-area-section { margin-bottom: 18px; }
+.pc2-area-section { margin-bottom: 28px; }
 .pc2-area-head {
   display: flex;
   align-items: center;
@@ -5492,10 +5489,8 @@ body {
   margin-bottom: 12px;
 }
 .pc2-area-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0E1A0E;
-  letter-spacing: -0.01em;
+  /* Унифицированный стиль — см. правило выше для .pc2-step-label / .pc2-param-title / .pc2-area-title */
+  margin-bottom: 0;
 }
 .pc2-area-chip {
   display: inline-flex;
