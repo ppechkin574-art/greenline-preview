@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=69">
+<link rel="stylesheet" href="css/styles.css?v=70">
 </head>
 <body>
 <div class="device-stage">
@@ -1720,6 +1720,23 @@
         </button>
       </div>
 
+      <!-- Settings (theme toggle) -->
+      <div class="profile-section-label">Настройки</div>
+      <div class="profile-list">
+        <div class="profile-item profile-item-static">
+          <span class="profile-item-icon profile-item-icon-theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>
+            </svg>
+          </span>
+          <span class="profile-item-text">Тёмная тема</span>
+          <label class="ios-switch" aria-label="Тёмная тема">
+            <input type="checkbox" id="themeToggle" onchange="toggleTheme(this.checked)">
+            <span class="ios-switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
       <!-- Subscription card (moved from home) -->
       <div class="profile-section-label">Сервис</div>
       <div class="subscription-card">
@@ -2294,6 +2311,27 @@ window.closeQuickBookSheet = closeQuickBookSheet;
 window.pickQuickBook = pickQuickBook;
 </script>
 
-<script src="js/app.js?v=67"></script>
+<!-- Theme (light / dark) — applied early to avoid flash of light theme -->
+<script>
+(function applyStoredTheme(){
+  try {
+    var theme = localStorage.getItem('gl_theme') || 'light';
+    document.body.setAttribute('data-theme', theme);
+    var sync = function() {
+      var t = document.getElementById('themeToggle');
+      if (t) t.checked = (theme === 'dark');
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync);
+    else sync();
+  } catch(e){}
+})();
+function toggleTheme(isDark) {
+  document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  try { localStorage.setItem('gl_theme', isDark ? 'dark' : 'light'); } catch(e){}
+}
+window.toggleTheme = toggleTheme;
+</script>
+
+<script src="js/app.js?v=70"></script>
 </body>
 </html>

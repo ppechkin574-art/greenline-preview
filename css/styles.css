@@ -6057,3 +6057,300 @@ body {
   transition: background 0.18s;
 }
 .qb-sheet-cancel:active { background: #ECF1EC; }
+
+/* ===== iOS-style switch для toggle тёмной темы ===== */
+.profile-item-static {
+  cursor: default;
+}
+.profile-item-icon-theme {
+  background: linear-gradient(135deg, #4D5C7C 0%, #2A3450 100%);
+}
+.ios-switch {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+}
+.ios-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.ios-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #E5E5EA;
+  border-radius: 31px;
+  transition: background-color 0.25s;
+}
+.ios-switch-slider::before {
+  content: '';
+  position: absolute;
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  bottom: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.25s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.20), 0 0 1px rgba(0,0,0,0.10);
+}
+.ios-switch input:checked + .ios-switch-slider {
+  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
+}
+.ios-switch input:checked + .ios-switch-slider::before {
+  transform: translateX(20px);
+}
+
+/* ===== DARK THEME ===== */
+body[data-theme="dark"] {
+  background: #050E05;
+}
+body[data-theme="dark"] .phone {
+  background: #0E1A0E;
+}
+body[data-theme="dark"] .page {
+  background: #0E1A0E;
+  color: #E8F0E8;
+}
+body[data-theme="dark"] .scroll-body {
+  background: #0E1A0E;
+}
+
+/* Headers */
+body[data-theme="dark"] .header,
+body[data-theme="dark"] .header-clean,
+body[data-theme="dark"] .header-with-back {
+  background: #0E1A0E;
+  border-bottom: 1px solid #1F2F1F;
+}
+body[data-theme="dark"] .header-title,
+body[data-theme="dark"] .header-subtitle {
+  color: #FFFFFF;
+}
+body[data-theme="dark"] .header-subtitle { color: #94A094; }
+body[data-theme="dark"] .page-back {
+  background: #1F2F1F;
+  border-color: #2A3E2A;
+  color: #E8F0E8;
+}
+
+/* Cards */
+body[data-theme="dark"] .ba-card,
+body[data-theme="dark"] #page-home .ba-card,
+body[data-theme="dark"] .pc2-card,
+body[data-theme="dark"] .order-section,
+body[data-theme="dark"] .reviews-card,
+body[data-theme="dark"] .home-discount,
+body[data-theme="dark"] .review-card,
+body[data-theme="dark"] .order-history-item,
+body[data-theme="dark"] .home-service-tile,
+body[data-theme="dark"] .order-area-card,
+body[data-theme="dark"] .order-contact-card,
+body[data-theme="dark"] .order-contact-row,
+body[data-theme="dark"] .ba-tile,
+body[data-theme="dark"] .gallery-item,
+body[data-theme="dark"] .profile-list,
+body[data-theme="dark"] .profile-item,
+body[data-theme="dark"] .social-card,
+body[data-theme="dark"] .subscription-card {
+  background: #1A2E1A;
+  border-color: #2A3E2A;
+  color: #E8F0E8;
+}
+
+/* Text */
+body[data-theme="dark"] .home-section-title,
+body[data-theme="dark"] .block-title,
+body[data-theme="dark"] .ohi-title,
+body[data-theme="dark"] .order-step-title,
+body[data-theme="dark"] .pc2-param-title,
+body[data-theme="dark"] .pc2-param-card-title,
+body[data-theme="dark"] .pc2-area-title,
+body[data-theme="dark"] .pc2-step-label,
+body[data-theme="dark"] .home-brand-text,
+body[data-theme="dark"] .home-calc-entry-title,
+body[data-theme="dark"] .qb-sheet-title,
+body[data-theme="dark"] .qb-svc-name,
+body[data-theme="dark"] .profile-name,
+body[data-theme="dark"] .profile-item-text,
+body[data-theme="dark"] .review-name,
+body[data-theme="dark"] .ohs-num,
+body[data-theme="dark"] .pc2-area-num,
+body[data-theme="dark"] .oad-num {
+  color: #FFFFFF;
+}
+
+body[data-theme="dark"] .home-section-sub,
+body[data-theme="dark"] .block-link,
+body[data-theme="dark"] .ohi-meta,
+body[data-theme="dark"] .order-step-sub,
+body[data-theme="dark"] .pc2-param-card-sub,
+body[data-theme="dark"] .home-calc-entry-sub,
+body[data-theme="dark"] .qb-sheet-sub,
+body[data-theme="dark"] .profile-phone,
+body[data-theme="dark"] .review-text,
+body[data-theme="dark"] .review-service,
+body[data-theme="dark"] .pc2-area-unit,
+body[data-theme="dark"] .pc2-price-note,
+body[data-theme="dark"] .order-price-inline-note,
+body[data-theme="dark"] .order-area-marks,
+body[data-theme="dark"] .order-area-ticks,
+body[data-theme="dark"] .pc2-slider-ticks,
+body[data-theme="dark"] .order-contact-label,
+body[data-theme="dark"] .pc2-step-label,
+body[data-theme="dark"] .order-date-label,
+body[data-theme="dark"] .profile-section-label {
+  color: #94A094;
+}
+
+/* Inputs */
+body[data-theme="dark"] .order-input-wrap,
+body[data-theme="dark"] .pc2-area,
+body[data-theme="dark"] .order-area-card {
+  background: #243824;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .order-input,
+body[data-theme="dark"] input[type="text"],
+body[data-theme="dark"] input[type="tel"] {
+  background: transparent;
+  color: #FFFFFF;
+}
+body[data-theme="dark"] .order-input::placeholder { color: #6F7B6F; }
+
+/* Chips & buttons (light surfaces inside) */
+body[data-theme="dark"] .pc2-svc-chip:not(.pc2-active),
+body[data-theme="dark"] .order-date-chip:not(.selected),
+body[data-theme="dark"] .order-time-chip:not(.selected),
+body[data-theme="dark"] .gallery-filter:not(.active) {
+  background: #243824;
+  color: #C0D5C0;
+  border-color: #2E4A2E;
+}
+
+/* Param cards (карточки виз. параметра в форме) */
+body[data-theme="dark"] .pc2-param-card {
+  background: #243824;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .pc2-param-card.pc2-selected {
+  border-color: #4ADE4A;
+  box-shadow: 0 6px 20px -6px rgba(74, 222, 74, 0.32);
+}
+
+/* Inline price card */
+body[data-theme="dark"] .order-price-inline,
+body[data-theme="dark"] .pc2-price-card {
+  background: linear-gradient(135deg, #1F3A1F 0%, #163316 100%);
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .order-price-inline-val,
+body[data-theme="dark"] .pc2-price-value,
+body[data-theme="dark"] .ohi-price {
+  color: #4ADE4A;
+}
+body[data-theme="dark"] .order-price-inline-label,
+body[data-theme="dark"] .pc2-price-label {
+  color: #94A094;
+}
+
+/* Bottom nav */
+body[data-theme="dark"] #bottomNav {
+  background: #0E1A0E;
+  border-top: 1px solid #1F2F1F;
+}
+body[data-theme="dark"] .bn-item:not(.bn-active) span {
+  color: #6F7B6F;
+}
+body[data-theme="dark"] .bn-item:not(.bn-active) svg {
+  stroke: #94A094;
+}
+
+/* Profile-specific */
+body[data-theme="dark"] #page-profile {
+  background: #0E1A0E;
+}
+body[data-theme="dark"] .profile-item:active {
+  background: #243824;
+}
+body[data-theme="dark"] .profile-item-arrow svg {
+  stroke: #6F7B6F;
+}
+
+/* Order history meta icons (flat svg на серых стрингах) */
+body[data-theme="dark"] .ohi-meta-icon svg {
+  stroke: #94A094;
+}
+
+/* Hero overlays */
+body[data-theme="dark"] .order-hero {
+  background: #1A2E1A;
+}
+
+/* Service tiles на главной */
+body[data-theme="dark"] .home-service-tile .hst-name,
+body[data-theme="dark"] .home-service-tile .hst-arrow {
+  color: #FFFFFF;
+}
+
+/* Quick book sheet */
+body[data-theme="dark"] .qb-sheet {
+  background: #1A2E1A;
+}
+body[data-theme="dark"] .qb-svc-tile {
+  background: #243824;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .qb-sheet-cancel {
+  background: #243824;
+  border-color: #2E4A2E;
+  color: #C0D5C0;
+}
+
+/* Slider trackс */
+body[data-theme="dark"] .order-area-slider {
+  background: #2A3E2A;
+}
+body[data-theme="dark"] .pc2-slider {
+  background: linear-gradient(to right,
+    #4ADE4A 0%, #4ADE4A var(--pc2-fill, 21%),
+    #2A3E2A var(--pc2-fill, 21%), #2A3E2A 100%);
+}
+
+/* Step states в dark */
+body[data-theme="dark"] .order-step-num[data-state="pending"] {
+  background: linear-gradient(135deg, #3A4A3A 0%, #2A3A2A 100%);
+  color: #94A094;
+}
+
+/* Submit button disabled state */
+body[data-theme="dark"] .order-submit:disabled {
+  background: #2A3E2A;
+  color: #6F7B6F;
+}
+
+/* Decorative discount block — оставляем зелёный градиент */
+/* Subscription card */
+body[data-theme="dark"] .subscription-title,
+body[data-theme="dark"] .subscription-text {
+  color: #FFFFFF;
+}
+body[data-theme="dark"] .subscription-text {
+  color: #94A094;
+}
+
+/* Modal overlays */
+body[data-theme="dark"] .modal-content,
+body[data-theme="dark"] .ai-chat-modal {
+  background: #1A2E1A;
+  color: #E8F0E8;
+}
+body[data-theme="dark"] .modal-input,
+body[data-theme="dark"] .modal-select {
+  background: #243824;
+  color: #FFFFFF;
+  border-color: #2E4A2E;
+}
