@@ -883,24 +883,21 @@ function openServiceDetail(name, tileEl, fromPage) {
     var addrEl = document.getElementById('orderAddress');
     if (addrEl) addrEl.value = '';
     // Применить service-specific data (виз. параметр, единицу площади, диапазон).
-    // Это сбрасывает state.opt = null, чтобы пользователь сделал выбор (item 4=а).
-    if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.setService === 'function') {
-      try {
-        window.serviceForm.setService(name);
-        var sfState = window.serviceForm.getState();
-        if (sfState) orderState.area = sfState.area;
-      } catch(e) {
-        var slider = document.getElementById('orderAreaSlider');
-        if (slider) slider.value = 5;
-        var areaVal = document.getElementById('orderAreaVal');
-        if (areaVal) areaVal.textContent = 5;
+    // Тройной вызов: сразу + через requestAnimationFrame + через 80ms таймаут —
+    // гарантируем что нужная услуга применится, даже если первая попытка
+    // случится до полной готовности DOM или стейта.
+    var applySvc = function() {
+      if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.setService === 'function') {
+        try {
+          window.serviceForm.setService(name);
+          var sfState = window.serviceForm.getState();
+          if (sfState) orderState.area = sfState.area;
+        } catch(e) {}
       }
-    } else {
-      var slider = document.getElementById('orderAreaSlider');
-      if (slider) slider.value = 5;
-      var areaVal = document.getElementById('orderAreaVal');
-      if (areaVal) areaVal.textContent = 5;
-    }
+    };
+    applySvc();
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(applySvc);
+    setTimeout(applySvc, 80);
 
     // Hero
     var titleEl = document.getElementById('detailTitle');
