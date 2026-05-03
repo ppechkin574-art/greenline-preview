@@ -4639,54 +4639,10 @@ body {
     inset 0 1px 0 rgba(255,255,255,0.9);
 }
 
-/* Timeline line: вертикальная пунктирная между шагами.
-   Цвет управляется --tl-color: серый = pending, зелёный = done.
-   Line только МЕЖДУ шагами, не уходит за последний шаг (Фото). */
-.order-section::after,
-.order-section::before,
-.order-price-inline::after {
-  content: '';
-  position: absolute;
-  left: 32px;
-  width: 2px;
-  background-image: linear-gradient(
-    to bottom,
-    var(--tl-color, #DCEEDC) 0,
-    var(--tl-color, #DCEEDC) 4px,
-    transparent 4px,
-    transparent 8px
-  );
-  background-size: 2px 8px;
-  background-repeat: repeat-y;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 0;
-  transition: background-image 0.25s;
-}
-
-/* ::after — линия ВНИЗ от step-num до низа секции + 14px (в gap) */
-.order-section::after {
-  top: 56px;
-  bottom: -14px;
-}
-/* ::before — линия ВВЕРХ от step-num через padding-top + 14px gap */
-.order-section::before {
-  top: -14px;
-  height: 70px; /* 14 gap + 18 padding + 32 step-num + 6 ниже центра */
-}
-
-/* Первая секция (параметр) — без линии вверху */
-.order-form > .order-section:first-of-type::before { display: none !important; }
-
-/* ПОСЛЕДНЯЯ секция (Фото = order-section-optional) — без линии вниз.
-   Используем класс, не :last-of-type (надёжнее, работает всегда) */
-.order-section.order-section-optional::after { display: none !important; }
-
-/* Inline-плашка цены — линия проходит через неё насквозь */
-.order-price-inline::after {
-  top: -14px;
-  bottom: -14px;
-}
+/* Timeline-линия УДАЛЕНА: рендерилась криво из-за edge-cases с позиционированием.
+   Прогресс шагов теперь показывается ТОЛЬКО через интерактивные состояния
+   step-num (pending → active → done) — этого достаточно для понимания
+   последовательности заполнения. */
 
 /* Step header (число + заголовок + подзаголовок) */
 .order-step-header {
