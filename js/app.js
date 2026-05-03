@@ -50,8 +50,9 @@ function showPage(name) {
     renderGallery(f);
     setTimeout(function(){ renderGallery(f); }, 100);
   }
-  // Service-detail: гарантированный рендер дат, времени и виз. параметра
+  // Service-detail: гарантированный рендер дат, времени, виз. параметра + step-states
   if (name === 'service-detail') {
+    setTimeout(function(){ try { updateOrderState(); } catch(e) {} }, 80);
     if (typeof renderOrderDates === 'function') {
       try { renderOrderDates(); } catch(e) {}
       setTimeout(function(){ try { renderOrderDates(); } catch(e) {} }, 50);
@@ -1028,6 +1029,38 @@ function updateOrderState() {
   // Submit button
   var btn = document.getElementById('orderSubmitBtn');
   if (btn) btn.disabled = !allValid;
+
+  // Обновить состояние шагов timeline (pending / active / done)
+  updateStepStates([validParam, validArea, validAddr, (validDate && validTime), !!(orderState.name && orderState.phone), false]);
+}
+
+/* Timeline шагов: для каждой .order-section выставляет состояние step-num
+   (pending/active/done) и цвет линии-соединителя.
+   doneFlags — массив 6 bool: [параметр, площадь, адрес, дата+время, контакты, фото] */
+function updateStepStates(doneFlags) {
+  var sections = document.querySelectorAll('#page-service-detail .order-section');
+  if (!sections.length) return;
+  // Найти первый невыполненный шаг — он становится "active"
+  var activeIdx = -1;
+  for (var i = 0; i < doneFlags.length; i++) {
+    if (!doneFlags[i]) { activeIdx = i; break; }
+  }
+  for (var j = 0; j < sections.length && j < doneFlags.length; j++) {
+    var num = sections[j].querySelector('.order-step-num');
+    if (!num) continue;
+    var state;
+    if (doneFlags[j]) state = 'done';
+    else if (j === activeIdx) state = 'active';
+    else state = 'pending';
+    num.setAttribute('data-state', state);
+    // Цвет линии под шагом: зелёная если шаг done, иначе светло-серая
+    sections[j].style.setProperty('--tl-color', doneFlags[j] ? '#4ADE4A' : '#DCEEDC');
+  }
+  // Цвет линии через inline-цены — равен цвету линии секции "площадь" (индекс 1)
+  var priceInline = document.getElementById('orderPriceInline');
+  if (priceInline) {
+    priceInline.style.setProperty('--tl-color', doneFlags[1] ? '#4ADE4A' : '#DCEEDC');
+  }
 }
 
 function submitOrder() {
