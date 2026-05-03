@@ -6354,3 +6354,70 @@ body[data-theme="dark"] .modal-select {
   color: #FFFFFF;
   border-color: #2E4A2E;
 }
+
+/* Home calc-entry CTA — dark version */
+body[data-theme="dark"] .home-calc-entry {
+  background: linear-gradient(135deg, #1F3A1F 0%, #163316 100%);
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .home-calc-entry-title { color: #FFFFFF; }
+body[data-theme="dark"] .home-calc-entry-sub { color: #94A094; }
+
+/* Review cards (внутри .reviews-card row) */
+body[data-theme="dark"] .review-card {
+  background: linear-gradient(160deg, #1F3A1F 0%, #163316 100%);
+  border-color: #2A3E2A;
+}
+body[data-theme="dark"] .review-text {
+  color: #C0D5C0;
+}
+body[data-theme="dark"] .review-quote-mark {
+  color: rgba(74, 222, 74, 0.18);
+}
+body[data-theme="dark"] .review-name { color: #FFFFFF; }
+body[data-theme="dark"] .review-service { color: #94A094; }
+
+/* Empty state (Активных заказов нет) */
+body[data-theme="dark"] .orders-empty-card {
+  background: linear-gradient(135deg, #1A2E1A 0%, #142414 100%);
+  border-color: rgba(74, 222, 74, 0.20);
+}
+body[data-theme="dark"] .orders-empty-card-title { color: #FFFFFF; }
+body[data-theme="dark"] .orders-empty-card-sub { color: #94A094; }
+body[data-theme="dark"] .orders-demo-btn {
+  background: #243824;
+  color: #4ADE4A;
+  border-color: #2E4A2E;
+}
+
+/* Profile avatar — белое кольцо → темно-зелёное на dark */
+body[data-theme="dark"] .profile-avatar {
+  border-color: #1A2E1A;
+}
+body[data-theme="dark"] .profile-avatar-badge {
+  border-color: #1A2E1A;
+}
+
+/* Profile header background — если есть */
+body[data-theme="dark"] .profile-header,
+body[data-theme="dark"] .profile-header-banner {
+  background: #0E1A0E;
+}
+
+/* Subscription card на тёмном — оставляем градиент темнее */
+body[data-theme="dark"] .subscription-card {
+  background: linear-gradient(135deg, #1F3A1F 0%, #142414 100%);
+  border-color: #2E4A2E;
+}
+
+/* Reviews card (контейнер) */
+body[data-theme="dark"] .reviews-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Profile-list item active state на тёмном */
+body[data-theme="dark"] .profile-item:active {
+  background: #2A3E2A;
+}
