@@ -4570,8 +4570,39 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.7) 100%);
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0) 25%, rgba(15, 50, 15, 0.55) 70%, rgba(15, 35, 15, 0.85) 100%);
   pointer-events: none;
+}
+/* Eyebrow-бейдж в углу hero — тип услуги и контекст */
+.order-hero-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  font-family: var(--app-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: #1F6B1F;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.order-hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 100%);
+  box-shadow: 0 0 0 2px rgba(74, 222, 74, 0.30);
 }
 .order-back {
   position: absolute;
@@ -4761,31 +4792,37 @@ body {
   line-height: 1.4;
 }
 
-/* 1. Площадь */
+/* 1. Площадь — карточка с slider и chip-индикатором значения */
 .order-area-card {
-  background: #F7FBF7;
+  background: linear-gradient(135deg, #F7FBF7 0%, #ECF5EC 100%);
   border: 1px solid #E5EFE5;
-  border-radius: 14px;
-  padding: 16px 14px;
+  border-radius: 16px;
+  padding: 16px 14px 14px;
 }
 .order-area-display {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 5px;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid #DCEEDC;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px -2px rgba(46, 139, 46, 0.15);
 }
 .oad-num {
   font-family: inherit;
-  font-size: 36px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: #2E8B2E;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1F6B1F;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .oad-unit {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  color: #6F7B6F;
+  color: #2E5A2E;
 }
 .order-area-slider {
   -webkit-appearance: none;
@@ -5623,6 +5660,38 @@ body {
 }
 .pc2-param-card.pc2-selected .pc2-param-card-check svg {
   stroke: #ffffff;
+}
+
+/* «Чаще выбирают» бейдж — на первой (популярной) опции */
+.pc2-param-card-popular {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  z-index: 3;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #FFB347 0%, #FF8C42 100%);
+  color: #ffffff;
+  font-family: var(--app-font);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px -2px rgba(255, 140, 66, 0.45);
+  white-space: nowrap;
+}
+
+/* Selected state — добавим subtle pulse */
+.pc2-param-card {
+  transform-origin: center center;
+}
+.pc2-param-card.pc2-selected {
+  animation: pc2CardSelect 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pc2CardSelect {
+  0% { transform: scale(0.96); }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); }
 }
 
 /* Площадь — слайдер */
@@ -6526,4 +6595,23 @@ body[data-theme="dark"] .ohi-photo {
 /* Контейнер orders-section (родитель active-order-card) */
 body[data-theme="dark"] .orders-section {
   background: transparent;
+}
+
+/* Order area card — chip-style display + dark gradient */
+body[data-theme="dark"] .order-area-card {
+  background: linear-gradient(135deg, #243824 0%, #1A2E1A 100%);
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .order-area-display {
+  background: #1A2E1A;
+  border-color: #2E4A2E;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.40);
+}
+body[data-theme="dark"] .oad-num { color: #4ADE4A; }
+body[data-theme="dark"] .oad-unit { color: #94A094; }
+
+/* Hero badge на тёмном — чуть темнее белого, ярче зелёный */
+body[data-theme="dark"] .order-hero-badge {
+  background: rgba(36, 56, 36, 0.92);
+  color: #4ADE4A;
 }
