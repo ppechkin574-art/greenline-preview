@@ -2478,7 +2478,15 @@ window.pc2SelectOption = pc2SelectOption;
 window.pc2OnSlider = pc2OnSlider;
 window.pc2Order = pc2Order;
 
-/* Init после загрузки DOM */
-document.addEventListener('DOMContentLoaded', function() {
-  if (document.getElementById('pc2-param-grid')) pc2RenderAll();
-});
+/* Инициализация: скрипт стоит в конце <body>, DOM уже распарсен.
+   Если по какой-то причине нет — fallback через DOMContentLoaded. */
+(function pc2Init() {
+  function run() {
+    if (document.getElementById('pc2-param-grid')) pc2RenderAll();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();

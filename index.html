@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=49">
+<link rel="stylesheet" href="css/styles.css?v=50">
 </head>
 <body>
 <div class="device-stage">
@@ -443,71 +443,23 @@
       </div>
     </section>
 
-    <!-- Калькулятор цены v2 -->
+    <!-- Калькулятор цены — entry CTA на отдельную страницу -->
     <section class="section home-reveal home-block">
-      <div class="block-head">
-        <h3 class="block-title">Калькулятор цены</h3>
-        <span class="block-link">за 10 секунд</span>
-      </div>
-      <div class="ba-card pc2-card">
-
-        <!-- Шаг 1: услуга -->
-        <div class="pc2-step-label">Тип услуги</div>
-        <div class="pc2-services" id="pc2-services">
-          <button type="button" class="pc2-svc-chip pc2-active" data-svc="Покос травы" onclick="pc2SelectService(this)">Покос</button>
-          <button type="button" class="pc2-svc-chip" data-svc="Стрижка газона" onclick="pc2SelectService(this)">Стрижка</button>
-          <button type="button" class="pc2-svc-chip" data-svc="Вспашка" onclick="pc2SelectService(this)">Вспашка</button>
-          <button type="button" class="pc2-svc-chip" data-svc="Посадка газона" onclick="pc2SelectService(this)">Посадка</button>
-        </div>
-
-        <!-- Шаг 2: визуальный параметр (зависит от услуги) -->
-        <div class="pc2-param-section">
-          <div class="pc2-param-title" id="pc2-param-title">Как сейчас выглядит ваш участок?</div>
-          <div class="pc2-param-sub" id="pc2-param-sub">Выберите вариант, похожий на ваш</div>
-          <div class="pc2-param-grid" id="pc2-param-grid"><!-- рендерится из JS --></div>
-        </div>
-
-        <!-- Шаг 3: площадь (универсально) -->
-        <div class="pc2-area-section">
-          <div class="pc2-area-head">
-            <div class="pc2-area-title" id="pc2-area-title">Площадь участка</div>
-            <div class="pc2-area-chip">
-              <span class="pc2-area-num" id="pc2-area-num">5</span>
-              <span class="pc2-area-unit" id="pc2-area-unit">соток</span>
-            </div>
-          </div>
-          <div class="pc2-slider-wrap">
-            <input type="range" min="1" max="20" value="5" step="1" class="pc2-slider" id="pc2-slider" oninput="pc2OnSlider(this.value)">
-          </div>
-          <div class="pc2-slider-ticks">
-            <span>1</span><span>5</span><span>10</span><span>15</span><span>20</span>
-          </div>
-        </div>
-
-        <!-- Результат -->
-        <div class="pc2-price-card">
-          <div class="pc2-price-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="5" y="3" width="14" height="18" rx="2"/>
-              <path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h2M12 19h2M16 19h0"/>
-            </svg>
-          </div>
-          <div class="pc2-price-body">
-            <div class="pc2-price-label">Примерная стоимость</div>
-            <div class="pc2-price-value" id="pc2-price-value">8 000 – 12 000 ₸</div>
-            <div class="pc2-duration-row">
-              <svg class="pc2-duration-icon" viewBox="0 0 14 14" fill="none" stroke="#6F7B6F" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l2 1.5"/></svg>
-              <span class="pc2-duration-text" id="pc2-duration-text">~ 1–2 часа работы</span>
-            </div>
-            <div class="pc2-price-note">Точная стоимость уточняется мастером после осмотра</div>
-          </div>
-        </div>
-
-        <button type="button" class="pc-cta" onclick="pc2Order()">
-          <span>Заказать</span>
+      <button type="button" class="home-calc-entry" onclick="showPage('calculator')">
+        <span class="home-calc-entry-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="18" rx="2"/>
+            <path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h2M12 19h2M16 19h0"/>
+          </svg>
+        </span>
+        <span class="home-calc-entry-body">
+          <span class="home-calc-entry-title">Рассчитать цену</span>
+          <span class="home-calc-entry-sub">Узнайте стоимость за 10 секунд</span>
+        </span>
+        <span class="home-calc-entry-arrow" aria-hidden="true">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
-        </button>
-      </div>
+        </span>
+      </button>
     </section>
 
     <!-- Наши работы -->
@@ -1059,9 +1011,83 @@
       </div>
     </div><div class="service-grid-name">Покос травы</div></div></div>
 
-      
 
-    
+
+
+<!-- ===== CALCULATOR PAGE ===== -->
+<div id="page-calculator" class="page">
+  <div class="header header-clean header-with-back">
+    <button class="page-back" type="button" onclick="goToHome()" aria-label="Назад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="header-title-stack">
+      <div class="header-title">Калькулятор цены</div>
+      <div class="header-subtitle">Узнайте стоимость за 10 секунд</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="ba-card pc2-card" style="margin: 8px 0 16px;">
+
+      <!-- Шаг 1: услуга -->
+      <div class="pc2-step-label">Тип услуги</div>
+      <div class="pc2-services" id="pc2-services">
+        <button type="button" class="pc2-svc-chip pc2-active" data-svc="Покос травы" onclick="pc2SelectService(this)">Покос</button>
+        <button type="button" class="pc2-svc-chip" data-svc="Стрижка газона" onclick="pc2SelectService(this)">Стрижка</button>
+        <button type="button" class="pc2-svc-chip" data-svc="Вспашка" onclick="pc2SelectService(this)">Вспашка</button>
+        <button type="button" class="pc2-svc-chip" data-svc="Посадка газона" onclick="pc2SelectService(this)">Посадка</button>
+      </div>
+
+      <!-- Шаг 2: визуальный параметр (зависит от услуги) -->
+      <div class="pc2-param-section">
+        <div class="pc2-param-title" id="pc2-param-title">Как сейчас выглядит ваш участок?</div>
+        <div class="pc2-param-sub" id="pc2-param-sub">Выберите вариант, похожий на ваш</div>
+        <div class="pc2-param-grid" id="pc2-param-grid"><!-- рендерится из JS --></div>
+      </div>
+
+      <!-- Шаг 3: площадь -->
+      <div class="pc2-area-section">
+        <div class="pc2-area-head">
+          <div class="pc2-area-title" id="pc2-area-title">Площадь участка</div>
+          <div class="pc2-area-chip">
+            <span class="pc2-area-num" id="pc2-area-num">5</span>
+            <span class="pc2-area-unit" id="pc2-area-unit">соток</span>
+          </div>
+        </div>
+        <div class="pc2-slider-wrap">
+          <input type="range" min="1" max="20" value="5" step="1" class="pc2-slider" id="pc2-slider" oninput="pc2OnSlider(this.value)">
+        </div>
+        <div class="pc2-slider-ticks">
+          <span>1</span><span>5</span><span>10</span><span>15</span><span>20</span>
+        </div>
+      </div>
+
+      <!-- Результат -->
+      <div class="pc2-price-card">
+        <div class="pc2-price-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="18" rx="2"/>
+            <path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h2M12 19h2M16 19h0"/>
+          </svg>
+        </div>
+        <div class="pc2-price-body">
+          <div class="pc2-price-label">Примерная стоимость</div>
+          <div class="pc2-price-value" id="pc2-price-value">8 000 – 12 000 ₸</div>
+          <div class="pc2-duration-row">
+            <svg class="pc2-duration-icon" viewBox="0 0 14 14" fill="none" stroke="#6F7B6F" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l2 1.5"/></svg>
+            <span class="pc2-duration-text" id="pc2-duration-text">~ 1–2 ч работы</span>
+          </div>
+          <div class="pc2-price-note">Точная стоимость уточняется мастером после осмотра</div>
+        </div>
+      </div>
+
+      <button type="button" class="pc-cta" onclick="pc2Order()">
+        <span>Заказать</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="page-service-detail" class="page">
   <!-- Hero -->
   <div class="order-hero">
@@ -1937,6 +1963,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=49"></script>
+<script src="js/app.js?v=50"></script>
 </body>
 </html>
