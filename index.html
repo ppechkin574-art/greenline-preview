@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=45">
+<link rel="stylesheet" href="css/styles.css?v=47">
 </head>
 <body>
 <div class="device-stage">
@@ -232,8 +232,8 @@
       <span class="home-brand-text">GreenLine</span>
     </div>
 
-    <!-- ===== ZONE A — МОТИВАЦИЯ (скидка) ===== -->
-    <section class="section home-discount-wrap home-reveal home-zone home-zone-a">
+    <!-- Personal discount with countdown -->
+    <section class="section home-discount-wrap home-reveal">
       <div class="home-discount">
         <div class="home-discount-blob" aria-hidden="true"></div>
         <div class="home-discount-glow" aria-hidden="true"></div>
@@ -388,12 +388,12 @@
       </div>
     </section>
 
-    <!-- ===== ZONE B — ДЕЙСТВИЕ (выберите → посчитайте → закажите) ===== -->
-    <section class="home-zone home-zone-b home-reveal">
-      <div class="zone-eyebrow">Выберите услугу</div>
-
-      <div class="ba-card commerce-card">
-        <!-- Каталог услуг -->
+    <!-- Каталог услуг -->
+    <section class="section home-reveal home-block">
+      <div class="block-head">
+        <h3 class="block-title">Каталог услуг</h3>
+      </div>
+      <div class="ba-card">
         <div class="home-service-grid">
           <div class="home-service-tile" onclick="openServiceDetail('Покос травы', this, 'home')">
             <img src="img/a993e26b12.png" alt="">
@@ -438,79 +438,76 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Внутренний разделитель: услуги → калькулятор -->
-        <div class="commerce-divider">
-          <span class="commerce-divider-label">или посчитайте цену</span>
+    <!-- Калькулятор цены -->
+    <section class="section home-reveal home-block">
+      <div class="block-head">
+        <h3 class="block-title">Калькулятор цены</h3>
+      </div>
+      <div class="ba-card price-calc-card">
+        <div class="pc-field-label" style="margin-top:0">Услуга</div>
+        <div class="pc-services" id="pc-services">
+          <button type="button" class="pc-service-chip pc-active" data-svc="Покос травы" data-rate="1500" onclick="pcSelectService(this)">Покос</button>
+          <button type="button" class="pc-service-chip" data-svc="Стрижка газона" data-rate="2000" onclick="pcSelectService(this)">Стрижка</button>
+          <button type="button" class="pc-service-chip" data-svc="Вспашка" data-rate="3000" onclick="pcSelectService(this)">Вспашка</button>
+          <button type="button" class="pc-service-chip" data-svc="Посадка газона" data-rate="5000" onclick="pcSelectService(this)">Посадка</button>
         </div>
 
-        <!-- Калькулятор цены (внутри той же карточки) -->
-        <div class="price-calc-inline">
-          <div class="pc-field-label">Услуга</div>
-          <div class="pc-services" id="pc-services">
-            <button type="button" class="pc-service-chip pc-active" data-svc="Покос травы" data-rate="1500" onclick="pcSelectService(this)">Покос</button>
-            <button type="button" class="pc-service-chip" data-svc="Стрижка газона" data-rate="2000" onclick="pcSelectService(this)">Стрижка</button>
-            <button type="button" class="pc-service-chip" data-svc="Вспашка" data-rate="3000" onclick="pcSelectService(this)">Вспашка</button>
-            <button type="button" class="pc-service-chip" data-svc="Посадка газона" data-rate="5000" onclick="pcSelectService(this)">Посадка</button>
-          </div>
-
-          <div class="pc-field-label">Площадь</div>
-          <div class="pc-area">
-            <button type="button" class="pc-step-btn" onclick="pcChangeArea(-1)" aria-label="Уменьшить">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8"/></svg>
-            </button>
-            <div class="pc-area-value">
-              <span class="pc-area-num" id="pc-area-num">4</span>
-              <span class="pc-area-unit">сот.</span>
-            </div>
-            <button type="button" class="pc-step-btn" onclick="pcChangeArea(1)" aria-label="Увеличить">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8M8 4v8"/></svg>
-            </button>
-          </div>
-
-          <div class="pc-result">
-            <div class="pc-result-label">Примерная цена</div>
-            <div class="pc-result-price" id="pc-result-price">~ 6 000 ₸</div>
-          </div>
-
-          <button type="button" class="pc-cta" onclick="pcOrderFromCalc()">
-            <span>Заказать</span>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+        <div class="pc-field-label">Площадь</div>
+        <div class="pc-area">
+          <button type="button" class="pc-step-btn" onclick="pcChangeArea(-1)" aria-label="Уменьшить">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8"/></svg>
           </button>
+          <div class="pc-area-value">
+            <span class="pc-area-num" id="pc-area-num">4</span>
+            <span class="pc-area-unit">сот.</span>
+          </div>
+          <button type="button" class="pc-step-btn" onclick="pcChangeArea(1)" aria-label="Увеличить">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 8h8M8 4v8"/></svg>
+          </button>
+        </div>
+
+        <div class="pc-result">
+          <div class="pc-result-label">Примерная цена</div>
+          <div class="pc-result-price" id="pc-result-price">~ 6 000 ₸</div>
+        </div>
+
+        <button type="button" class="pc-cta" onclick="pcOrderFromCalc()">
+          <span>Заказать</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Наши работы -->
+    <section class="section home-reveal home-block">
+      <div class="block-head">
+        <h3 class="block-title">Наши работы</h3>
+        <span class="block-link" onclick="openGallery()">Все ›</span>
+      </div>
+      <div class="ba-card">
+        <div class="ba-grid">
+          <div class="ba-tile" onclick="openGallery()">
+            <img src="img/bfd86991f4.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+            <div class="ba-tile-label">Покос · 6 соток</div>
+          </div>
+          <div class="ba-tile" onclick="openGallery()">
+            <img src="img/8ed73f0d79.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+            <div class="ba-tile-label">Стрижка газона</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== ZONE C — ДОВЕРИЕ (работы + отзывы) ===== -->
-    <section class="home-zone home-zone-c home-reveal">
-      <div class="zone-eyebrow">Нам доверяют</div>
-
-      <!-- Наши работы — горизонтальный скролл edge-to-edge -->
-      <div class="works-scroll-wrap">
-        <div class="works-scroll" id="worksScroll">
-          <div class="works-tile" onclick="openGallery()">
-            <img src="img/bfd86991f4.png" alt="До и после">
-            <div class="works-tile-label">Покос · 6 соток</div>
-          </div>
-          <div class="works-tile" onclick="openGallery()">
-            <img src="img/8ed73f0d79.png" alt="До и после">
-            <div class="works-tile-label">Стрижка газона</div>
-          </div>
-          <div class="works-tile works-tile-more" onclick="openGallery()">
-            <div class="works-tile-more-inner">
-              <div class="works-tile-more-icon">→</div>
-              <div class="works-tile-more-text">Все работы</div>
-            </div>
-          </div>
-        </div>
+    <!-- Отзывы клиентов -->
+    <section class="section home-reveal home-block" style="padding-bottom: 96px;">
+      <div class="block-head">
+        <h3 class="block-title">Отзывы клиентов</h3>
+        <span class="block-link">Все ›</span>
       </div>
-
-      <!-- Отзывы -->
-      <div class="reviews-card" style="margin-top: 12px;">
-        <div class="home-section-head">
-          <h3 class="home-section-title">Отзывы клиентов</h3>
-          <span class="home-section-link">Все отзывы ›</span>
-        </div>
+      <div class="reviews-card">
         <div class="reviews-row" id="reviewsRow">
           <article class="review-card">
             <div class="review-quote-mark" aria-hidden="true">"</div>
@@ -1924,6 +1921,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=45"></script>
+<script src="js/app.js?v=47"></script>
 </body>
 </html>

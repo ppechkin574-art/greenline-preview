@@ -5452,184 +5452,40 @@ body {
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
 }
 
-/* ===== HOME ZONES — семантическая группировка блоков =====
-   Зоны: A — мотивация, B — действие, C — доверие.
-   Гэп между зонами 24px, eyebrow-заголовки, тонировка фона зоны B.
+/* ===== HOME BLOCKS — listings-app паттерн =====
+   Заголовок секции жирный, ВНЕ белой карточки, прямо на фоне страницы.
+   Справа опционально — мутная ссылка «Все ›».
+   Карточка ниже — белая, в стандартных боковых отступах контейнера.
+   Разделение между блоками — только отступом (без тонировки/линий/eyebrow).
 */
-.home-zone {
-  position: relative;
+.home-block {
+  padding-top: 22px;
 }
-/* Zone A (скидка) — отступ как был */
-.home-zone-a {
-  padding-top: 12px;
-  padding-bottom: 0;
-}
-/* Zone B (действие) — расширенный фон до края экрана с лёгкой зелёной тонировкой */
-.home-zone-b {
-  margin-top: 24px;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  /* фон выходит за края контейнера на полную ширину экрана */
-  background: linear-gradient(180deg, #F7FBF7 0%, #F2F8F2 100%);
-  border-top: 1px solid rgba(46, 139, 46, 0.06);
-  border-bottom: 1px solid rgba(46, 139, 46, 0.06);
-  /* "выпрыгиваем" за горизонтальные паддинги .scroll-body */
-  margin-left: -16px;
-  margin-right: -16px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-/* Zone C (доверие) — белый фон, отступ от Zone B */
-.home-zone-c {
-  margin-top: 24px;
-  padding-bottom: 96px;
-}
-
-/* Eyebrow-заголовок зоны (мелкий ALL-CAPS) */
-.zone-eyebrow {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: #6F7B6F;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  margin: 0 4px 10px;
+.block-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-.zone-eyebrow::before,
-.zone-eyebrow::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(46, 139, 46, 0.18) 50%, transparent 100%);
-}
-
-/* Объединённая carcточка «каталог + калькулятор» */
-.commerce-card {
-  /* немного плотнее обычной ba-card — два блока внутри */
-  padding-top: 14px;
-}
-.commerce-card .home-service-grid {
-  margin-top: 0;
-}
-/* Внутренний разделитель между каталогом и калькулятором */
-.commerce-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 18px -2px 14px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+  margin-bottom: 12px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  font-size: 11px;
+}
+.block-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  color: #0E1A0E;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.block-link {
+  font-size: 13px;
   font-weight: 600;
-  color: #8A968A;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.commerce-divider::before,
-.commerce-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(46, 139, 46, 0.16);
-}
-.commerce-divider-label {
-  flex-shrink: 0;
-}
-
-/* Калькулятор внутри commerce-card — убираем заголовок (его роль играет divider) */
-.price-calc-inline .pc-field-label:first-child {
-  margin-top: 0;
-}
-
-/* ===== WORKS SCROLL — горизонтальный edge-to-edge ===== */
-.works-scroll-wrap {
-  /* выходит за горизонтальные паддинги .scroll-body для full-bleed эффекта */
-  margin-left: -16px;
-  margin-right: -16px;
-}
-.works-scroll {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 4px 16px 8px;
-}
-.works-scroll::-webkit-scrollbar { display: none; }
-.works-tile {
-  position: relative;
-  flex: 0 0 72%;
-  max-width: 280px;
-  aspect-ratio: 4 / 3;
-  border-radius: 16px;
-  overflow: hidden;
-  scroll-snap-align: start;
-  background: #F4F6F4;
+  color: #6F7B6F;
+  letter-spacing: -0.005em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 8px 20px -10px rgba(46, 139, 46, 0.20);
+  flex-shrink: 0;
+  transition: color 0.18s;
 }
-.works-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.works-tile-label {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  padding: 6px 10px;
-  border-radius: 10px;
-  background: rgba(15, 26, 14, 0.62);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-/* "Все работы" — последняя плитка-заглушка */
-.works-tile-more {
-  flex: 0 0 50%;
-  max-width: 200px;
-  aspect-ratio: 4 / 3;
-  background: linear-gradient(135deg, #F0FAF0 0%, #E2F0E2 100%);
-  border: 1px dashed rgba(46, 139, 46, 0.32);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.works-tile-more-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.works-tile-more-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 55%, #1F6B1F 100%);
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
-    0 4px 10px -3px rgba(46, 139, 46, 0.45);
-}
-.works-tile-more-text {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1F6B1F;
-}
+.block-link:active { color: #1F6B1F; }
