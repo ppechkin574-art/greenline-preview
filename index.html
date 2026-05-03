@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=38">
+<link rel="stylesheet" href="css/styles.css?v=39">
 </head>
 <body>
 <div class="device-stage">
@@ -383,6 +383,59 @@
       </div>
     </section>
 
+    <!-- Service catalog -->
+    <section class="section home-reveal" style="padding-top: 8px;">
+      <div class="ba-card">
+        <div class="home-section-head">
+          <h3 class="home-section-title">Каталог услуг</h3>
+        </div>
+        <div class="home-service-grid" style="margin-top:12px">
+          <div class="home-service-tile" onclick="openServiceDetail('Покос травы', this, 'home')">
+            <img src="img/a993e26b12.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Покос травы</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+          <div class="home-service-tile" onclick="openServiceDetail('Стрижка газона', this, 'home')">
+            <img src="img/4eecf9d329.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Стрижка газона</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+          <div class="home-service-tile" onclick="openServiceDetail('Вспашка', this, 'home')">
+            <img src="img/c7ea20cb93.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Вспашка</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+          <div class="home-service-tile" onclick="openServiceDetail('Посадка газона', this, 'home')">
+            <img src="img/0d19d8e209.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Посадка газона</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+          <div class="home-service-tile" onclick="openServiceDetail('Посадка растений', this, 'home')">
+            <img src="img/c300d3358f.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Посадка растений</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+          <div class="home-service-tile" onclick="openServiceDetail('Топиарная обрезка', this, 'home')">
+            <img src="img/6c992cb66e.png" alt="">
+            <div class="hst-bottom">
+              <div class="hst-name">Топиарная обрезка</div>
+              <div class="hst-arrow">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Before After (gallery) -->
     <section class="section home-reveal" style="padding-top: 8px; padding-bottom: 0;">
       <div class="ba-card">
@@ -724,56 +777,6 @@
       </article>
     </section>
 
-    <!-- Service catalog -->
-    <section class="orders-section orders-catalog">
-      <div class="orders-section-header">
-        <h2 class="orders-section-title">Каталог услуг</h2>
-      </div>
-      <div class="home-service-grid">
-        <div class="home-service-tile" onclick="openServiceDetail('Покос травы', this, 'orders')">
-          <img src="img/a993e26b12.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Покос травы</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-        <div class="home-service-tile" onclick="openServiceDetail('Стрижка газона', this, 'orders')">
-          <img src="img/4eecf9d329.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Стрижка газона</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-        <div class="home-service-tile" onclick="openServiceDetail('Вспашка', this, 'orders')">
-          <img src="img/c7ea20cb93.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Вспашка</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-        <div class="home-service-tile" onclick="openServiceDetail('Посадка газона', this, 'orders')">
-          <img src="img/0d19d8e209.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Посадка газона</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-        <div class="home-service-tile" onclick="openServiceDetail('Посадка растений', this, 'orders')">
-          <img src="img/c300d3358f.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Посадка растений</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-        <div class="home-service-tile" onclick="openServiceDetail('Топиарная обрезка', this, 'orders')">
-          <img src="img/6c992cb66e.png" alt="">
-          <div class="hst-bottom">
-            <div class="hst-name">Топиарная обрезка</div>
-            <div class="hst-arrow">›</div>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </div>
 
@@ -1776,6 +1779,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=38"></script>
+<script src="js/app.js?v=39"></script>
 </body>
 </html>
