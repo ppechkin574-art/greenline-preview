@@ -6421,3 +6421,109 @@ body[data-theme="dark"] .reviews-card {
 body[data-theme="dark"] .profile-item:active {
   background: #2A3E2A;
 }
+
+/* ===== Active order card (страница «Ваши заказы», демо-карточка) ===== */
+body[data-theme="dark"] .active-order-card {
+  background: #1A2E1A;
+  border-color: #2A3E2A;
+  box-shadow:
+    0 12px 28px -10px rgba(0, 0, 0, 0.50),
+    0 4px 10px -2px rgba(0, 0, 0, 0.30);
+}
+body[data-theme="dark"] .active-order-title { color: #FFFFFF; }
+body[data-theme="dark"] .active-order-num { color: #6F7B6F; }
+
+/* Info-rows (дата/адрес/цена) внутренняя карточка */
+body[data-theme="dark"] .active-order-info {
+  background: #243824;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .aor-label { color: #94A094; }
+body[data-theme="dark"] .aor-value { color: #FFFFFF; }
+body[data-theme="dark"] .aor-edit {
+  background: #1A2E1A;
+  border-color: #2E4A2E;
+  color: #4ADE4A;
+}
+body[data-theme="dark"] .aor-edit:active {
+  background: #2A3E2A;
+}
+
+/* Manager strip */
+body[data-theme="dark"] .active-order-manager {
+  background: linear-gradient(135deg, #243824 0%, #1A2E1A 100%);
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .aom-label { color: #94A094; }
+body[data-theme="dark"] .aom-name { color: #FFFFFF; }
+
+/* Action buttons */
+body[data-theme="dark"] .aoa-btn-secondary {
+  background: #243824;
+  color: #C0D5C0;
+}
+body[data-theme="dark"] .aoa-btn-secondary:active {
+  background: #2A3E2A;
+}
+body[data-theme="dark"] .aoa-btn-outline {
+  background: #1A2E1A;
+  color: #4ADE4A;
+  border-color: #4ADE4A;
+}
+body[data-theme="dark"] .aoa-btn-outline:active {
+  background: #243824;
+}
+
+/* Active-order menu dropdown */
+body[data-theme="dark"] .active-order-menu-dropdown {
+  background: #1A2E1A;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .active-order-menu-item {
+  color: #E8F0E8;
+}
+body[data-theme="dark"] .active-order-menu-item:active {
+  background: #2A3E2A;
+}
+body[data-theme="dark"] .active-order-menu-item-danger { color: #FF6B6B; }
+body[data-theme="dark"] .active-order-menu-item-danger:active { background: #3A1F1F; }
+
+/* Order timeline progress (4 шага) */
+body[data-theme="dark"] .active-order-timeline::before {
+  background: #2A3E2A;
+}
+
+/* Demo button "Показать пример" — оранжевая хост-кнопка из orders-empty */
+body[data-theme="dark"] .orders-demo-btn {
+  background: #243824;
+  color: #4ADE4A;
+  border-color: #2E4A2E;
+}
+body[data-theme="dark"] .orders-demo-btn svg {
+  stroke: #4ADE4A;
+}
+
+/* Header bar для orders/profile pages — серый фон */
+body[data-theme="dark"] .orders-section-title,
+body[data-theme="dark"] .profile-name-row {
+  color: #FFFFFF;
+}
+
+/* Order header title (на странице услуги, hero) */
+body[data-theme="dark"] .order-hero-title { color: #FFFFFF; }
+body[data-theme="dark"] .order-hero-sub { color: #C0D5C0; }
+
+/* History item meta-icons — flat серые SVG */
+body[data-theme="dark"] .ohi-meta-icon svg {
+  stroke: #94A094;
+}
+body[data-theme="dark"] .ohi-photo {
+  background: #243824;
+}
+
+/* Демо-плашка «ПРИМЕР» — оставляем как есть, она акцентная */
+
+/* Контейнер orders-section (родитель active-order-card) */
+body[data-theme="dark"] .orders-section {
+  background: transparent;
+}
