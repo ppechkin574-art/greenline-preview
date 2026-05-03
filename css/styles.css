@@ -5481,6 +5481,17 @@ body {
   width: 36%; height: 36%;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
 }
+/* Flat-иллюстрация: SVG-иконка на градиенте (минимализм) */
+.pc2-param-card-img-flat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pc2-param-card-img-flat svg {
+  width: 60%;
+  height: 60%;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.20));
+}
 
 /* Body row: icon-bubble + text-stack */
 .pc2-param-card-body {

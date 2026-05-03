@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=64">
+<link rel="stylesheet" href="css/styles.css?v=65">
 </head>
 <body>
 <div class="device-stage">
@@ -1047,38 +1047,26 @@
         </div>
       </div>
       <div class="pc2-param-grid" id="orderParamGrid">
-        <!-- Static fallback (Покос травы) — гарантированный показ до запуска JS.
-             JS перерисовывает grid при смене услуги через window.serviceForm. -->
-        <div class="pc2-param-card" data-opt="light">
-          <div class="pc2-param-card-img"><img src="img/8ed73f0d79.png" alt=""></div>
+        <!-- Static fallback (Покос травы, 2 опции). JS перерисует grid через
+             window.serviceForm.setService() с flat-иллюстрациями. -->
+        <div class="pc2-param-card" data-opt="low">
+          <div class="pc2-param-card-img pc2-param-card-img-flat" style="background:linear-gradient(135deg,#6FCC6F 0%,#3DA83D 100%);">
+            <svg viewBox="0 0 64 64" fill="none"><path d="M12 50 L12 38 L16 50 M20 50 L20 36 L24 50 M28 50 L28 34 L32 50 M36 50 L36 36 L40 50 M44 50 L44 38 L48 50 M52 50 L52 40 L56 50" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+          </div>
           <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
           <div class="pc2-param-card-body"><div class="pc2-param-card-text">
-            <div class="pc2-param-card-title">Лёгкая стрижка</div>
-            <div class="pc2-param-card-sub">Трава до 10–15 см</div>
+            <div class="pc2-param-card-title">Невысокая трава</div>
+            <div class="pc2-param-card-sub">До 20 см</div>
           </div></div>
         </div>
-        <div class="pc2-param-card" data-opt="medium">
-          <div class="pc2-param-card-img"><img src="img/4eecf9d329.png" alt=""></div>
+        <div class="pc2-param-card" data-opt="high">
+          <div class="pc2-param-card-img pc2-param-card-img-flat" style="background:linear-gradient(135deg,#2E8B2E 0%,#1F6B1F 100%);">
+            <svg viewBox="0 0 64 64" fill="none"><path d="M8 52 Q8 28 14 16 M18 52 Q14 26 22 12 M26 52 Q22 28 30 10 M34 52 Q34 24 40 14 M42 52 Q38 26 48 12 M52 52 Q52 30 58 16" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="14" r="2.5" fill="#fff"/><circle cx="46" cy="16" r="2.5" fill="#fff"/></svg>
+          </div>
           <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
           <div class="pc2-param-card-body"><div class="pc2-param-card-text">
-            <div class="pc2-param-card-title">Средняя зарощенность</div>
-            <div class="pc2-param-card-sub">Трава 20–40 см</div>
-          </div></div>
-        </div>
-        <div class="pc2-param-card" data-opt="heavy">
-          <div class="pc2-param-card-img"><img src="img/a993e26b12.png" alt=""></div>
-          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
-            <div class="pc2-param-card-title">Сильно заросший</div>
-            <div class="pc2-param-card-sub">Высокая трава, бурьян</div>
-          </div></div>
-        </div>
-        <div class="pc2-param-card" data-opt="extreme">
-          <div class="pc2-param-card-img"><img src="img/bfd86991f4.png" alt=""></div>
-          <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-          <div class="pc2-param-card-body"><div class="pc2-param-card-text">
-            <div class="pc2-param-card-title">Запущенный участок</div>
-            <div class="pc2-param-card-sub">Кусты, мусор, давно не ухожен</div>
+            <div class="pc2-param-card-title">Заросший</div>
+            <div class="pc2-param-card-sub">Выше 30 см, есть бурьян</div>
           </div></div>
         </div>
       </div>
@@ -1251,56 +1239,94 @@
      Самодостаточно, не зависит от app.js. Bridge через window.serviceForm. -->
 <script>
 (function(){
+  // Flat-иллюстрации: SVG-иконки на цветовом градиенте.
+  // Минимализм, передают суть объёма работы. Иконки — простые геометрические.
+  var ICONS = {
+    grassLow:  '<svg viewBox="0 0 64 64" fill="none"><path d="M12 50 L12 38 L16 50 M20 50 L20 36 L24 50 M28 50 L28 34 L32 50 M36 50 L36 36 L40 50 M44 50 L44 38 L48 50 M52 50 L52 40 L56 50" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',
+    grassHigh: '<svg viewBox="0 0 64 64" fill="none"><path d="M8 52 Q8 28 14 16 M18 52 Q14 26 22 12 M26 52 Q22 28 30 10 M34 52 Q34 24 40 14 M42 52 Q38 26 48 12 M52 52 Q52 30 58 16" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="14" r="2.5" fill="#fff"/><circle cx="46" cy="16" r="2.5" fill="#fff"/></svg>',
+    lawnNeat:  '<svg viewBox="0 0 64 64" fill="none"><rect x="6" y="34" width="52" height="20" rx="3" fill="#fff" opacity="0.18"/><line x1="6" y1="40" x2="58" y2="40" stroke="#fff" stroke-width="2" opacity="0.6"/><line x1="6" y1="46" x2="58" y2="46" stroke="#fff" stroke-width="2" opacity="0.6"/><line x1="6" y1="52" x2="58" y2="52" stroke="#fff" stroke-width="2" opacity="0.6"/><circle cx="32" cy="20" r="6" fill="#fff" opacity="0.55"/></svg>',
+    lawnWild:  '<svg viewBox="0 0 64 64" fill="none"><path d="M10 52 Q14 30 16 52 M22 52 Q28 24 28 52 M34 52 Q40 22 40 52 M46 52 Q52 28 52 52" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="22" r="2.5" fill="#fff"/><circle cx="46" cy="20" r="2.5" fill="#fff"/></svg>',
+    soilSoft:  '<svg viewBox="0 0 64 64" fill="none"><path d="M6 32 Q14 28 22 32 Q30 36 38 32 Q46 28 58 32" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M6 42 Q14 38 22 42 Q30 46 38 42 Q46 38 58 42" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M6 52 Q14 48 22 52 Q30 56 38 52 Q46 48 58 52" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="#fff"/><circle cx="44" cy="22" r="2.5" fill="#fff"/></svg>',
+    soilHard:  '<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="20" width="48" height="36" rx="2" fill="#fff" opacity="0.15"/><path d="M8 36 L18 30 L30 38 L44 28 L56 32 M16 56 L16 38 M28 56 L26 36 M40 56 L42 32 M48 56 L48 32" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>',
+    seeds:     '<svg viewBox="0 0 64 64" fill="none"><ellipse cx="18" cy="22" rx="3" ry="5" fill="#fff" transform="rotate(-15 18 22)"/><ellipse cx="32" cy="16" rx="3" ry="5" fill="#fff" transform="rotate(8 32 16)"/><ellipse cx="46" cy="22" rx="3" ry="5" fill="#fff" transform="rotate(20 46 22)"/><ellipse cx="14" cy="38" rx="3" ry="5" fill="#fff"/><ellipse cx="28" cy="42" rx="3" ry="5" fill="#fff" transform="rotate(-10 28 42)"/><ellipse cx="42" cy="36" rx="3" ry="5" fill="#fff"/><ellipse cx="22" cy="52" rx="3" ry="5" fill="#fff" transform="rotate(15 22 52)"/><ellipse cx="38" cy="52" rx="3" ry="5" fill="#fff"/></svg>',
+    roll:      '<svg viewBox="0 0 64 64" fill="none"><rect x="6" y="22" width="52" height="20" rx="10" fill="#fff" opacity="0.25"/><rect x="6" y="22" width="52" height="20" rx="10" stroke="#fff" stroke-width="2.5"/><line x1="14" y1="22" x2="14" y2="42" stroke="#fff" stroke-width="2"/><line x1="22" y1="22" x2="22" y2="42" stroke="#fff" stroke-width="2"/><line x1="30" y1="22" x2="30" y2="42" stroke="#fff" stroke-width="2"/><line x1="38" y1="22" x2="38" y2="42" stroke="#fff" stroke-width="2"/><line x1="46" y1="22" x2="46" y2="42" stroke="#fff" stroke-width="2"/></svg>',
+    plantsFew: '<svg viewBox="0 0 64 64" fill="none"><path d="M22 50 Q14 32 22 18 Q30 32 22 50 Z" fill="#fff" opacity="0.92"/><path d="M44 50 Q38 32 44 22 Q50 32 44 50 Z" fill="#fff" opacity="0.92"/><line x1="22" y1="50" x2="22" y2="56" stroke="#fff" stroke-width="3" stroke-linecap="round"/><line x1="44" y1="50" x2="44" y2="56" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',
+    plantsMany:'<svg viewBox="0 0 64 64" fill="none"><path d="M10 50 Q6 36 10 28 Q14 36 10 50 Z" fill="#fff" opacity="0.85"/><path d="M22 50 Q18 30 22 22 Q26 30 22 50 Z" fill="#fff" opacity="0.95"/><path d="M32 50 Q28 32 32 24 Q36 32 32 50 Z" fill="#fff" opacity="0.95"/><path d="M42 50 Q38 28 42 20 Q46 28 42 50 Z" fill="#fff" opacity="0.95"/><path d="M54 50 Q50 34 54 26 Q58 34 54 50 Z" fill="#fff" opacity="0.85"/><line x1="10" y1="50" x2="10" y2="55" stroke="#fff" stroke-width="2"/><line x1="22" y1="50" x2="22" y2="56" stroke="#fff" stroke-width="2"/><line x1="32" y1="50" x2="32" y2="56" stroke="#fff" stroke-width="2"/><line x1="42" y1="50" x2="42" y2="56" stroke="#fff" stroke-width="2"/><line x1="54" y1="50" x2="54" y2="55" stroke="#fff" stroke-width="2"/></svg>',
+    bushFew:   '<svg viewBox="0 0 64 64" fill="none"><circle cx="22" cy="34" r="14" fill="#fff" opacity="0.85"/><circle cx="44" cy="32" r="12" fill="#fff" opacity="0.92"/><line x1="22" y1="48" x2="22" y2="56" stroke="#fff" stroke-width="3" stroke-linecap="round"/><line x1="44" y1="44" x2="44" y2="56" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>',
+    bushMany:  '<svg viewBox="0 0 64 64" fill="none"><circle cx="12" cy="38" r="8" fill="#fff" opacity="0.7"/><circle cx="26" cy="32" r="10" fill="#fff" opacity="0.88"/><circle cx="42" cy="36" r="9" fill="#fff" opacity="0.82"/><circle cx="56" cy="40" r="7" fill="#fff" opacity="0.65"/><line x1="12" y1="46" x2="12" y2="54" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="26" y1="42" x2="26" y2="56" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="42" y1="45" x2="42" y2="56" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="56" y1="47" x2="56" y2="54" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>'
+  };
+
+  // Цветовые градиенты для flat-иллюстраций (отражают суть объёма)
+  var BG = {
+    greenLight:  'linear-gradient(135deg, #6FCC6F 0%, #3DA83D 100%)',
+    greenDeep:   'linear-gradient(135deg, #2E8B2E 0%, #1F6B1F 100%)',
+    soilLight:   'linear-gradient(135deg, #BC9B6E 0%, #8B6F47 100%)',
+    soilDark:    'linear-gradient(135deg, #6B5B4A 0%, #3F2F22 100%)',
+    seedTan:     'linear-gradient(135deg, #C9A968 0%, #A57F40 100%)',
+    rollGreen:   'linear-gradient(135deg, #4DA84D 0%, #2E8B2E 100%)'
+  };
+
   var SERVICES = {
     'Покос травы': {
       key: 'mow', rate: 1500, min: 8000, hpu: 0.25,
       areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
-      paramTitle: 'Как сейчас выглядит ваш участок?',
-      paramSub: 'Влияет на стоимость',
+      areaTicks: [1, 5, 10, 20, 50],
+      paramTitle: 'Какая трава на участке?',
       opts: [
-        { id:'light',   t:'Лёгкая стрижка',       s:'Трава до 10–15 см',             m:1.0, img:'img/8ed73f0d79.png' },
-        { id:'medium',  t:'Средняя зарощенность', s:'Трава 20–40 см',                m:1.3, img:'img/4eecf9d329.png' },
-        { id:'heavy',   t:'Сильно заросший',      s:'Высокая трава, бурьян',         m:1.6, img:'img/a993e26b12.png' },
-        { id:'extreme', t:'Запущенный участок',   s:'Кусты, мусор, давно не ухожен', m:2.0, img:'img/bfd86991f4.png' }
+        { id:'low',  t:'Невысокая трава', s:'До 20 см',                  m:1.0, bg:BG.greenLight, icon:ICONS.grassLow },
+        { id:'high', t:'Заросший',        s:'Выше 30 см, есть бурьян',    m:1.7, bg:BG.greenDeep,  icon:ICONS.grassHigh }
       ]
     },
     'Стрижка газона': {
       key: 'cut', rate: 2000, min: 6000, hpu: 0.20,
       areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
-      paramTitle: 'Как часто стригли газон?',
-      paramSub: 'Влияет на стоимость',
+      areaTicks: [1, 5, 10, 20, 50],
+      paramTitle: 'Как давно стригли газон?',
       opts: [
-        { id:'regular',  t:'Регулярный уход',  s:'Раз в 1–2 недели',         m:1.0, img:'img/8ed73f0d79.png' },
-        { id:'lapsed',   t:'Давно не стригли', s:'3–4 недели без ухода',     m:1.3, img:'img/4eecf9d329.png' },
-        { id:'neglected',t:'Запущенный газон', s:'1–2 месяца без ухода',     m:1.6, img:'img/a993e26b12.png' },
-        { id:'rough',    t:'Тяжёлый случай',   s:'Газон превратился в луг',  m:2.0, img:'img/bfd86991f4.png' }
+        { id:'neat',    t:'Ухоженный', s:'Стригли 1–2 недели назад', m:1.0, bg:BG.greenLight, icon:ICONS.lawnNeat },
+        { id:'overgrown', t:'Запущенный', s:'Не стригли месяц и больше', m:1.6, bg:BG.greenDeep, icon:ICONS.lawnWild }
       ]
     },
     'Вспашка': {
       key: 'till', rate: 3000, min: 12000, hpu: 0.40,
       areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
-      paramTitle: 'Какая у вас почва?',
-      paramSub: 'Влияет на стоимость',
+      areaTicks: [1, 5, 10, 20, 50],
+      paramTitle: 'Какая почва на участке?',
       opts: [
-        { id:'soft',   t:'Мягкая почва',      s:'Рыхлая, окультуренная',     m:1.0, img:'img/c7ea20cb93.png' },
-        { id:'medium', t:'Средняя плотность', s:'Огород, давно копали',      m:1.3, img:'img/0d19d8e209.png' },
-        { id:'hard',   t:'Твёрдая почва',     s:'Давно не пахали, плотная',  m:1.6, img:'img/bfd86991f4.png' },
-        { id:'virgin', t:'Целина',            s:'Первичная вспашка',         m:2.0, img:'img/a993e26b12.png' }
+        { id:'soft', t:'Огород',  s:'Рыхлая, мягкая почва',          m:1.0, bg:BG.soilLight, icon:ICONS.soilSoft },
+        { id:'hard', t:'Целина',  s:'Плотная, давно не пахали',      m:1.8, bg:BG.soilDark,  icon:ICONS.soilHard }
       ]
     },
     'Посадка газона': {
       key: 'plant', rate: 5000, min: 15000, hpu: 0.50,
-      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 50, areaDefault: 5,
-      paramTitle: 'Какой газон сажаем?',
-      paramSub: 'Влияет на стоимость',
+      areaUnit: 'соток', areaUnitOne: 'сотка', areaMin: 1, areaMax: 30, areaDefault: 5,
+      areaTicks: [1, 5, 10, 20, 30],
+      paramTitle: 'Какой газон будем сажать?',
       opts: [
-        { id:'seed-basic',  t:'Посевной обычный', s:'Семена, базовая смесь',     m:1.0, img:'img/0d19d8e209.png' },
-        { id:'seed-prem',   t:'Посевной премиум', s:'Спортивная / декоративная', m:1.4, img:'img/c300d3358f.png' },
-        { id:'roll-basic',  t:'Рулонный',         s:'Готовый газон, обычный',    m:2.5, img:'img/8ed73f0d79.png' },
-        { id:'roll-prem',   t:'Рулонный премиум', s:'Элитные сорта',             m:3.0, img:'img/4eecf9d329.png' }
+        { id:'seed', t:'Посевной', s:'Семена, прорастёт за 2–3 недели', m:1.0, bg:BG.seedTan,   icon:ICONS.seeds },
+        { id:'roll', t:'Рулонный', s:'Готовый газон, моментально',     m:2.5, bg:BG.rollGreen, icon:ICONS.roll }
+      ]
+    },
+    'Посадка растений': {
+      key: 'plants', rate: 1200, min: 8000, hpu: 0.30,
+      areaUnit: 'штук', areaUnitOne: 'штука', areaMin: 1, areaMax: 30, areaDefault: 5,
+      areaTicks: [1, 3, 5, 10, 30],
+      paramTitle: 'Сколько растений сажаем?',
+      opts: [
+        { id:'few',  t:'До 10 шт.', s:'Небольшая клумба',     m:1.0, bg:BG.greenLight, icon:ICONS.plantsFew },
+        { id:'many', t:'10+ шт.',   s:'Большой объём посадки', m:1.8, bg:BG.greenDeep,  icon:ICONS.plantsMany }
+      ]
+    },
+    'Топиарная обрезка': {
+      key: 'topiary', rate: 2500, min: 10000, hpu: 0.50,
+      areaUnit: 'штук', areaUnitOne: 'штука', areaMin: 1, areaMax: 20, areaDefault: 3,
+      areaTicks: [1, 3, 5, 10, 20],
+      paramTitle: 'Сколько кустов обрезаем?',
+      opts: [
+        { id:'few',  t:'До 5 шт.', s:'Небольшой объём', m:1.0, bg:BG.greenLight, icon:ICONS.bushFew },
+        { id:'many', t:'5+ шт.',   s:'Большой объём',   m:1.8, bg:BG.greenDeep,  icon:ICONS.bushMany }
       ]
     }
-    // Посадка растений и Топиарная обрезка пока без параметров — для них блок будет скрыт
   };
 
   var state = { svcName: 'Покос травы', opt: null, area: 5 };
@@ -1336,14 +1362,13 @@
         titleEl.appendChild(sp);
       }
     }
-    if (subEl) subEl.textContent = s.paramSub;
+    if (subEl) subEl.style.display = 'none'; // подзаголовок убран — заголовок самодостаточный
     var html = '';
     for (var i = 0; i < s.opts.length; i++) {
       var o = s.opts[i];
       var sel = (state.opt === o.id) ? ' pc2-selected' : '';
-      var img = o.img
-        ? '<div class="pc2-param-card-img"><img src="' + o.img + '" alt=""></div>'
-        : '<div class="pc2-param-card-img" style="background:linear-gradient(135deg, #C8F0C8 0%, #4DA84D 100%);"></div>';
+      // Flat-иллюстрация: SVG-иконка на цветовом градиенте (отражает суть объёма)
+      var img = '<div class="pc2-param-card-img pc2-param-card-img-flat" style="background:' + o.bg + ';">' + o.icon + '</div>';
       html += '<div class="pc2-param-card' + sel + '" data-opt="' + o.id + '">'
         + img
         + '<span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>'
@@ -1373,17 +1398,23 @@
     var slider = document.getElementById('orderAreaSlider');
     var numEl = document.getElementById('orderAreaVal');
     var unitEl = document.getElementById('orderAreaUnit');
-    var minEl = document.getElementById('orderAreaMin');
-    var maxEl = document.getElementById('orderAreaMax');
+    var ticksEl = document.getElementById('orderAreaTicks');
     if (slider) {
       slider.min = s.areaMin;
       slider.max = s.areaMax;
+      // если state.area вне нового диапазона — обрезать
+      if (state.area < s.areaMin) state.area = s.areaMin;
+      if (state.area > s.areaMax) state.area = s.areaMax;
       slider.value = state.area;
     }
     if (numEl) numEl.textContent = state.area;
     if (unitEl) unitEl.textContent = s.areaUnit;
-    if (minEl) minEl.textContent = s.areaMin + ' ' + s.areaUnitOne;
-    if (maxEl) maxEl.textContent = s.areaMax + ' ' + s.areaUnit;
+    // Per-service ticks (1, 5, 10, 20, 50 и т.п.)
+    if (ticksEl && s.areaTicks) {
+      var th = '';
+      for (var i = 0; i < s.areaTicks.length; i++) th += '<span>' + s.areaTicks[i] + '</span>';
+      ticksEl.innerHTML = th;
+    }
   }
 
   function getOption() {
@@ -2283,6 +2314,6 @@ window.closeQuickBookSheet = closeQuickBookSheet;
 window.pickQuickBook = pickQuickBook;
 </script>
 
-<script src="js/app.js?v=64"></script>
+<script src="js/app.js?v=65"></script>
 </body>
 </html>
