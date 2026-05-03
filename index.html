@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>GreenLine</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Шрифты убраны: используем нативный SF Pro / Roboto / system-стек.
+     Это обязательно для Capacitor (никаких CDN), даёт нативное ощущение
+     iOS/Android и не загружает сеть. См. CONTEXT.md / правила Capacitor. -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <!-- ===== FIREBASE SDK ===== -->
@@ -14,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=47">
+<link rel="stylesheet" href="css/styles.css?v=48">
 </head>
 <body>
 <div class="device-stage">
@@ -1331,19 +1333,6 @@
       </div>
       <div class="profile-name" id="profileName">Алибек</div>
       <div class="profile-phone" id="profilePhone">+7 (700) 000-00-00</div>
-
-      <!-- Member stats row -->
-      <div class="profile-stats">
-        <div class="profile-stat">
-          <div class="profile-stat-num" id="profileStatOrders">0</div>
-          <div class="profile-stat-label">заказов</div>
-        </div>
-        <div class="profile-stat-divider"></div>
-        <div class="profile-stat">
-          <div class="profile-stat-num">0%</div>
-          <div class="profile-stat-label">скидка</div>
-        </div>
-      </div>
     </section>
 
     <!-- Menu list -->
@@ -1921,6 +1910,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=47"></script>
+<script src="js/app.js?v=48"></script>
 </body>
 </html>
