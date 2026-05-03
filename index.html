@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=55">
+<link rel="stylesheet" href="css/styles.css?v=56">
 </head>
 <body>
 <div class="device-stage">
@@ -1022,7 +1022,6 @@
     </button>
     <div class="header-title-stack">
       <div class="header-title">Калькулятор цены</div>
-      <div class="header-subtitle">Узнайте стоимость за 10 секунд</div>
     </div>
   </div>
   <div class="scroll-body" style="padding-left: 16px; padding-right: 16px;">
@@ -1095,37 +1094,37 @@
     mow: { name: 'Покос травы', rate: 1500, min: 8000, unit: 'соток', hpu: 0.25,
       pTitle: 'Как сейчас выглядит ваш участок?', pSub: 'Выберите вариант, похожий на ваш',
       opts: [
-        { id:'light',   t:'Лёгкая стрижка',       s:'Трава до 10–15 см',             m:1.0, img:'img/a993e26b12.png' },
+        { id:'light',   t:'Лёгкая стрижка',       s:'Трава до 10–15 см',             m:1.0, img:'img/8ed73f0d79.png' },
         { id:'medium',  t:'Средняя зарощенность', s:'Трава 20–40 см',                m:1.3, img:'img/4eecf9d329.png' },
-        { id:'heavy',   t:'Сильно заросший',      s:'Высокая трава, бурьян',         m:1.6, img:'img/bfd86991f4.png' },
-        { id:'extreme', t:'Запущенный участок',   s:'Кусты, мусор, давно не ухожен', m:2.0, img:'img/c300d3358f.png' }
+        { id:'heavy',   t:'Сильно заросший',      s:'Высокая трава, бурьян',         m:1.6, img:'img/a993e26b12.png' },
+        { id:'extreme', t:'Запущенный участок',   s:'Кусты, мусор, давно не ухожен', m:2.0, img:'img/bfd86991f4.png' }
       ]
     },
     cut: { name: 'Стрижка газона', rate: 2000, min: 6000, unit: 'соток', hpu: 0.20,
       pTitle: 'Как часто стригли газон?', pSub: 'От этого зависит сложность работы',
       opts: [
-        { id:'regular',  t:'Регулярный уход',  s:'Раз в 1–2 недели',     m:1.0, img:'img/4eecf9d329.png' },
-        { id:'lapsed',   t:'Давно не стригли', s:'3–4 недели без ухода', m:1.3, img:'img/8ed73f0d79.png' },
-        { id:'neglected',t:'Запущенный газон', s:'1–2 месяца без ухода', m:1.6, img:'img/bfd86991f4.png' },
-        { id:'rough',    t:'Тяжёлый случай',   s:'Газон превратился в луг', m:2.0, img:null }
+        { id:'regular',  t:'Регулярный уход',  s:'Раз в 1–2 недели',         m:1.0, img:'img/8ed73f0d79.png' },
+        { id:'lapsed',   t:'Давно не стригли', s:'3–4 недели без ухода',     m:1.3, img:'img/4eecf9d329.png' },
+        { id:'neglected',t:'Запущенный газон', s:'1–2 месяца без ухода',     m:1.6, img:'img/a993e26b12.png' },
+        { id:'rough',    t:'Тяжёлый случай',   s:'Газон превратился в луг',  m:2.0, img:'img/bfd86991f4.png' }
       ]
     },
     till: { name: 'Вспашка', rate: 3000, min: 12000, unit: 'соток', hpu: 0.40,
       pTitle: 'Какая у вас почва?', pSub: 'Чем плотнее — тем дольше работа',
       opts: [
-        { id:'soft',   t:'Мягкая почва',     s:'Рыхлая, окультуренная',     m:1.0, img:'img/c7ea20cb93.png' },
-        { id:'medium', t:'Средняя плотность',s:'Огород, давно копали',      m:1.3, img:null },
-        { id:'hard',   t:'Твёрдая почва',    s:'Давно не пахали, плотная',  m:1.6, img:null },
-        { id:'virgin', t:'Целина',           s:'Первичная вспашка',         m:2.0, img:null }
+        { id:'soft',   t:'Мягкая почва',      s:'Рыхлая, окультуренная',     m:1.0, img:'img/c7ea20cb93.png' },
+        { id:'medium', t:'Средняя плотность', s:'Огород, давно копали',      m:1.3, img:'img/0d19d8e209.png' },
+        { id:'hard',   t:'Твёрдая почва',     s:'Давно не пахали, плотная',  m:1.6, img:'img/bfd86991f4.png' },
+        { id:'virgin', t:'Целина',            s:'Первичная вспашка',         m:2.0, img:'img/a993e26b12.png' }
       ]
     },
     plant: { name: 'Посадка газона', rate: 5000, min: 15000, unit: 'соток', hpu: 0.50,
       pTitle: 'Какой газон сажаем?', pSub: 'Тип посадки сильно влияет на цену',
       opts: [
         { id:'seed-basic',  t:'Посевной обычный', s:'Семена, базовая смесь',     m:1.0, img:'img/0d19d8e209.png' },
-        { id:'seed-prem',   t:'Посевной премиум', s:'Спортивная / декоративная', m:1.4, img:null },
-        { id:'roll-basic',  t:'Рулонный',         s:'Готовый газон, обычный',    m:2.5, img:null },
-        { id:'roll-prem',   t:'Рулонный премиум', s:'Элитные сорта',             m:3.0, img:null }
+        { id:'seed-prem',   t:'Посевной премиум', s:'Спортивная / декоративная', m:1.4, img:'img/c300d3358f.png' },
+        { id:'roll-basic',  t:'Рулонный',         s:'Готовый газон, обычный',    m:2.5, img:'img/8ed73f0d79.png' },
+        { id:'roll-prem',   t:'Рулонный премиум', s:'Элитные сорта',             m:3.0, img:'img/4eecf9d329.png' }
       ]
     }
   };
@@ -2148,6 +2147,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=55"></script>
+<script src="js/app.js?v=56"></script>
 </body>
 </html>

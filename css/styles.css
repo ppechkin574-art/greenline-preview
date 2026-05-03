@@ -197,6 +197,13 @@ body {
   .device-frame .header-with-back {
     padding-top: 58px;
   }
+  /* Back-кнопка в header-with-back должна быть на уровне title-row,
+     а не центрироваться по всей высоте (включая 58px safe-area) */
+  .device-frame .header-with-back .page-back {
+    top: auto;
+    bottom: 12px;
+    transform: none;
+  }
 
   /* Страницы без шапки — добавляем top padding для status-bar/Island */
   .device-frame #page-orders .scroll-body,
