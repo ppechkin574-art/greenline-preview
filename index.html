@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=54">
+<link rel="stylesheet" href="css/styles.css?v=55">
 </head>
 <body>
 <div class="device-stage">
@@ -1014,7 +1014,7 @@
 
 
 
-<!-- ===== CALCULATOR PAGE ===== -->
+<!-- ===== CALCULATOR PAGE (полностью самодостаточная, inline JS) ===== -->
 <div id="page-calculator" class="page">
   <div class="header header-clean header-with-back">
     <button class="page-back" type="button" onclick="goToHome()" aria-label="Назад">
@@ -1026,78 +1026,35 @@
     </div>
   </div>
   <div class="scroll-body" style="padding-left: 16px; padding-right: 16px;">
-    <div class="ba-card pc2-card" style="margin: 12px 0 24px;">
+    <div class="ba-card pc2-card" id="calc-root" style="margin: 12px 0 24px;">
 
       <!-- Шаг 1: услуга -->
       <div class="pc2-step-label">Тип услуги</div>
-      <div class="pc2-services" id="pc2-services">
-        <button type="button" class="pc2-svc-chip pc2-active" data-svc="Покос травы" onclick="pc2SelectService(this)">Покос</button>
-        <button type="button" class="pc2-svc-chip" data-svc="Стрижка газона" onclick="pc2SelectService(this)">Стрижка</button>
-        <button type="button" class="pc2-svc-chip" data-svc="Вспашка" onclick="pc2SelectService(this)">Вспашка</button>
-        <button type="button" class="pc2-svc-chip" data-svc="Посадка газона" onclick="pc2SelectService(this)">Посадка</button>
+      <div class="pc2-services" id="calc-svc-row">
+        <button type="button" class="pc2-svc-chip pc2-active" data-svc="mow">Покос</button>
+        <button type="button" class="pc2-svc-chip" data-svc="cut">Стрижка</button>
+        <button type="button" class="pc2-svc-chip" data-svc="till">Вспашка</button>
+        <button type="button" class="pc2-svc-chip" data-svc="plant">Посадка</button>
       </div>
 
-      <!-- Шаг 2: визуальный параметр (зависит от услуги) -->
+      <!-- Шаг 2: визуальный параметр -->
       <div class="pc2-param-section">
-        <div class="pc2-param-title" id="pc2-param-title">Как сейчас выглядит ваш участок?</div>
-        <div class="pc2-param-sub" id="pc2-param-sub">Выберите вариант, похожий на ваш</div>
-        <div class="pc2-param-grid" id="pc2-param-grid">
-          <!-- Static fallback: рендерится в HTML для гарантированного показа.
-               JS перерисует grid при смене услуги. -->
-          <div class="pc2-param-card pc2-selected" data-opt="light" onclick="pc2SelectOption('light')">
-            <div class="pc2-param-card-img"><img src="img/a993e26b12.png" alt=""></div>
-            <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-            <div class="pc2-param-card-body">
-              <div class="pc2-param-card-text">
-                <div class="pc2-param-card-title">Лёгкая стрижка</div>
-                <div class="pc2-param-card-sub">Трава до 10–15 см</div>
-              </div>
-            </div>
-          </div>
-          <div class="pc2-param-card" data-opt="medium" onclick="pc2SelectOption('medium')">
-            <div class="pc2-param-card-img"><img src="img/4eecf9d329.png" alt=""></div>
-            <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-            <div class="pc2-param-card-body">
-              <div class="pc2-param-card-text">
-                <div class="pc2-param-card-title">Средняя зарощенность</div>
-                <div class="pc2-param-card-sub">Трава 20–40 см</div>
-              </div>
-            </div>
-          </div>
-          <div class="pc2-param-card" data-opt="heavy" onclick="pc2SelectOption('heavy')">
-            <div class="pc2-param-card-img"><img src="img/bfd86991f4.png" alt=""></div>
-            <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-            <div class="pc2-param-card-body">
-              <div class="pc2-param-card-text">
-                <div class="pc2-param-card-title">Сильно заросший</div>
-                <div class="pc2-param-card-sub">Высокая трава, бурьян</div>
-              </div>
-            </div>
-          </div>
-          <div class="pc2-param-card" data-opt="extreme" onclick="pc2SelectOption('extreme')">
-            <div class="pc2-param-card-img"><img src="img/c300d3358f.png" alt=""></div>
-            <span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>
-            <div class="pc2-param-card-body">
-              <div class="pc2-param-card-text">
-                <div class="pc2-param-card-title">Запущенный участок</div>
-                <div class="pc2-param-card-sub">Кусты, мусор, давно не ухожен</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="pc2-param-title" id="calc-param-title">Как сейчас выглядит ваш участок?</div>
+        <div class="pc2-param-sub" id="calc-param-sub">Выберите вариант, похожий на ваш</div>
+        <div class="pc2-param-grid" id="calc-param-grid"><!-- наполняется inline JS ниже --></div>
       </div>
 
       <!-- Шаг 3: площадь -->
       <div class="pc2-area-section">
         <div class="pc2-area-head">
-          <div class="pc2-area-title" id="pc2-area-title">Площадь участка</div>
+          <div class="pc2-area-title">Площадь участка</div>
           <div class="pc2-area-chip">
-            <span class="pc2-area-num" id="pc2-area-num">5</span>
-            <span class="pc2-area-unit" id="pc2-area-unit">соток</span>
+            <span class="pc2-area-num" id="calc-area-num">5</span>
+            <span class="pc2-area-unit" id="calc-area-unit">соток</span>
           </div>
         </div>
         <div class="pc2-slider-wrap">
-          <input type="range" min="1" max="20" value="5" step="1" class="pc2-slider" id="pc2-slider" oninput="pc2OnSlider(this.value)">
+          <input type="range" min="1" max="20" value="5" step="1" class="pc2-slider" id="calc-slider">
         </div>
         <div class="pc2-slider-ticks">
           <span>1</span><span>5</span><span>10</span><span>15</span><span>20</span>
@@ -1114,22 +1071,207 @@
         </div>
         <div class="pc2-price-body">
           <div class="pc2-price-label">Примерная стоимость</div>
-          <div class="pc2-price-value" id="pc2-price-value">8 000 – 12 000 ₸</div>
+          <div class="pc2-price-value" id="calc-price">8 000 – 12 000 ₸</div>
           <div class="pc2-duration-row">
             <svg class="pc2-duration-icon" viewBox="0 0 14 14" fill="none" stroke="#6F7B6F" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l2 1.5"/></svg>
-            <span class="pc2-duration-text" id="pc2-duration-text">~ 1–2 ч работы</span>
+            <span class="pc2-duration-text" id="calc-dur">~ 1–2 ч работы</span>
           </div>
           <div class="pc2-price-note">Точная стоимость уточняется мастером после осмотра</div>
         </div>
       </div>
 
-      <button type="button" class="pc-cta" onclick="pc2Order()">
+      <button type="button" class="pc-cta" id="calc-cta">
         <span>Заказать</span>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
       </button>
     </div>
   </div>
 </div>
+<!-- inline JS калькулятора: полностью самодостаточная,
+     не зависит от app.js, всё через addEventListener. -->
+<script>
+(function(){
+  var SERVICES = {
+    mow: { name: 'Покос травы', rate: 1500, min: 8000, unit: 'соток', hpu: 0.25,
+      pTitle: 'Как сейчас выглядит ваш участок?', pSub: 'Выберите вариант, похожий на ваш',
+      opts: [
+        { id:'light',   t:'Лёгкая стрижка',       s:'Трава до 10–15 см',             m:1.0, img:'img/a993e26b12.png' },
+        { id:'medium',  t:'Средняя зарощенность', s:'Трава 20–40 см',                m:1.3, img:'img/4eecf9d329.png' },
+        { id:'heavy',   t:'Сильно заросший',      s:'Высокая трава, бурьян',         m:1.6, img:'img/bfd86991f4.png' },
+        { id:'extreme', t:'Запущенный участок',   s:'Кусты, мусор, давно не ухожен', m:2.0, img:'img/c300d3358f.png' }
+      ]
+    },
+    cut: { name: 'Стрижка газона', rate: 2000, min: 6000, unit: 'соток', hpu: 0.20,
+      pTitle: 'Как часто стригли газон?', pSub: 'От этого зависит сложность работы',
+      opts: [
+        { id:'regular',  t:'Регулярный уход',  s:'Раз в 1–2 недели',     m:1.0, img:'img/4eecf9d329.png' },
+        { id:'lapsed',   t:'Давно не стригли', s:'3–4 недели без ухода', m:1.3, img:'img/8ed73f0d79.png' },
+        { id:'neglected',t:'Запущенный газон', s:'1–2 месяца без ухода', m:1.6, img:'img/bfd86991f4.png' },
+        { id:'rough',    t:'Тяжёлый случай',   s:'Газон превратился в луг', m:2.0, img:null }
+      ]
+    },
+    till: { name: 'Вспашка', rate: 3000, min: 12000, unit: 'соток', hpu: 0.40,
+      pTitle: 'Какая у вас почва?', pSub: 'Чем плотнее — тем дольше работа',
+      opts: [
+        { id:'soft',   t:'Мягкая почва',     s:'Рыхлая, окультуренная',     m:1.0, img:'img/c7ea20cb93.png' },
+        { id:'medium', t:'Средняя плотность',s:'Огород, давно копали',      m:1.3, img:null },
+        { id:'hard',   t:'Твёрдая почва',    s:'Давно не пахали, плотная',  m:1.6, img:null },
+        { id:'virgin', t:'Целина',           s:'Первичная вспашка',         m:2.0, img:null }
+      ]
+    },
+    plant: { name: 'Посадка газона', rate: 5000, min: 15000, unit: 'соток', hpu: 0.50,
+      pTitle: 'Какой газон сажаем?', pSub: 'Тип посадки сильно влияет на цену',
+      opts: [
+        { id:'seed-basic',  t:'Посевной обычный', s:'Семена, базовая смесь',     m:1.0, img:'img/0d19d8e209.png' },
+        { id:'seed-prem',   t:'Посевной премиум', s:'Спортивная / декоративная', m:1.4, img:null },
+        { id:'roll-basic',  t:'Рулонный',         s:'Готовый газон, обычный',    m:2.5, img:null },
+        { id:'roll-prem',   t:'Рулонный премиум', s:'Элитные сорта',             m:3.0, img:null }
+      ]
+    }
+  };
+
+  var state = { svc: 'mow', opt: 'light', area: 5 };
+
+  function fmt(n) { return String(Math.round(n / 100) * 100).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  function renderCards() {
+    var grid = document.getElementById('calc-param-grid');
+    var titleEl = document.getElementById('calc-param-title');
+    var subEl = document.getElementById('calc-param-sub');
+    if (!grid) return;
+    var s = SERVICES[state.svc];
+    titleEl.textContent = s.pTitle;
+    subEl.textContent = s.pSub;
+    var html = '';
+    for (var i = 0; i < s.opts.length; i++) {
+      var o = s.opts[i];
+      var sel = (o.id === state.opt) ? ' pc2-selected' : '';
+      var img;
+      if (o.img) {
+        img = '<div class="pc2-param-card-img"><img src="' + o.img + '" alt=""></div>';
+      } else {
+        img = '<div class="pc2-param-card-img" style="background:linear-gradient(135deg, #C8F0C8 0%, #4DA84D 100%);"></div>';
+      }
+      html += '<div class="pc2-param-card' + sel + '" data-opt="' + o.id + '">'
+        + img
+        + '<span class="pc2-param-card-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l2.5 2.5L9.5 3.5"/></svg></span>'
+        + '<div class="pc2-param-card-body"><div class="pc2-param-card-text">'
+        + '<div class="pc2-param-card-title">' + o.t + '</div>'
+        + '<div class="pc2-param-card-sub">' + o.s + '</div>'
+        + '</div></div>'
+        + '</div>';
+    }
+    grid.innerHTML = html;
+    // Bind clicks на свежесозданные карточки
+    var cards = grid.querySelectorAll('.pc2-param-card');
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        state.opt = card.getAttribute('data-opt');
+        cards.forEach(function(c){ c.classList.remove('pc2-selected'); });
+        card.classList.add('pc2-selected');
+        renderPrice();
+      });
+    });
+  }
+
+  function renderArea() {
+    var s = SERVICES[state.svc];
+    var slider = document.getElementById('calc-slider');
+    var numEl = document.getElementById('calc-area-num');
+    var unitEl = document.getElementById('calc-area-unit');
+    if (slider) {
+      slider.value = state.area;
+      var pct = ((state.area - parseFloat(slider.min)) / (parseFloat(slider.max) - parseFloat(slider.min))) * 100;
+      slider.style.setProperty('--pc2-fill', pct + '%');
+    }
+    if (numEl) numEl.textContent = state.area;
+    if (unitEl) unitEl.textContent = s.unit;
+  }
+
+  function renderPrice() {
+    var s = SERVICES[state.svc];
+    var o = null;
+    for (var i = 0; i < s.opts.length; i++) if (s.opts[i].id === state.opt) o = s.opts[i];
+    if (!o) o = s.opts[0];
+    var base = s.rate * state.area * o.m;
+    var price = Math.max(base, s.min);
+    var priceMax = Math.max(price * 1.5, s.min + 4000);
+    var priceEl = document.getElementById('calc-price');
+    if (priceEl) priceEl.textContent = fmt(price) + ' – ' + fmt(priceMax) + ' ₸';
+    var hours = s.hpu * state.area * Math.sqrt(o.m);
+    var hFrom = Math.max(1, Math.floor(hours));
+    var hTo = Math.max(hFrom + 1, Math.ceil(hours + 0.5));
+    var durEl = document.getElementById('calc-dur');
+    if (durEl) durEl.textContent = '~ ' + hFrom + '–' + hTo + ' ч работы';
+  }
+
+  function renderAll() { renderCards(); renderArea(); renderPrice(); }
+
+  // Bind chips
+  function bindChips() {
+    var chips = document.querySelectorAll('#calc-svc-row .pc2-svc-chip');
+    chips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var svc = chip.getAttribute('data-svc');
+        if (!SERVICES[svc]) return;
+        chips.forEach(function(c){ c.classList.remove('pc2-active'); });
+        chip.classList.add('pc2-active');
+        state.svc = svc;
+        state.opt = SERVICES[svc].opts[0].id;
+        renderAll();
+      });
+    });
+  }
+
+  // Bind slider
+  function bindSlider() {
+    var slider = document.getElementById('calc-slider');
+    if (!slider) return;
+    slider.addEventListener('input', function() {
+      state.area = parseInt(slider.value, 10) || 1;
+      renderArea();
+      renderPrice();
+    });
+  }
+
+  // Bind CTA
+  function bindCta() {
+    var cta = document.getElementById('calc-cta');
+    if (!cta) return;
+    cta.addEventListener('click', function() {
+      var s = SERVICES[state.svc];
+      if (typeof openServiceDetail === 'function') {
+        openServiceDetail(s.name, null, 'home');
+        setTimeout(function() {
+          try {
+            if (typeof orderState !== 'undefined') orderState.area = state.area;
+            var sl = document.getElementById('orderAreaSlider');
+            if (sl) sl.value = state.area;
+            var av = document.getElementById('orderAreaVal');
+            if (av) av.textContent = state.area;
+            if (typeof updateOrderState === 'function') updateOrderState();
+          } catch(e) {}
+        }, 0);
+      }
+    });
+  }
+
+  function init() {
+    bindChips();
+    bindSlider();
+    bindCta();
+    renderAll();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  // Экспортируем renderAll, чтобы showPage мог пересчитать при показе
+  window.calcRefresh = renderAll;
+})();
+</script>
 
 <div id="page-service-detail" class="page">
   <!-- Hero -->
@@ -2006,6 +2148,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=54"></script>
+<script src="js/app.js?v=55"></script>
 </body>
 </html>
