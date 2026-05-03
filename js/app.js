@@ -55,6 +55,17 @@ function showPage(name) {
     window.calcRefresh();
     setTimeout(function(){ if (typeof window.calcRefresh === 'function') window.calcRefresh(); }, 50);
   }
+  // Service-detail: гарантированный рендер дат и времени при показе
+  if (name === 'service-detail') {
+    if (typeof renderOrderDates === 'function') {
+      try { renderOrderDates(); } catch(e) {}
+      setTimeout(function(){ try { renderOrderDates(); } catch(e) {} }, 50);
+    }
+    if (typeof renderOrderTimes === 'function') {
+      try { renderOrderTimes(); } catch(e) {}
+      setTimeout(function(){ try { renderOrderTimes(); } catch(e) {} }, 50);
+    }
+  }
 }
 function switchTo(tab) { showPage(tab); }
 

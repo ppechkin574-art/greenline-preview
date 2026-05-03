@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=58">
+<link rel="stylesheet" href="css/styles.css?v=59">
 </head>
 <body>
 <div class="device-stage">
@@ -1270,14 +1270,20 @@
 </script>
 
 <div id="page-service-detail" class="page">
-  <!-- Hero -->
-  <div class="order-hero">
-    <img id="detailHeroImg" src="img/a993e26b12.png" alt="">
-    <button class="order-back" type="button" onclick="detailGoBack()" aria-label="Назад">
+  <!-- Sticky header — всегда виден при скролле -->
+  <div class="header header-clean header-with-back">
+    <button class="page-back" type="button" onclick="detailGoBack()" aria-label="Назад">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
+    <div class="header-title-stack">
+      <div class="header-title" id="detailTitle">Покос травы</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+  <!-- Компактный hero (только превью услуги, без заголовка — он в header) -->
+  <div class="order-hero order-hero-compact">
+    <img id="detailHeroImg" src="img/a993e26b12.png" alt="">
     <div class="order-hero-overlay">
-      <h1 class="order-hero-title" id="detailTitle">Покос травы</h1>
       <p class="order-hero-sub" id="detailSub">Быстро и аккуратно скосим траву</p>
     </div>
   </div>
@@ -1420,6 +1426,7 @@
       <div class="order-privacy">🔒 Мы не передаём ваши данные третьим лицам</div>
     </div>
 
+  </div>
   </div>
 </div>
 
@@ -2144,6 +2151,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=57"></script>
+<script src="js/app.js?v=59"></script>
 </body>
 </html>
