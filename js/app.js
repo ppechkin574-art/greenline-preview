@@ -51,9 +51,11 @@ function showPage(name) {
     setTimeout(function(){ renderGallery(f); }, 100);
   }
   // Калькулятор: гарантированно рендерим параметры/площадь/цену при открытии
+  // Тройной вызов: сразу + после reflow + после анимации показа page
   if (name === 'calculator' && typeof pc2RenderAll === 'function') {
     pc2RenderAll();
-    setTimeout(function(){ pc2RenderAll(); }, 50);
+    requestAnimationFrame(function(){ pc2RenderAll(); });
+    setTimeout(function(){ pc2RenderAll(); }, 100);
   }
 }
 function switchTo(tab) { showPage(tab); }
