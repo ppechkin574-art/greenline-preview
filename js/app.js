@@ -50,12 +50,7 @@ function showPage(name) {
     renderGallery(f);
     setTimeout(function(){ renderGallery(f); }, 100);
   }
-  // Калькулятор: пересчитать при показе (inline-script регистрирует window.calcRefresh)
-  if (name === 'calculator' && typeof window.calcRefresh === 'function') {
-    window.calcRefresh();
-    setTimeout(function(){ if (typeof window.calcRefresh === 'function') window.calcRefresh(); }, 50);
-  }
-  // Service-detail: гарантированный рендер дат и времени при показе
+  // Service-detail: гарантированный рендер дат, времени и виз. параметра
   if (name === 'service-detail') {
     if (typeof renderOrderDates === 'function') {
       try { renderOrderDates(); } catch(e) {}
@@ -64,6 +59,10 @@ function showPage(name) {
     if (typeof renderOrderTimes === 'function') {
       try { renderOrderTimes(); } catch(e) {}
       setTimeout(function(){ try { renderOrderTimes(); } catch(e) {} }, 50);
+    }
+    if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.refresh === 'function') {
+      try { window.serviceForm.refresh(); } catch(e) {}
+      setTimeout(function(){ try { window.serviceForm.refresh(); } catch(e) {} }, 50);
     }
   }
 }
@@ -883,10 +882,25 @@ function openServiceDetail(name, tileEl, fromPage) {
     // Сброс UI полей
     var addrEl = document.getElementById('orderAddress');
     if (addrEl) addrEl.value = '';
-    var slider = document.getElementById('orderAreaSlider');
-    if (slider) slider.value = 4;
-    var areaVal = document.getElementById('orderAreaVal');
-    if (areaVal) areaVal.textContent = 4;
+    // Применить service-specific data (виз. параметр, единицу площади, диапазон).
+    // Это сбрасывает state.opt = null, чтобы пользователь сделал выбор (item 4=а).
+    if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.setService === 'function') {
+      try {
+        window.serviceForm.setService(name);
+        var sfState = window.serviceForm.getState();
+        if (sfState) orderState.area = sfState.area;
+      } catch(e) {
+        var slider = document.getElementById('orderAreaSlider');
+        if (slider) slider.value = 5;
+        var areaVal = document.getElementById('orderAreaVal');
+        if (areaVal) areaVal.textContent = 5;
+      }
+    } else {
+      var slider = document.getElementById('orderAreaSlider');
+      if (slider) slider.value = 5;
+      var areaVal = document.getElementById('orderAreaVal');
+      if (areaVal) areaVal.textContent = 5;
+    }
 
     // Hero
     var titleEl = document.getElementById('detailTitle');
@@ -911,6 +925,9 @@ function updateOrderArea(val) {
   orderState.area = parseInt(val, 10) || 1;
   var el = document.getElementById('orderAreaVal');
   if (el) el.textContent = orderState.area;
+  if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.setArea === 'function') {
+    try { window.serviceForm.setArea(orderState.area); } catch(e) {}
+  }
   updateOrderState();
 }
 
@@ -1001,17 +1018,15 @@ function updateOrderState() {
   var validAddr = orderState.address.length >= 3;
   var validDate = !!orderState.date;
   var validTime = !!orderState.time;
-  var allValid = validArea && validAddr && validDate && validTime;
-
-  // Price preview
-  var preview = document.getElementById('orderPricePreview');
-  var priceEl = document.getElementById('orderPriceVal');
-  if (allValid && preview && priceEl) {
-    priceEl.textContent = _formatPriceKZT(calcOrderPrice());
-    preview.hidden = false;
-  } else if (preview) {
-    preview.hidden = true;
+  // Item 4=а — виз. параметр обязателен (если для услуги предусмотрен)
+  var validParam = true;
+  if (typeof window.serviceForm !== 'undefined' && typeof window.serviceForm.hasOption === 'function') {
+    var paramSection = document.getElementById('orderParamGrid');
+    var hasParamUI = paramSection && paramSection.closest('.order-section') &&
+                     paramSection.closest('.order-section').style.display !== 'none';
+    if (hasParamUI) validParam = window.serviceForm.hasOption();
   }
+  var allValid = validParam && validArea && validAddr && validDate && validTime;
 
   // Submit button
   var btn = document.getElementById('orderSubmitBtn');
