@@ -977,36 +977,47 @@ function _wIcon(kind) {
 document.addEventListener('DOMContentLoaded', renderHomeWeather);
 
 // === Каталог услуг на home — рендер из Firebase RTDB ===
-// Только первые 4 услуги (на home макет показывает 4 карточки).
-// Остальные — на page-services.
-async function renderHomeServices() {
+// Стратегия 2-этапная:
+// 1) МОМЕНТАЛЬНО рисуем fallback (4 услуги из локального массива) — пользователь
+//    никогда не видит пустых скелетонов дольше первого фрейма.
+// 2) Параллельно запрашиваем Firebase. Если ответ пришёл и валиден — заменяем.
+function _renderHomeServicesNow(list) {
   const row = document.getElementById('hmServicesRow');
-  if (!row) { console.warn('[GL home] #hmServicesRow not found'); return; }
-  if (!window.api || !api.services) {
-    console.warn('[GL home] api.services недоступен — fallback');
-  }
-
-  let list = [];
-  try {
-    if (window.api && api.services) list = await api.services.list();
-  } catch (e) {
-    console.warn('[GL home] services.list threw:', e);
-  }
-  console.log('[GL home] services loaded:', list.length);
-
-  if (!list.length) {
-    // Фоллбек — встроенный набор, чтобы home не оставался скелетоном при оффлайне
-    list = _SERVICES_FALLBACK;
-  }
+  if (!row) return;
   const top4 = list.slice(0, 4);
   try {
     row.innerHTML = top4.map(_renderServiceCard).join('');
   } catch (e) {
-    console.error('[GL home] render failed, fallback to plain text:', e);
+    console.error('[GL home] render failed:', e);
     row.innerHTML = top4.map(function (s) {
       return '<article class="hm-service-card" style="background:#2A4A2A;color:#fff;padding:12px;font-size:13px;">' +
         (s.name || 'Услуга') + '</article>';
     }).join('');
+  }
+}
+
+async function renderHomeServices() {
+  console.log('[GL home] renderHomeServices: start');
+  const row = document.getElementById('hmServicesRow');
+  if (!row) { console.warn('[GL home] #hmServicesRow not found'); return; }
+
+  // Этап 1: моментально fallback — убираем скелетоны.
+  _renderHomeServicesNow(_SERVICES_FALLBACK);
+
+  // Этап 2: тянем из Firebase, заменяем если получилось.
+  if (!window.api || !api.services) {
+    console.warn('[GL home] api.services недоступен — остаётся fallback');
+    return;
+  }
+  try {
+    const list = await api.services.list();
+    console.log('[GL home] api.services.list →', list.length, 'items');
+    if (list && list.length) {
+      _renderHomeServicesNow(list);
+      console.log('[GL home] заменили на Firebase data');
+    }
+  } catch (e) {
+    console.warn('[GL home] services.list threw:', e);
   }
 }
 
