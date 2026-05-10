@@ -3,18 +3,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>GreenLine</title>
-<!-- Шрифты убраны: используем нативный SF Pro / Roboto / system-стек.
-     Это обязательно для Capacitor (никаких CDN), даёт нативное ощущение
-     iOS/Android и не загружает сеть. См. CONTEXT.md / правила Capacitor. -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<!-- Шрифты: системный стек (SF Pro / Roboto). Никаких CDN — обязательно для Capacitor. -->
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
 
-<!-- ===== FIREBASE SDK ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<!-- ===== FIREBASE SDK (локально, не CDN — требование Capacitor) ===== -->
+<script src="vendor/firebase/firebase-app-compat.js"></script>
+<script src="vendor/firebase/firebase-database-compat.js"></script>
+<script src="vendor/firebase/firebase-auth-compat.js"></script>
 
 <link rel="stylesheet" href="css/styles.css?v=76">
 </head>
@@ -1607,7 +1606,7 @@
         <div style="font-weight:700;font-size:13px;color:#8B6914;margin-bottom:8px;">📋 Условия</div>
         <div style="font-size:12px;color:#7a6030;line-height:1.7;">• Сторис должна быть публичной<br>• Скидка действует 30 дней<br>• Скидка на одну услугу</div>
       </div>
-      <button onclick="window.open('https://wa.me/77000000000?text=Привет! Я сделал сторис с GreenLine. Отправляю скриншот!','_blank')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">💬 Отправить скриншот в WhatsApp</button>
+      <button onclick="api.native.openWhatsApp('77000000000','Привет! Я сделал сторис с GreenLine. Отправляю скриншот!')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">💬 Отправить скриншот в WhatsApp</button>
     </div>
   </div>
 </div>
@@ -1639,7 +1638,7 @@
       </div>
       <div style="display:none;padding:0 14px 14px;font-size:13px;color:#666;line-height:1.6;">Нет, при дожде переносим на ближайший подходящий день и предупреждаем заранее.</div>
     </div>
-    <button onclick="window.open('https://wa.me/77000000000','_blank')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;">💬 Написать в WhatsApp</button>
+    <button onclick="api.native.openWhatsApp('77000000000')" style="width:100%;padding:16px;background:#2E8B2E;border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;">💬 Написать в WhatsApp</button>
   </div>
 </div>
 
@@ -1713,7 +1712,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </span>
         </button>
-        <button type="button" class="profile-item profile-item-link" onclick="window.open('https://wa.me/77000000000','_system')">
+        <button type="button" class="profile-item profile-item-link" onclick="api.native.openWhatsApp('77000000000')">
           <span class="profile-item-icon profile-item-icon-wa">
             <svg viewBox="0 0 24 24" fill="#fff"><path d="M17 14c-.3-.2-1.7-.8-2-1-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-.9-.4-1.7-.9-2.5-1.6-.7-.7-1.2-1.6-1.4-1.9-.2-.3 0-.5.1-.6.2-.2.4-.4.5-.6.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.2.2 2.1 3.2 5 4.4 2 .8 2.8.9 3.8.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4 0-.1-.3-.2-.5-.3z"/><path d="M3 21l1.5-4.5A8 8 0 1112 20a8 8 0 01-3.5-.8L3 21z" stroke="#fff" stroke-width="0" fill="rgba(255,255,255,0.18)"/></svg>
           </span>
@@ -1790,7 +1789,7 @@
       <div class="profile-section-label">Мы в соцсетях</div>
       <div class="social-card">
         <div class="social-row">
-          <a class="social-link" href="https://instagram.com/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://instagram.com/greenline','_system');">
+          <a class="social-link" href="https://instagram.com/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); api.native.openExternal('https://instagram.com/greenline');">
             <span class="social-icon social-icon-ig" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="4" width="20" height="20" rx="6"/>
@@ -1800,7 +1799,7 @@
             </span>
             <span class="social-name">Instagram</span>
           </a>
-          <a class="social-link" href="https://t.me/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://t.me/greenline','_system');">
+          <a class="social-link" href="https://t.me/greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); api.native.openExternal('https://t.me/greenline');">
             <span class="social-icon social-icon-tg" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="#fff">
                 <path d="M23.5 5.5L3.5 13.2c-1 .4-1 1.8 0 2.2l5 1.7 1.8 5.6c.3 1 1.6 1.2 2.3.4l3-3.2 5.4 4c.9.7 2.1.2 2.3-.9l3-15c.3-1.4-1.1-2.6-2.3-2zM10.6 17.6l-.5 4.4 2.6-3.4 7-7.6c.2-.2-.1-.5-.3-.4l-8.8 7z"/>
@@ -1808,7 +1807,7 @@
             </span>
             <span class="social-name">Telegram</span>
           </a>
-          <a class="social-link" href="https://wa.me/77000000000" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://wa.me/77000000000','_system');">
+          <a class="social-link" href="https://wa.me/77000000000" target="_blank" rel="noopener" onclick="event.preventDefault(); api.native.openWhatsApp('77000000000');">
             <span class="social-icon social-icon-wa" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="#fff">
                 <path d="M14 3a11 11 0 00-9.5 16.5L3 25l5.6-1.5A11 11 0 1014 3zm0 20a9 9 0 01-4.6-1.3l-.3-.2-3.3.9.9-3.2-.2-.3A9 9 0 1114 23zm5-6.7c-.3-.1-1.6-.8-1.9-.9-.3-.1-.5-.1-.7.2l-.9 1.1c-.2.2-.3.2-.6.1-.9-.4-1.7-1-2.4-1.7-.6-.6-1.1-1.4-1.5-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5l.3-.4c.1-.1 0-.3 0-.5-.1-.1-.6-1.5-.9-2.1-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1.1-1.1 2.6 0 1.5 1.1 3 1.3 3.2.2.3 2.2 3.4 5.4 4.6 2.7 1 3.3.9 3.9.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.5-.4z"/>
@@ -1816,7 +1815,7 @@
             </span>
             <span class="social-name">WhatsApp</span>
           </a>
-          <a class="social-link" href="https://tiktok.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://tiktok.com/@greenline','_system');">
+          <a class="social-link" href="https://tiktok.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); api.native.openExternal('https://tiktok.com/@greenline');">
             <span class="social-icon social-icon-tt" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="#fff">
                 <path d="M19.5 4c.4 1.8 1.5 3.3 3 4.2 1 .6 2.2 1 3.5 1v3.5c-2.2 0-4.2-.7-5.9-2v8.4c0 4.6-3.7 8.4-8.4 8.4S3.3 23.7 3.3 19c0-4.6 3.7-8.4 8.4-8.4.4 0 .8 0 1.2.1v3.5c-.4-.1-.8-.2-1.2-.2-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9 4.9-2.2 4.9-4.9V4h2.9z"/>
@@ -1824,7 +1823,7 @@
             </span>
             <span class="social-name">TikTok</span>
           </a>
-          <a class="social-link" href="https://youtube.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); window.open('https://youtube.com/@greenline','_system');">
+          <a class="social-link" href="https://youtube.com/@greenline" target="_blank" rel="noopener" onclick="event.preventDefault(); api.native.openExternal('https://youtube.com/@greenline');">
             <span class="social-icon social-icon-yt" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="#fff">
                 <path d="M26 9.2c-.3-1.1-1.2-2-2.3-2.3C21.6 6.3 14 6.3 14 6.3s-7.6 0-9.7.6c-1.1.3-2 1.2-2.3 2.3C1.4 11.3 1.4 14 1.4 14s0 2.7.6 4.8c.3 1.1 1.2 2 2.3 2.3 2.1.6 9.7.6 9.7.6s7.6 0 9.7-.6c1.1-.3 2-1.2 2.3-2.3.6-2.1.6-4.8.6-4.8s0-2.7-.6-4.8zM11.6 18V10l6.4 4-6.4 4z"/>
@@ -2633,6 +2632,11 @@ function toggleTheme(isDark) {
 window.toggleTheme = toggleTheme;
 </script>
 
+<!-- Слой данных (api.js) и нативных вызовов (native.js).
+     UI должен дёргать ТОЛЬКО window.api.* — не firebase.*, не fetch напрямую.
+     При переезде на NestJS / Capacitor меняются ТОЛЬКО эти два файла. -->
+<script src="js/api.js?v=1"></script>
+<script src="js/native.js?v=1"></script>
 <script src="js/app.js?v=70"></script>
 </body>
 </html>

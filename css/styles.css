@@ -23,20 +23,28 @@ body {
   background: #e0e0e0;
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  /* iOS: запрет браузерных свайпов / overscroll, чтобы не было white-bounce поверх UI */
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .phone {
   width: 100%;
   max-width: 430px;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   position: relative;
+  /* Safe-area: на iPhone с челкой статус-бар «съест» этот padding-top.
+     На обычном вебе env(...) = 0px — никакого эффекта. */
+  padding-top: env(safe-area-inset-top);
 }
 
-.page { display: none; flex-direction: column; min-height: 100vh; }
+.page { display: none; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
 .page.active { display: flex; }
 
 /* ============================================================

@@ -1,4 +1,31 @@
 
+/* === Делегированный обработчик кликов ===
+ * Для НОВОГО кода используем data-action / data-* вместо inline onclick=.
+ * Пример: <button data-action="show-page" data-page="profile">Профиль</button>
+ * Старые inline onclick остаются работать (Capacitor с дефолтным CSP их разрешает),
+ * но мигрируем их инкрементально по мере переписывания экранов.
+ */
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('[data-action]');
+  if (!el) return;
+  var action = el.dataset.action;
+  switch (action) {
+    case 'show-page':
+      if (el.dataset.page) showPage(el.dataset.page);
+      break;
+    case 'go-back':
+      if (typeof window.detailGoBack === 'function') window.detailGoBack();
+      else history.back();
+      break;
+    case 'open-tel':
+      if (window.api && api.native) api.native.openTel(el.dataset.phone);
+      break;
+    case 'open-whatsapp':
+      if (window.api && api.native) api.native.openWhatsApp(el.dataset.phone, el.dataset.text || '');
+      break;
+  }
+});
+
   const firebaseConfig = {
     apiKey: "AIzaSyAeOGSibtP9n9N-iR48bzXM2Pa8v-1rY-k",
     authDomain: "greenline-f8811.firebaseapp.com",
@@ -1098,7 +1125,7 @@ function sendWhatsApp() {
     `👤 Имя: ${name}\n` +
     `📞 Телефон: ${phone}`
   );
-  window.open(`https://wa.me/77000000000?text=${msg}`, '_blank');
+  api.native.openWhatsApp('77000000000', decodeURIComponent(msg));
 
   // ===== СОХРАНЕНИЕ В FIREBASE =====
   const now = new Date();
@@ -1309,13 +1336,13 @@ function _glInitMap() {
 (function loadLeaflet() {
   if (window.L) { _glInitMap(); return; }
   var script = document.createElement('script');
-  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.src = 'vendor/leaflet/leaflet.js';
   script.onload = function() {
     _glInitMap();
     setTimeout(_glInitMap, 300);
   };
   script.onerror = function() {
-    console.warn('Leaflet CDN failed to load');
+    console.warn('Leaflet failed to load (vendor/leaflet/leaflet.js)');
   };
   document.head.appendChild(script);
 })();
@@ -1381,7 +1408,7 @@ function submitOrderWhatsApp() {
     '📐 Площадь: ' + area + ' соток\n' +
     '📅 Дата: ' + date
   );
-  window.open('https://wa.me/77000000000?text=' + msg, '_blank');
+  api.native.openWhatsApp('77000000000', decodeURIComponent(msg));
 
   // Show success
   const num = '#LN-' + Math.floor(1000 + Math.random() * 9000);
@@ -1552,8 +1579,8 @@ function toggleNote(id) {
   lead.showNote=!lead.showNote; renderLeads();
 }
 function saveNote(id,val) { adminLeads.find(l=>l.id===id).note=val; }
-function adminCall(phone) { window.location.href='tel:'+phone.replace(/\s/g,''); }
-function adminWhatsapp(phone,name) { window.open('https://wa.me/'+phone.replace(/\D/g,'')+'?text=Здравствуйте+'+encodeURIComponent(name)+',+мы+из+GreenLine!'); }
+function adminCall(phone) { api.native.openTel(phone); }
+function adminWhatsapp(phone,name) { api.native.openWhatsApp(phone, 'Здравствуйте ' + name + ', мы из GreenLine!'); }
 function renderLeads() {
   const container=document.getElementById('leads');
   if(!container) return;
@@ -1734,11 +1761,11 @@ function renderLeads() {
         <div class="adm-card-comment">💬 ${l.comment || '—'}</div>
       </div>
       <div class="adm-card-actions" id="admActions-${l.id}">
-        <button class="adm-action-btn call" onclick="window.location.href='tel:${l.phone.replace(/\s/g,'')}'" >
+        <button class="adm-action-btn call" onclick="api.native.openTel('${l.phone.replace(/\s/g,'')}')" >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.28-1.28a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           Позвонить
         </button>
-        <button class="adm-action-btn wa" onclick="window.open('https://wa.me/${l.phone.replace(/\D/g,'')}?text=Здравствуйте+${encodeURIComponent(l.name)}!+Мы+из+GreenLine.','_blank')">
+        <button class="adm-action-btn wa" onclick="api.native.openWhatsApp('${l.phone.replace(/\D/g,'')}','Здравствуйте ${l.name}! Мы из GreenLine.')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.849L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           WhatsApp
         </button>
