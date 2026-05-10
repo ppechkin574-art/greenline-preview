@@ -7421,13 +7421,13 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 
 /* Логотип: лист + название в одну строку, слева сверху */
 .wlc-brand {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 36px;
-  font-size: 20px; font-weight: 800;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 44px;
+  font-size: 26px; font-weight: 800;
   color: #2E8B2E;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
 }
-.wlc-leaf { width: 28px; height: 28px; flex-shrink: 0; }
+.wlc-leaf { width: 38px; height: 38px; flex-shrink: 0; }
 .wlc-brand-text { color: #2E8B2E; }
 
 /* Заголовок и подзаголовок — крупный hero, левое выравнивание */
@@ -7462,17 +7462,47 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   background: #2E8B2E;
   color: #fff;
   border: none;
+  /* Лёгкая зеленоватая «подложка» — подчёркивает приподнятость, не давит */
+  box-shadow:
+    0 6px 16px rgba(46, 139, 46, 0.18),
+    0 2px 4px rgba(46, 139, 46, 0.10);
 }
-.wlc-btn-login:hover  { background: #2A7E2A; }
-.wlc-btn-login:active { background: #266F26; transform: scale(0.985); }
+.wlc-btn-login:hover  {
+  background: #2A7E2A;
+  box-shadow:
+    0 8px 20px rgba(46, 139, 46, 0.22),
+    0 2px 4px rgba(46, 139, 46, 0.12);
+}
+.wlc-btn-login:active {
+  background: #266F26;
+  transform: scale(0.985);
+  box-shadow:
+    0 4px 10px rgba(46, 139, 46, 0.16),
+    0 1px 2px rgba(46, 139, 46, 0.08);
+}
 
 .wlc-btn-register {
   background: #fff;
   color: #1F4F1F;
   border: 1.5px solid #DDE6DD;
+  /* Нейтральная серая тень — отделяет белую кнопку от белого фона */
+  box-shadow:
+    0 4px 12px rgba(15, 31, 15, 0.05),
+    0 1px 3px rgba(15, 31, 15, 0.04);
 }
-.wlc-btn-register:hover  { border-color: #2E8B2E; }
-.wlc-btn-register:active { background: #F4F8F4; transform: scale(0.985); }
+.wlc-btn-register:hover  {
+  border-color: #2E8B2E;
+  box-shadow:
+    0 6px 14px rgba(15, 31, 15, 0.07),
+    0 1px 3px rgba(15, 31, 15, 0.05);
+}
+.wlc-btn-register:active {
+  background: #F4F8F4;
+  transform: scale(0.985);
+  box-shadow:
+    0 2px 8px rgba(15, 31, 15, 0.04),
+    0 1px 2px rgba(15, 31, 15, 0.03);
+}
 
 /* Согласие — мелкий текст внизу страницы */
 .wlc-terms {
