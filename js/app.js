@@ -976,6 +976,58 @@ function _wIcon(kind) {
 // Запуск при загрузке home
 document.addEventListener('DOMContentLoaded', renderHomeWeather);
 
+// === Каталог услуг на home — рендер из Firebase RTDB ===
+// Только первые 4 услуги (на home макет показывает 4 карточки).
+// Остальные — на page-services.
+async function renderHomeServices() {
+  const row = document.getElementById('hmServicesRow');
+  if (!row || !window.api || !api.services) return;
+  let list = [];
+  try { list = await api.services.list(); } catch (e) { /* offline */ }
+  if (!list.length) {
+    // Фоллбек — встроенный набор, чтобы home не оставался скелетоном при оффлайне
+    list = _SERVICES_FALLBACK;
+  }
+  const top4 = list.slice(0, 4);
+  row.innerHTML = top4.map(_renderServiceCard).join('');
+}
+
+function _renderServiceCard(s) {
+  const cover = s.cover || 'img/service-pokos.jpg';
+  // Название переносим в 2 строки: первая — главное слово, вторая — уточнение
+  const parts = String(s.name || '').split(' ');
+  const titleHtml = parts.length > 1
+    ? parts[0] + '<br>' + parts.slice(1).join(' ')
+    : (s.name || '');
+  // Цена: «от X ₸ / сотка» — берём базовую цену + единицу
+  const price = 'от ' + _formatPrice(s.basePrice) + ' ' + (s.unit || '');
+  // Идентификатор для openServiceDetail — название (старая логика)
+  const safeName = (s.name || '').replace(/'/g, "\\'");
+  return ''
+    + '<article class="hm-service-card" onclick="openServiceDetail(\'' + safeName + '\', this, \'home\')">'
+    +   '<img src="' + cover + '" alt="" loading="lazy"/>'
+    +   '<div class="hm-service-overlay" aria-hidden="true"></div>'
+    +   '<div class="hm-service-info">'
+    +     '<div class="hm-service-name">' + titleHtml + '</div>'
+    +     '<div class="hm-service-price">' + price + '</div>'
+    +   '</div>'
+    + '</article>';
+}
+
+function _formatPrice(n) {
+  if (typeof n !== 'number') return n;
+  return n.toLocaleString('ru-RU').replace(/,/g, ' ');
+}
+
+const _SERVICES_FALLBACK = [
+  { id: 1, name: 'Стрижка газона',     cover: 'img/service-pokos.jpg',    basePrice: 2000, unit: '₸ / сотка' },
+  { id: 2, name: 'Покос травы',        cover: 'img/service-pokos.jpg',    basePrice: 2500, unit: '₸ / сотка' },
+  { id: 3, name: 'Вспашка земли',      cover: 'img/service-vspashka.jpg', basePrice: 8000, unit: '₸ / сотка' },
+  { id: 4, name: 'Посадка растений',   cover: 'img/service-topiar.jpg',   basePrice: 6000, unit: '₸ / растение' },
+];
+
+document.addEventListener('DOMContentLoaded', renderHomeServices);
+
 // Before/After mini sliders
 
 // Modal

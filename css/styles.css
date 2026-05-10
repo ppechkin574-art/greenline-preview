@@ -7786,6 +7786,20 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   transition: transform 0.18s;
 }
 .hm-service-card:active { transform: scale(0.97); }
+
+/* Скелетон до загрузки данных из Firebase */
+.hm-service-skel {
+  background: linear-gradient(110deg, #E8EFE8 0%, #F4F8F4 50%, #E8EFE8 100%);
+  background-size: 200% 100%;
+  animation: hmSkelShimmer 1.4s ease-in-out infinite;
+  cursor: default;
+  pointer-events: none;
+}
+.hm-service-skel:active { transform: none; }
+@keyframes hmSkelShimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
 .hm-service-card img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;

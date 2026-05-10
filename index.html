@@ -15,7 +15,7 @@
 <script src="vendor/firebase/firebase-database-compat.js"></script>
 <script src="vendor/firebase/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=83">
+<link rel="stylesheet" href="css/styles.css?v=84">
 </head>
 <body>
 <div class="device-stage">
@@ -413,40 +413,14 @@
         <span class="block-link" data-action="show-page" data-page="services">Все услуги ›</span>
       </div>
       <!-- Горизонтальный скролл со snap-point'ами: 3 карточки помещаются в viewport,
-           4-ая выглядывает справа. На десктопе с device-frame работает так же. -->
+           4-ая выглядывает справа. Карточки рендерятся JS из api.services.list().
+           Если запрос упал (нет интернета на старте) — JS вставит fallback. -->
       <div class="hm-services-row" id="hmServicesRow">
-        <article class="hm-service-card" onclick="openServiceDetail('Покос травы', this, 'home')">
-          <img src="img/service-pokos.jpg" alt="" loading="lazy"/>
-          <div class="hm-service-overlay" aria-hidden="true"></div>
-          <div class="hm-service-info">
-            <div class="hm-service-name">Покос<br>травы</div>
-            <div class="hm-service-price">от 2 500 ₸ / сотка</div>
-          </div>
-        </article>
-        <article class="hm-service-card" onclick="openServiceDetail('Посадка газона', this, 'home')">
-          <img src="img/service-gazon.jpg" alt="" loading="lazy"/>
-          <div class="hm-service-overlay" aria-hidden="true"></div>
-          <div class="hm-service-info">
-            <div class="hm-service-name">Посадка<br>газона</div>
-            <div class="hm-service-price">от 4 500 ₸ / сотка</div>
-          </div>
-        </article>
-        <article class="hm-service-card" onclick="openServiceDetail('Вспашка', this, 'home')">
-          <img src="img/service-vspashka.jpg" alt="" loading="lazy"/>
-          <div class="hm-service-overlay" aria-hidden="true"></div>
-          <div class="hm-service-info">
-            <div class="hm-service-name">Вспашка<br>участка</div>
-            <div class="hm-service-price">от 8 000 ₸ / сотка</div>
-          </div>
-        </article>
-        <article class="hm-service-card" onclick="openServiceDetail('Топиарная обрезка', this, 'home')">
-          <img src="img/service-topiar.jpg" alt="" loading="lazy"/>
-          <div class="hm-service-overlay" aria-hidden="true"></div>
-          <div class="hm-service-info">
-            <div class="hm-service-name">Топиарная<br>стрижка</div>
-            <div class="hm-service-price">от 3 000 ₸ / час</div>
-          </div>
-        </article>
+        <!-- Скелетоны до загрузки -->
+        <div class="hm-service-card hm-service-skel" aria-hidden="true"></div>
+        <div class="hm-service-card hm-service-skel" aria-hidden="true"></div>
+        <div class="hm-service-card hm-service-skel" aria-hidden="true"></div>
+        <div class="hm-service-card hm-service-skel" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -2762,8 +2736,8 @@ window.toggleTheme = toggleTheme;
 <!-- Слой данных (api.js) и нативных вызовов (native.js).
      UI должен дёргать ТОЛЬКО window.api.* — не firebase.*, не fetch напрямую.
      При переезде на NestJS / Capacitor меняются ТОЛЬКО эти два файла. -->
-<script src="js/api.js?v=3"></script>
+<script src="js/api.js?v=4"></script>
 <script src="js/native.js?v=1"></script>
-<script src="js/app.js?v=72"></script>
+<script src="js/app.js?v=73"></script>
 </body>
 </html>

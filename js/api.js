@@ -132,11 +132,25 @@
   };
 
   // ================== СПРАВОЧНИКИ (services / banners / texts / pricing) ==================
-  // Заглушки — пока тарифы и баннеры не выведены в Firestore через админку.
-  // При появлении админки добавятся: db.ref('services').once('value') и т.п.
+  // services живут в /services (admin пишет, mobile читает).
+  // Структура: массив объектов { id, name, slug, cover, basePrice, unit, ... }.
+  // Cover — base64 data URL (загружено через PhotoUploader) или относительный
+  // путь к файлу в img/.
   const services = {
-    async list() { return []; },
-    async get(id) { return null; }
+    async list() {
+      try {
+        const snap = await _db().ref('services').once('value');
+        const v = snap.val();
+        if (!v) return [];
+        // RTDB может вернуть массив (если ключи 0..N) или объект — нормализуем.
+        const arr = Array.isArray(v) ? v.filter(Boolean) : Object.values(v);
+        return arr.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+      } catch (e) { _err('services.list', e); return []; }
+    },
+    async get(idOrSlug) {
+      const list = await this.list();
+      return list.find(function (s) { return s.id === idOrSlug || s.slug === idOrSlug; }) || null;
+    }
   };
 
   const banners = { async list() { return []; } };
