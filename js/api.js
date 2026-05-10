@@ -21,20 +21,42 @@
   }
 
   // ================== AUTH ==================
-  // SMS-вход: Firebase Auth → Mobizon при переезде.
-  // recaptchaContainerId — id <div>, в который Firebase ставит invisible reCAPTCHA.
+  // SMS-вход через Firebase Phone Auth. Тест-номера настраиваются в Firebase Console
+  // (Authentication → Sign-in method → Phone → Phone numbers for testing).
+  // При переезде на NestJS — реализация меняется на fetch к собственному endpoint.
+
+  function _getRecaptcha(containerId) {
+    // Recaptcha создаётся ОДИН РАЗ. После signOut'а или ошибки — clearRecaptcha().
+    if (window._glRecaptcha) return window._glRecaptcha;
+    const verifier = new firebase.auth.RecaptchaVerifier(containerId || 'recaptcha-container', {
+      size: 'invisible',
+      callback: function () { /* пройдена — Firebase сам отправит SMS */ },
+      'expired-callback': function () { clearRecaptcha(); }
+    });
+    // Принудительный рендер — ловим ошибки конфигурации (домен, ключи) рано.
+    verifier.render().catch(function (e) { console.warn('recaptcha render', e); });
+    window._glRecaptcha = verifier;
+    return verifier;
+  }
+
+  function clearRecaptcha() {
+    try { if (window._glRecaptcha) window._glRecaptcha.clear(); } catch (e) {}
+    window._glRecaptcha = null;
+    // Контейнер reCAPTCHA Firebase может оставить «съеденным» — очистим вручную.
+    const c = document.getElementById('recaptcha-container');
+    if (c) c.innerHTML = '';
+  }
+
   const auth = {
-    /** @returns {Promise<ConfirmationResult>} объект для последующего auth.verify */
+    /** @returns {Promise<ConfirmationResult>} объект для последующего auth.verifyCode */
     async sendCode(phoneE164, recaptchaContainerId) {
       try {
-        if (!window._glRecaptcha) {
-          window._glRecaptcha = new firebase.auth.RecaptchaVerifier(
-            recaptchaContainerId,
-            { size: 'invisible' }
-          );
-        }
-        return await _auth().signInWithPhoneNumber(phoneE164, window._glRecaptcha);
-      } catch (e) { _err('auth.sendCode', e); }
+        const verifier = _getRecaptcha(recaptchaContainerId);
+        return await _auth().signInWithPhoneNumber(phoneE164, verifier);
+      } catch (e) {
+        clearRecaptcha();
+        _err('auth.sendCode', e);
+      }
     },
 
     /** @param confirmation — результат sendCode */
@@ -44,13 +66,19 @@
     },
 
     async logout() {
-      try { return await _auth().signOut(); }
-      catch (e) { _err('auth.logout', e); }
+      try {
+        clearRecaptcha();
+        return await _auth().signOut();
+      } catch (e) { _err('auth.logout', e); }
     },
 
     currentUser() { return _auth().currentUser; },
 
-    onAuthChange(cb) { return _auth().onAuthStateChanged(cb); }
+    /** Подписка на изменение состояния (firebase сам персистит сессию в IndexedDB). */
+    onAuthChange(cb) { return _auth().onAuthStateChanged(cb); },
+
+    /** Сбросить reCAPTCHA вручную — нужно при resend кода. */
+    resetRecaptcha: clearRecaptcha
   };
 
   // ================== CLIENTS ==================
@@ -140,6 +168,7 @@
     texts: texts,
     pricing: pricing,
     photos: photos,
-    chat: chat
+    chat: chat,
+    _internal: { clearRecaptcha: clearRecaptcha }
   };
 })();

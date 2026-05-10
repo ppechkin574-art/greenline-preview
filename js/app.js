@@ -318,7 +318,8 @@ function switchAuthMode(mode) {
   regShowStep(mode);
 }
 
-function loginRequestCode() {
+// === LOGIN: проверка существования номера + реальный SMS через Firebase Phone Auth ===
+async function loginRequestCode() {
   const phoneInput = document.getElementById('login-phone');
   const errEl = document.getElementById('login-phone-error');
   const btn = document.getElementById('loginBtnSend');
@@ -331,28 +332,27 @@ function loginRequestCode() {
   }
 
   setBtnLoading(btn, true);
-  db.ref('clients/' + phone).once('value').then(snap => {
-    setBtnLoading(btn, false);
-    if (!snap.exists()) {
+  try {
+    const data = await api.clients.get(phone);
+    if (!data) {
+      setBtnLoading(btn, false);
       showFieldError(phoneInput, errEl, 'Этот номер не зарегистрирован. Зарегистрируйтесь.');
       return;
     }
-    const data = snap.val() || {};
     _regMode = 'login';
     _regPhone = '+7' + phone;
     _regName = data.name || '';
-    proceedToCodeStep();
-  }).catch(err => {
+    _confirmationResult = await api.auth.sendCode(_regPhone, 'recaptcha-container');
     setBtnLoading(btn, false);
-    console.warn('Auth check failed, fallback to demo mode:', err);
-    _regMode = 'login';
-    _regPhone = '+7' + phone;
-    _regName = localStorage.getItem('gl_name') || 'Пользователь';
     proceedToCodeStep();
-  });
+  } catch (e) {
+    setBtnLoading(btn, false);
+    showFieldError(phoneInput, errEl, _smsErrorMessage(e));
+  }
 }
 
-function registerRequestCode() {
+// === REGISTER: проверка что номер свободен + реальный SMS ===
+async function registerRequestCode() {
   const nameInput = document.getElementById('reg-name');
   const nameErr = document.getElementById('reg-name-error');
   const phoneInput = document.getElementById('reg-phone');
@@ -377,24 +377,38 @@ function registerRequestCode() {
   if (hasError) return;
 
   setBtnLoading(btn, true);
-  db.ref('clients/' + phone).once('value').then(snap => {
-    setBtnLoading(btn, false);
-    if (snap.exists()) {
+  try {
+    const existing = await api.clients.get(phone);
+    if (existing) {
+      setBtnLoading(btn, false);
       showFieldError(phoneInput, phoneErr, 'Этот номер уже зарегистрирован. Войдите.');
       return;
     }
     _regMode = 'register';
     _regName = name;
     _regPhone = '+7' + phone;
-    proceedToCodeStep();
-  }).catch(err => {
+    _confirmationResult = await api.auth.sendCode(_regPhone, 'recaptcha-container');
     setBtnLoading(btn, false);
-    console.warn('Auth check failed, fallback to demo mode:', err);
-    _regMode = 'register';
-    _regName = name;
-    _regPhone = '+7' + phone;
     proceedToCodeStep();
-  });
+  } catch (e) {
+    setBtnLoading(btn, false);
+    showFieldError(phoneInput, phoneErr, _smsErrorMessage(e));
+  }
+}
+
+// Перевод ошибок Firebase Phone Auth в человеческий русский
+function _smsErrorMessage(e) {
+  const code = (e && e.code) || '';
+  switch (code) {
+    case 'auth/invalid-phone-number': return 'Неверный формат номера';
+    case 'auth/too-many-requests':    return 'Слишком много попыток. Попробуйте позже';
+    case 'auth/quota-exceeded':       return 'Превышен лимит SMS. Свяжитесь с поддержкой';
+    case 'auth/captcha-check-failed': return 'Не удалось проверить, что вы не робот. Обновите страницу';
+    case 'auth/network-request-failed': return 'Нет связи с сервером. Проверьте интернет';
+    case 'auth/app-not-authorized':   return 'Домен не авторизован в Firebase';
+    case 'auth/operation-not-allowed': return 'Phone-вход не включён в Firebase Console';
+    default: return 'Не удалось отправить SMS. ' + (e && e.message ? e.message : '');
+  }
 }
 
 function proceedToCodeStep() {
@@ -445,6 +459,26 @@ function startResendTimer() {
   }, 1000);
 }
 
+// Повторная отправка SMS на тот же номер.
+// reCAPTCHA нужно сбросить — иначе Firebase бросит "captcha already used".
+async function regResendCode() {
+  if (!_regPhone) { regGoBack(); return; }
+  api._internal.clearRecaptcha();
+  try {
+    _confirmationResult = await api.auth.sendCode(_regPhone, 'recaptcha-container');
+    startResendTimer();
+    // Очистить поля кода
+    for (let i = 0; i < 6; i++) {
+      const el = document.getElementById('rc' + i);
+      if (el) { el.value = ''; el.classList.remove('filled'); }
+    }
+    const first = document.getElementById('rc0');
+    if (first) first.focus();
+  } catch (e) {
+    flashCodeError(_smsErrorMessage(e));
+  }
+}
+
 function regCodeInput(i) {
   const el = document.getElementById('rc' + i);
   el.value = el.value.replace(/\D/g,'').slice(-1);
@@ -461,27 +495,32 @@ function regCodeKey(e, i) {
   }
 }
 
-function regVerifyCode() {
+async function regVerifyCode() {
   const entered = [0,1,2,3,4,5].map(i => document.getElementById('rc'+i).value).join('');
   const errEl = document.getElementById('reg-code-error');
   const btn = document.getElementById('regBtnVerify');
   const wrap = document.getElementById('regCodeWrap');
   if (entered.length < 6) return;
 
-  // Демо-режим: любой 6-значный код принимается.
-  // (Этап 2: реальная проверка через свой бэкенд + Mobizon SMS)
   if (errEl) errEl.style.display = 'none';
   if (wrap) wrap.classList.remove('error');
 
+  if (!_confirmationResult) {
+    flashCodeError('Сессия истекла. Запросите код ещё раз');
+    setTimeout(regGoBack, 800);
+    return;
+  }
+
   setBtnLoading(btn, true);
-  // Имитация сетевой задержки 600мс — даёт ощущение "проверки"
-  setTimeout(function() {
+  try {
+    await api.auth.verifyCode(_confirmationResult, entered);
     setBtnLoading(btn, false);
     clearInterval(_resendTimer);
+    _confirmationResult = null;
 
     if (_regMode === 'register') {
       const phone10 = _regPhone.replace('+7', '');
-      db.ref('clients/' + phone10).set({
+      await api.clients.upsert(phone10, {
         name: _regName,
         phone: _regPhone,
         registered: Date.now()
@@ -492,7 +531,13 @@ function regVerifyCode() {
     } else {
       finishAuth();
     }
-  }, 600);
+  } catch (e) {
+    setBtnLoading(btn, false);
+    const code = (e && e.code) || '';
+    if (code === 'auth/invalid-verification-code') flashCodeError('Неверный код. Попробуйте ещё раз');
+    else if (code === 'auth/code-expired')          flashCodeError('Код истёк. Запросите новый');
+    else                                            flashCodeError('Ошибка проверки кода');
+  }
 }
 
 function flashCodeError(msg) {
@@ -523,14 +568,68 @@ function flashCodeError(msg) {
 }
 
 function finishAuth() {
+  // Локальный кеш для оффлайн-приветствия. Источником истины остаётся Firebase Auth.
   localStorage.setItem('gl_name', _regName);
   localStorage.setItem('gl_phone', _regPhone);
-  if (document.getElementById('profileName')) document.getElementById('profileName').textContent = _regName;
-  if (document.getElementById('profileInitial') && _regName) document.getElementById('profileInitial').textContent = _regName[0].toUpperCase();
-  if (document.getElementById('profilePhone')) document.getElementById('profilePhone').textContent = formatPhoneForDisplay(_regPhone);
+  _renderProfileFields(_regName, _regPhone);
   injectBottomNav();
   showPage('home');
 }
+
+function _renderProfileFields(name, phone) {
+  if (document.getElementById('profileName')) document.getElementById('profileName').textContent = name || '';
+  if (document.getElementById('profileInitial') && name) document.getElementById('profileInitial').textContent = name[0].toUpperCase();
+  if (document.getElementById('profilePhone')) document.getElementById('profilePhone').textContent = formatPhoneForDisplay(phone || '');
+}
+
+// === BOOT: авто-вход если сессия Firebase Auth ещё жива ===
+// Firebase сам персистит сессию в IndexedDB, нам нужно лишь подписаться.
+async function _bootAuthCheck() {
+  return new Promise(function (resolve) {
+    const off = api.auth.onAuthChange(async function (user) {
+      off(); // одноразово — дальше следим вручную
+      if (!user) {
+        // Не залогинен — оставляем page-register активной (она active по умолчанию).
+        resolve(false);
+        return;
+      }
+      // Залогинен. Достаём имя из /clients/{phone10}
+      const phone = user.phoneNumber || '';
+      const phone10 = phone.replace(/^\+7/, '').replace(/\D/g, '');
+      let name = localStorage.getItem('gl_name') || '';
+      try {
+        const data = await api.clients.get(phone10);
+        if (data && data.name) name = data.name;
+      } catch (e) { /* offline → используем localStorage */ }
+
+      _regPhone = phone;
+      _regName = name;
+      localStorage.setItem('gl_phone', phone);
+      if (name) localStorage.setItem('gl_name', name);
+      _renderProfileFields(name, phone);
+      injectBottomNav();
+      showPage('home');
+      resolve(true);
+    });
+  });
+}
+
+// === LOGOUT: реальный выход + очистка локального кеша ===
+async function glLogout() {
+  try { await api.auth.logout(); } catch (e) { console.warn('logout', e); }
+  localStorage.removeItem('gl_name');
+  localStorage.removeItem('gl_phone');
+  _regPhone = '';
+  _regName = '';
+  _confirmationResult = null;
+  // Сброс полей формы
+  const lp = document.getElementById('login-phone'); if (lp) lp.value = '';
+  const rp = document.getElementById('reg-phone');   if (rp) rp.value = '';
+  const rn = document.getElementById('reg-name');    if (rn) rn.value = '';
+  regShowStep('login');
+  showPage('register');
+}
+window.glLogout = glLogout;
 
 // Обратная совместимость со старым именем
 function regBack() { regGoBack(); }
@@ -546,6 +645,9 @@ function attachInputFocusClass(input) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Авто-вход: если Firebase Auth ещё помнит пользователя — сразу на home.
+  if (window.api && api.auth) _bootAuthCheck();
+
   const loginPhone = document.getElementById('login-phone');
   const regName = document.getElementById('reg-name');
   const regPhone = document.getElementById('reg-phone');
@@ -595,9 +697,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const toLogin = document.getElementById('switchToLoginLink');
   if (toLogin) toLogin.addEventListener('click', () => switchAuthMode('login'));
 
-  // Resend ссылка → новый запрос кода (для демо — просто вернуться на форму)
+  // Resend ссылка → реальный повторный SMS
   const resendLink = document.getElementById('reg-resend-link');
-  if (resendLink) resendLink.addEventListener('click', regGoBack);
+  if (resendLink) resendLink.addEventListener('click', regResendCode);
 
   // Кнопка "Назад" с шага кода
   const backBtn = document.getElementById('regBackBtn');
