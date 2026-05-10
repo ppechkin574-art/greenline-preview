@@ -207,6 +207,10 @@ body {
     padding-bottom: 18px;
     min-height: 116px; /* safe-area 58 + back-кнопка 44 + breathing 14 */
   }
+  /* Home greeting — в device-frame отступ от часов/Dynamic Island */
+  .device-frame .hm-header {
+    padding-top: 58px;
+  }
   /* Back-кнопка чётко в зоне контента header — НИЖЕ Dynamic Island,
      центруется с title (которому даём margin-top для вертикального центра) */
   .device-frame .header-with-back .page-back {
@@ -7518,6 +7522,24 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   text-align: center;
 }
 .wlc-terms a { color: #2E8B2E; font-weight: 600; cursor: pointer; }
+
+/* ============================================================
+   GreenLine — общий лого-компонент (два листа, росток)
+   Использовать в HTML так:
+   <svg class="gl-leaves" viewBox="0 0 32 32" fill="none">
+     <path class="gl-leaf-back"  d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
+     <path class="gl-leaf-front" d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
+     <path class="gl-leaves-stem" d="M16 27 L16 30" stroke-width="1.4" stroke-linecap="round"/>
+   </svg>
+   Модификатор .gl-leaves--white для зелёных фонов (splash, onboarding).
+   ============================================================ */
+.gl-leaves .gl-leaf-back   { fill: #2E8B2E; }
+.gl-leaves .gl-leaf-front  { fill: #4ADE4A; }
+.gl-leaves .gl-leaves-stem { stroke: #1F5F1F; fill: none; }
+
+.gl-leaves--white .gl-leaf-back   { fill: rgba(255,255,255,0.92); }
+.gl-leaves--white .gl-leaf-front  { fill: #FFFFFF; }
+.gl-leaves--white .gl-leaves-stem { stroke: rgba(255,255,255,0.7); }
 
 /* ============================================================
    HOME — новый дизайн под макет «Добрый вечер, Нурболат! 👋»
