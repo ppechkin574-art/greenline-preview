@@ -27,14 +27,13 @@ document.addEventListener('click', function (e) {
 });
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAeOGSibtP9n9N-iR48bzXM2Pa8v-1rY-k",
-    authDomain: "greenline-f8811.firebaseapp.com",
-    databaseURL: "https://greenline-f8811-default-rtdb.firebaseio.com",
-    projectId: "greenline-f8811",
-    storageBucket: "greenline-f8811.firebasestorage.app",
-    messagingSenderId: "551415149229",
-    appId: "1:551415149229:web:e5378a923ea4a448874c24",
-    measurementId: "G-3CDVWT9P93"
+    apiKey: "AIzaSyDx7ZzcEDAIQpdRtQVx4rC4i31YwdYgMH8",
+    authDomain: "greenline-prod-5f1c3.firebaseapp.com",
+    databaseURL: "https://greenline-prod-5f1c3-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "greenline-prod-5f1c3",
+    storageBucket: "greenline-prod-5f1c3.firebasestorage.app",
+    messagingSenderId: "314425697791",
+    appId: "1:314425697791:web:b759eda9972e198a1473ca"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
