@@ -154,18 +154,40 @@
   // Сейчас прямой вызов OpenWeather с ключом в клиенте.
   // Безопасный путь: Cloud Function проксирует, ключ только на сервере.
   // TODO: перенести в Cloud Function когда подключим Blaze.
-  const OPENWEATHER_KEY = ''; // ← вставь свой ключ с openweathermap.org или оставь пусто для заглушки
+  // Ключ НЕ хранится в git (GitHub secret-scanning блокирует push с ключами).
+  // Берём из (по приоритету):
+  //   1. localStorage 'gl_owm_key' — поставить вручную в DevTools console
+  //   2. Firebase RTDB /config/openweather_key — общий для всех пользователей
+  //   3. Иначе fallback (23°/солнечно/Уральск) — UI работает, но без реальных данных
+  // На прод правильно поднять Cloud Function-прокси, ключ только на сервере.
+  let _owmKeyCache = null;
+  async function _getOwmKey() {
+    if (_owmKeyCache !== null) return _owmKeyCache;
+    const local = localStorage.getItem('gl_owm_key');
+    if (local) { _owmKeyCache = local; return local; }
+    try {
+      const snap = await _db().ref('config/openweather_key').once('value');
+      const v = snap.val();
+      _owmKeyCache = v || '';
+      return _owmKeyCache;
+    } catch (e) {
+      _owmKeyCache = '';
+      return '';
+    }
+  }
+
   const weather = {
     async get(city) {
       const fallback = {
         temp: 23, condition: 'солнечно', icon: '01d',
         city: city || 'Уральск', main: 'Clear'
       };
-      if (!OPENWEATHER_KEY) return fallback;
+      const key = await _getOwmKey();
+      if (!key) return fallback;
       try {
         const url = 'https://api.openweathermap.org/data/2.5/weather?q=' +
           encodeURIComponent(city || 'Uralsk,KZ') +
-          '&appid=' + OPENWEATHER_KEY +
+          '&appid=' + key +
           '&units=metric&lang=ru';
         const r = await fetch(url);
         if (!r.ok) return fallback;
