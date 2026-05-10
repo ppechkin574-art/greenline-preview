@@ -138,6 +138,7 @@
   // путь к файлу в img/.
   const services = {
     async list() {
+      // Никогда не throw — fetch-with-fallback. UI рассчитывает на массив.
       try {
         const snap = await _db().ref('services').once('value');
         const v = snap.val();
@@ -145,7 +146,10 @@
         // RTDB может вернуть массив (если ключи 0..N) или объект — нормализуем.
         const arr = Array.isArray(v) ? v.filter(Boolean) : Object.values(v);
         return arr.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
-      } catch (e) { _err('services.list', e); return []; }
+      } catch (e) {
+        console.warn('[api.services.list]', e && e.message || e);
+        return [];
+      }
     },
     async get(idOrSlug) {
       const list = await this.list();

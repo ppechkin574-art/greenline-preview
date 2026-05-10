@@ -981,15 +981,33 @@ document.addEventListener('DOMContentLoaded', renderHomeWeather);
 // Остальные — на page-services.
 async function renderHomeServices() {
   const row = document.getElementById('hmServicesRow');
-  if (!row || !window.api || !api.services) return;
+  if (!row) { console.warn('[GL home] #hmServicesRow not found'); return; }
+  if (!window.api || !api.services) {
+    console.warn('[GL home] api.services недоступен — fallback');
+  }
+
   let list = [];
-  try { list = await api.services.list(); } catch (e) { /* offline */ }
+  try {
+    if (window.api && api.services) list = await api.services.list();
+  } catch (e) {
+    console.warn('[GL home] services.list threw:', e);
+  }
+  console.log('[GL home] services loaded:', list.length);
+
   if (!list.length) {
     // Фоллбек — встроенный набор, чтобы home не оставался скелетоном при оффлайне
     list = _SERVICES_FALLBACK;
   }
   const top4 = list.slice(0, 4);
-  row.innerHTML = top4.map(_renderServiceCard).join('');
+  try {
+    row.innerHTML = top4.map(_renderServiceCard).join('');
+  } catch (e) {
+    console.error('[GL home] render failed, fallback to plain text:', e);
+    row.innerHTML = top4.map(function (s) {
+      return '<article class="hm-service-card" style="background:#2A4A2A;color:#fff;padding:12px;font-size:13px;">' +
+        (s.name || 'Услуга') + '</article>';
+    }).join('');
+  }
 }
 
 function _renderServiceCard(s) {
@@ -1026,7 +1044,17 @@ const _SERVICES_FALLBACK = [
   { id: 4, name: 'Посадка растений',   cover: 'img/service-topiar.jpg',   basePrice: 6000, unit: '₸ / растение' },
 ];
 
-document.addEventListener('DOMContentLoaded', renderHomeServices);
+// Запуск рендера: не полагаемся только на DOMContentLoaded —
+// если этот скрипт загрузился ПОСЛЕ ready (редко, но возможно при медленных сетях/SW),
+// listener никогда не сработает. Явно проверяем readyState.
+function _scheduleHomeRender() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderHomeServices);
+  } else {
+    setTimeout(renderHomeServices, 0);
+  }
+}
+_scheduleHomeRender();
 
 // Before/After mini sliders
 
