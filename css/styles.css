@@ -7751,20 +7751,38 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 }
 .hm-hero-cta-arrow svg { width: 14px; height: 14px; }
 
-/* === SERVICES (4 carousel-style cards) === */
+/* === SERVICES — большие карточки с горизонтальным snap-скроллом ===
+   Цель макета: 3 карточки видны полностью + 4-я выглядывает справа,
+   приглашая свайп. Реализуем через flex + scroll-snap на любом размере. */
 .hm-services-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  display: flex;
+  gap: 10px;
+  /* Перекрываем родительский padding 16px, чтобы скролл шёл от края до края.
+     Внутренний padding возвращает первую карточку к 16px от края. */
+  margin: 0 -16px;
+  padding: 4px 16px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.hm-services-row::-webkit-scrollbar { display: none; }
+
 .hm-service-card {
+  /* 3 карточки в ряд + ~28% от 4-й = (100% - 2*gap) / 3.32 ≈ 28%
+     На 380px viewport: ~107px каждая + gap 10px = 3.5 видимых */
+  flex: 0 0 calc((100% - 24px) / 3.3);
+  scroll-snap-align: start;
   position: relative;
   aspect-ratio: 3 / 4;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
   background: #2A4A2A;
-  box-shadow: 0 3px 10px rgba(15, 31, 15, 0.12);
+  box-shadow:
+    0 4px 14px rgba(15, 31, 15, 0.16),
+    0 1px 3px rgba(15, 31, 15, 0.08);
   transition: transform 0.18s;
 }
 .hm-service-card:active { transform: scale(0.97); }
@@ -7775,51 +7793,33 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 }
 .hm-service-overlay {
   position: absolute; left: 0; right: 0; bottom: 0;
-  height: 65%;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.78) 100%);
+  height: 70%;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.82) 100%);
 }
 .hm-service-info {
-  position: absolute; left: 8px; right: 8px; bottom: 8px;
+  position: absolute; left: 12px; right: 12px; bottom: 12px;
   z-index: 1;
   color: #fff;
   line-height: 1.15;
 }
 .hm-service-name {
-  font-size: 13px; font-weight: 700;
-  letter-spacing: -0.1px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -0.2px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.55);
 }
 .hm-service-price {
-  font-size: 10px; font-weight: 500;
-  margin-top: 4px;
-  color: rgba(255,255,255,0.86);
+  font-size: 11px; font-weight: 500;
+  margin-top: 6px;
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
-/* На очень узких экранах (≤360px) переходим в горизонтальный скролл */
-@media (max-width: 360px) {
-  .hm-services-row {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    margin: 0 -16px;
-    padding: 0 16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .hm-services-row::-webkit-scrollbar { display: none; }
-  .hm-service-card {
-    flex: 0 0 38%;
-    scroll-snap-align: start;
-  }
-}
-
-/* В device-frame (≥500px) принудительно равняем 4 в ряд */
+/* В device-frame с фикс. 412px шириной — карточки чуть крупнее */
 @media (min-width: 500px) {
-  #page-home .hm-services-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    overflow: visible;
+  .device-frame .hm-services-row {
+    padding-bottom: 4px;
   }
-  #page-home .hm-service-card { flex: none; }
+  .device-frame .hm-service-card {
+    flex: 0 0 calc((100% - 24px) / 3.3);
+  }
 }
