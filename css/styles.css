@@ -7565,6 +7565,18 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 .gl-leaves--white .gl-leaf-vein-r  { stroke: rgba(0,0,0,0.10); }
 .gl-leaves--white .gl-leaves-stem  { stroke: rgba(255,255,255,0.7); }
 
+/* === TECH DEBT: лого временно скрыт ===
+   Ждём от пользователя финальный PNG логотипа с прозрачным фоном.
+   После получения файла:
+   1) положить в img/logo.png
+   2) удалить этот блок display:none
+   3) заменить <svg class="gl-leaves">…</svg> на <img class="gl-logo" src="img/logo.png" alt="GreenLine">
+   Места: page-splash, page-onboarding (.onb-brand),
+          page-welcome (.wlc-brand), home weather-rec, home hero-leaf */
+.gl-leaves,
+.hm-hero-leaf,
+.hm-weather-rec-icon { display: none; }
+
 /* ============================================================
    HOME — новый дизайн под макет «Добрый вечер, Нурболат! 👋»
    Префикс .hm- (home v2) чтобы не конфликтовать со старыми .home-*
