@@ -1,4 +1,21 @@
 
+// Маппинг "page id (без префикса page-)" → активная вкладка нижнего бара.
+// Объявлено в самом верху чтобы любой ранний вызов showPage() / updateBottomNavActive()
+// уже имел инициализированный const (без TDZ).
+const NAV_TAB_FOR_PAGE = {
+  'home': 'home',
+  'gallery': 'home',             // галерея работ — глубокая страница от главной
+  'orders': 'orders',
+  'services': 'orders',          // объединили: каталог услуг и история — одна вкладка
+  'service-detail': 'orders',    // открывая услугу, остаёмся в "Ваши заказы"
+  'order': 'orders',             // оформление заказа — тоже сюда
+  'profile': 'profile',
+  'profile-addresses': 'profile',
+  'profile-notifications': 'profile',
+  'profile-referral': 'profile',
+  'profile-help': 'profile'
+};
+
 /* === Делегированный обработчик кликов ===
  * Для НОВОГО кода используем data-action / data-* вместо inline onclick=.
  * Пример: <button data-action="show-page" data-page="profile">Профиль</button>
@@ -856,21 +873,13 @@ function setHomeTab(btn) {
   btn.classList.add('active');
 }
 // ============================================================
-
-
-  // Автовход если уже входил
-  const savedName = localStorage.getItem('gl_name');
-  const savedPhone = localStorage.getItem('gl_phone');
-  if (savedName && savedPhone) {
-    if (document.getElementById('profileName'))
-      document.getElementById('profileName').textContent = savedName;
-    if (document.getElementById('profileInitial'))
-      document.getElementById('profileInitial').textContent = savedName[0].toUpperCase();
-    if (document.getElementById('profilePhone'))
-      document.getElementById('profilePhone').textContent = formatPhoneForDisplay(savedPhone);
-    injectBottomNav();
-    showPage('home');
-  }
+// Прежний legacy-блок автологина по localStorage (dangling top-level)
+// удалён: он:
+//  1) бросал TDZ-ошибку — обращался к const NAV_TAB_FOR_PAGE который ниже в файле,
+//     это останавливало весь скрипт (включая renderHomeServices → скелетоны навсегда)
+//  2) дублировал _bootAuthCheck() (правильный авто-вход через Firebase Auth)
+//  3) дёргал showPage('home') до splash, ломая UX
+// Теперь авто-вход полностью в _bootAuthCheck.
 
 // Home hero greeting — заполнение имени пользователя
 // === Приветствие на home ===
@@ -1801,22 +1810,6 @@ function handleOrderPhoto(input) {
     nav.style.display = (pid === 'page-register' || pid === 'page-admin' || pid === 'page-splash' || pid === 'page-onboarding' || pid === 'page-welcome') ? 'none' : 'flex';
   }
 })();
-
-// Маппинг "page id (без префикса page-)" → активная вкладка нижнего бара.
-// Сюда же сводим services и подстраницы профиля.
-const NAV_TAB_FOR_PAGE = {
-  'home': 'home',
-  'gallery': 'home',             // галерея работ — глубокая страница от главной
-  'orders': 'orders',
-  'services': 'orders',          // объединили: каталог услуг и история — одна вкладка
-  'service-detail': 'orders',    // открывая услугу, остаёмся в "Ваши заказы"
-  'order': 'orders',             // оформление заказа — тоже сюда
-  'profile': 'profile',
-  'profile-addresses': 'profile',
-  'profile-notifications': 'profile',
-  'profile-referral': 'profile',
-  'profile-help': 'profile'
-};
 
 function updateBottomNavActive(pageName) {
   const tab = NAV_TAB_FOR_PAGE[pageName] || null;
