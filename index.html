@@ -50,7 +50,100 @@
 </div>
 
 <!-- ===== REGISTER / LOGIN ===== -->
-<div id="page-register" class="page active">
+<!-- ============================================================
+     SPLASH — стартовая заставка (1.5с, fade-in логотипа)
+     ============================================================ -->
+<div id="page-splash" class="page active splash-page">
+  <div class="splash-bg" aria-hidden="true"></div>
+  <div class="splash-content">
+    <div class="splash-logo">
+      <svg class="splash-leaf" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <path d="M32 8 C 18 16, 12 30, 16 46 C 22 38, 26 30, 32 22 C 38 30, 42 38, 48 46 C 52 30, 46 16, 32 8 Z" fill="#FFFFFF" opacity="0.95"/>
+        <path d="M32 22 L 32 56" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.95"/>
+      </svg>
+      <div class="splash-brand">GreenLine</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ONBOARDING — показывается 1 раз (флаг gl_onboarding_seen)
+     ============================================================ -->
+<div id="page-onboarding" class="page onb-page">
+  <div class="onb-track" id="onbTrack">
+    <!-- Слайд 1 -->
+    <section class="onb-slide" data-slide="0">
+      <div class="onb-bg" aria-hidden="true"></div>
+      <div class="onb-top">
+        <div class="onb-brand">
+          <svg class="onb-leaf" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3 C 7 6, 5 11, 6 17 C 9 14, 11 11, 12 8 C 13 11, 15 14, 18 17 C 19 11, 17 6, 12 3 Z" fill="#FFFFFF"/>
+          </svg>
+          <span>GreenLine</span>
+        </div>
+      </div>
+      <div class="onb-bottom">
+        <h1 class="onb-title">Забота о вашем участке на профессиональном уровне</h1>
+        <p class="onb-sub">Создаём ухоженные и зелёные пространства для жизни</p>
+      </div>
+    </section>
+    <!-- Сюда добавятся слайды 2-3-4 (просто скопировать <section class="onb-slide"> и поменять текст) -->
+  </div>
+
+  <div class="onb-foot">
+    <div class="onb-dots" id="onbDots">
+      <!-- Точки рисуются JS под количество слайдов -->
+    </div>
+    <button type="button" class="btn-primary onb-btn-next" id="onbBtnNext">
+      <span class="btn-label">Начать</span>
+      <svg class="onb-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <button type="button" class="onb-skip" id="onbSkip">Пропустить</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     WELCOME — выбор «Войти» / «Создать аккаунт»
+     ============================================================ -->
+<div id="page-welcome" class="page wlc-page">
+  <div class="wlc-content">
+    <div class="wlc-brand">
+      <svg class="wlc-leaf" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <path d="M14 4 C 8 7, 6 13, 7 20 C 11 16, 13 13, 14 9 C 15 13, 17 16, 21 20 C 22 13, 20 7, 14 4 Z" fill="#3DA83D"/>
+        <path d="M14 9 L 14 24" stroke="#2E8B2E" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="wlc-brand-text">GreenLine</span>
+    </div>
+
+    <h1 class="wlc-title">Добро пожаловать<br>в&nbsp;GreenLine!</h1>
+    <p class="wlc-sub">Войдите или создайте аккаунт,<br>чтобы продолжить</p>
+
+    <div class="wlc-actions">
+      <button type="button" class="btn-primary wlc-btn-login" data-action="welcome-login">
+        Войти
+      </button>
+      <button type="button" class="btn-ghost wlc-btn-register" data-action="welcome-register">
+        Создать аккаунт
+      </button>
+    </div>
+
+    <div class="wlc-divider"><span>или войти через</span></div>
+
+    <div class="wlc-socials">
+      <button type="button" class="wlc-social" data-action="welcome-login" aria-label="Войти по телефону">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2E8B2E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="wlc-terms">Продолжая, вы соглашаетесь с&nbsp;нашими <a>Условиями</a> и <a>Политикой</a></p>
+  </div>
+</div>
+
+<div id="page-register" class="page">
   <!-- Декоративный фоновый блик в верхнем углу -->
   <div class="reg-blob"></div>
 

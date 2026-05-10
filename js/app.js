@@ -23,6 +23,14 @@ document.addEventListener('click', function (e) {
     case 'open-whatsapp':
       if (window.api && api.native) api.native.openWhatsApp(el.dataset.phone, el.dataset.text || '');
       break;
+    case 'welcome-login':
+      showPage('register');
+      if (typeof regShowStep === 'function') regShowStep('login');
+      break;
+    case 'welcome-register':
+      showPage('register');
+      if (typeof regShowStep === 'function') regShowStep('register');
+      break;
   }
 });
 
@@ -55,9 +63,12 @@ function showPage(name) {
   const el = document.getElementById('page-' + name);
   if (el) { el.classList.add('active'); } else { document.getElementById('page-home').classList.add('active'); }
   window.scrollTo(0,0);
-  // Hide bottom nav on register and admin pages
+  // Hide bottom nav on auth/onboarding/admin pages
   const nav = document.getElementById('bottomNav');
-  if (nav) nav.style.display = (name === 'register' || name === 'admin') ? 'none' : 'flex';
+  if (nav) {
+    const hidden = (name === 'register' || name === 'admin' || name === 'splash' || name === 'onboarding' || name === 'welcome');
+    nav.style.display = hidden ? 'none' : 'flex';
+  }
   // Подсветить активную вкладку нижнего бара (если функция уже определена)
   if (typeof updateBottomNavActive === 'function') updateBottomNavActive(name);
   // Обновить приветствие на главной (имя из localStorage)
@@ -581,36 +592,100 @@ function _renderProfileFields(name, phone) {
   if (document.getElementById('profilePhone')) document.getElementById('profilePhone').textContent = formatPhoneForDisplay(phone || '');
 }
 
-// === BOOT: авто-вход если сессия Firebase Auth ещё жива ===
+// === BOOT: splash (1.5с) → авто-вход / onboarding / welcome ===
 // Firebase сам персистит сессию в IndexedDB, нам нужно лишь подписаться.
-async function _bootAuthCheck() {
-  return new Promise(function (resolve) {
-    const off = api.auth.onAuthChange(async function (user) {
-      off(); // одноразово — дальше следим вручную
-      if (!user) {
-        // Не залогинен — оставляем page-register активной (она active по умолчанию).
-        resolve(false);
-        return;
-      }
-      // Залогинен. Достаём имя из /clients/{phone10}
-      const phone = user.phoneNumber || '';
-      const phone10 = phone.replace(/^\+7/, '').replace(/\D/g, '');
-      let name = localStorage.getItem('gl_name') || '';
-      try {
-        const data = await api.clients.get(phone10);
-        if (data && data.name) name = data.name;
-      } catch (e) { /* offline → используем localStorage */ }
+const SPLASH_MIN_MS = 1500;
+const ONBOARDING_FLAG = 'gl_onboarding_seen';
 
-      _regPhone = phone;
-      _regName = name;
-      localStorage.setItem('gl_phone', phone);
-      if (name) localStorage.setItem('gl_name', name);
-      _renderProfileFields(name, phone);
-      injectBottomNav();
-      showPage('home');
-      resolve(true);
-    });
+function _hideSplash() {
+  const el = document.getElementById('page-splash');
+  if (!el) return;
+  el.classList.add('is-leaving');
+  setTimeout(function () { el.classList.remove('active', 'is-leaving'); }, 360);
+}
+
+async function _bootAuthCheck() {
+  const splashStart = Date.now();
+
+  // Параллельно ждём ответ Firebase Auth (одноразово) и таймаут сплэша.
+  const authPromise = new Promise(function (resolve) {
+    const off = api.auth.onAuthChange(function (user) { off(); resolve(user); });
   });
+  const user = await authPromise;
+  const elapsed = Date.now() - splashStart;
+  if (elapsed < SPLASH_MIN_MS) await new Promise(r => setTimeout(r, SPLASH_MIN_MS - elapsed));
+
+  if (user) {
+    // Залогинен — на home, минуя onboarding и welcome
+    const phone = user.phoneNumber || '';
+    const phone10 = phone.replace(/^\+7/, '').replace(/\D/g, '');
+    let name = localStorage.getItem('gl_name') || '';
+    try {
+      const data = await api.clients.get(phone10);
+      if (data && data.name) name = data.name;
+    } catch (e) { /* offline → localStorage */ }
+
+    _regPhone = phone;
+    _regName = name;
+    localStorage.setItem('gl_phone', phone);
+    if (name) localStorage.setItem('gl_name', name);
+    _renderProfileFields(name, phone);
+    injectBottomNav();
+    _hideSplash();
+    showPage('home');
+    return true;
+  }
+
+  // Не залогинен → onboarding (если первый запуск) или сразу welcome
+  _hideSplash();
+  if (!localStorage.getItem(ONBOARDING_FLAG)) {
+    _initOnboarding();
+    showPage('onboarding');
+  } else {
+    showPage('welcome');
+  }
+  return false;
+}
+
+// === ONBOARDING ===
+function _initOnboarding() {
+  const track = document.getElementById('onbTrack');
+  const dots = document.getElementById('onbDots');
+  if (!track || !dots) return;
+  const slides = track.querySelectorAll('.onb-slide');
+  let i = 0;
+
+  // Рисуем точки под количество слайдов
+  dots.innerHTML = '';
+  slides.forEach((_, n) => {
+    const d = document.createElement('span');
+    d.className = 'onb-dot' + (n === 0 ? ' active' : '');
+    dots.appendChild(d);
+  });
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    track.style.transform = 'translateX(' + (-i * 100) + '%)';
+    dots.querySelectorAll('.onb-dot').forEach((d, k) => d.classList.toggle('active', k === i));
+    const btn = document.getElementById('onbBtnNext');
+    if (btn) btn.querySelector('.btn-label').textContent = (i === slides.length - 1) ? 'Начать' : 'Далее';
+  }
+
+  function next() {
+    if (i >= slides.length - 1) finishOnboarding();
+    else go(i + 1);
+  }
+
+  function finishOnboarding() {
+    localStorage.setItem(ONBOARDING_FLAG, '1');
+    showPage('welcome');
+  }
+
+  const btn = document.getElementById('onbBtnNext');
+  const skip = document.getElementById('onbSkip');
+  if (btn)  btn.onclick  = next;
+  if (skip) skip.onclick = finishOnboarding;
+  go(0);
 }
 
 // === LOGOUT: реальный выход + очистка локального кеша ===
@@ -626,7 +701,7 @@ async function glLogout() {
   const rp = document.getElementById('reg-phone');   if (rp) rp.value = '';
   const rn = document.getElementById('reg-name');    if (rn) rn.value = '';
   regShowStep('login');
-  showPage('register');
+  showPage('welcome');
 }
 window.glLogout = glLogout;
 
@@ -1539,7 +1614,7 @@ function handleOrderPhoto(input) {
   const activePage = document.querySelector('.page.active');
   if (nav && activePage) {
     const pid = activePage.id;
-    nav.style.display = (pid === 'page-register' || pid === 'page-admin') ? 'none' : 'flex';
+    nav.style.display = (pid === 'page-register' || pid === 'page-admin' || pid === 'page-splash' || pid === 'page-onboarding' || pid === 'page-welcome') ? 'none' : 'flex';
   }
 })();
 
