@@ -7397,81 +7397,89 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 .onb-skip:active { color: #fff; }
 
 /* ============================================================
-   WELCOME — выбор Войти / Создать аккаунт
+   WELCOME — экран выбора способа входа.
+   Лево-флаговый: лого/заголовок/подзаголовок выровнены по левому краю,
+   кнопки на всю ширину. Сплошной зелёный, без градиентов на CTA.
    ============================================================ */
 .wlc-page {
   background: #fff;
   min-height: 100vh; min-height: 100dvh;
-  padding: calc(env(safe-area-inset-top) + 32px) 24px calc(env(safe-area-inset-bottom) + 24px);
+  padding: 0;
 }
 .wlc-content {
-  max-width: 360px; margin: 0 auto;
-  display: flex; flex-direction: column; align-items: center;
-  min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 56px);
+  max-width: 380px;
+  margin: 0 auto;
+  padding:
+    calc(env(safe-area-inset-top) + 64px)
+    24px
+    calc(env(safe-area-inset-bottom) + 24px);
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  /* Контент прижат к левому краю — это ключ к ощущению из макета */
+  text-align: left;
 }
+
+/* Логотип: лист + название в одну строку, слева сверху */
 .wlc-brand {
-  display: flex; align-items: center; gap: 8px;
-  margin: 12vh 0 28px;
-  font-size: 22px; font-weight: 800;
-  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 36px;
+  font-size: 20px; font-weight: 800;
+  color: #2E8B2E;
+  letter-spacing: -0.2px;
 }
-.wlc-leaf { width: 26px; height: 26px; }
-.wlc-brand-text { color: #2E8B2E; -webkit-text-fill-color: initial; }
+.wlc-leaf { width: 28px; height: 28px; flex-shrink: 0; }
+.wlc-brand-text { color: #2E8B2E; }
+
+/* Заголовок и подзаголовок — крупный hero, левое выравнивание */
 .wlc-title {
-  font-size: 26px; line-height: 1.22; font-weight: 800;
-  margin: 0 0 12px; text-align: center;
-  color: #1a2e1a; letter-spacing: -0.4px;
+  font-size: 30px; line-height: 1.18; font-weight: 800;
+  margin: 0 0 14px;
+  color: #0F1F0F; letter-spacing: -0.6px;
 }
 .wlc-sub {
-  font-size: 15px; line-height: 1.5; margin: 0 0 36px;
-  color: #6a7a6a; text-align: center;
+  font-size: 15px; line-height: 1.5;
+  margin: 0 0 44px;
+  color: #6E7A6E;
+  max-width: 320px;
 }
+
+/* Кнопки: solid green primary, white outline secondary.
+   Без gradient — в макете спокойный плоский цвет. */
 .wlc-actions {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.wlc-btn-login,
+.wlc-btn-register {
   width: 100%;
-  display: flex; flex-direction: column; gap: 12px;
+  height: 60px;
+  border-radius: 18px;
+  font-size: 16px; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
 }
 .wlc-btn-login {
-  width: 100%; height: 56px; border-radius: 16px;
-  background: linear-gradient(135deg, #3DA83D 0%, #2E8B2E 100%);
-  color: #fff; border: none; font-size: 16px; font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(46,139,46,0.28);
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: #2E8B2E;
+  color: #fff;
+  border: none;
 }
-.wlc-btn-login:active { transform: scale(0.98); }
-.btn-ghost.wlc-btn-register {
-  width: 100%; height: 56px; border-radius: 16px;
-  background: #fff; color: #2E8B2E; font-size: 16px; font-weight: 700;
-  border: 1.5px solid #D8ECD8; cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-}
-.btn-ghost.wlc-btn-register:active { transform: scale(0.98); background: #F0FAF0; }
+.wlc-btn-login:hover  { background: #2A7E2A; }
+.wlc-btn-login:active { background: #266F26; transform: scale(0.985); }
 
-.wlc-divider {
-  width: 100%; display: flex; align-items: center;
-  margin: 28px 0 18px;
-  color: #8aaa8a; font-size: 12px; font-weight: 500;
+.wlc-btn-register {
+  background: #fff;
+  color: #1F4F1F;
+  border: 1.5px solid #DDE6DD;
 }
-.wlc-divider::before, .wlc-divider::after {
-  content: ''; flex: 1; height: 1px; background: #E0EDE0;
-}
-.wlc-divider span { padding: 0 12px; }
+.wlc-btn-register:hover  { border-color: #2E8B2E; }
+.wlc-btn-register:active { background: #F4F8F4; transform: scale(0.985); }
 
-.wlc-socials { display: flex; gap: 12px; justify-content: center; margin-bottom: auto; }
-.wlc-social {
-  width: 64px; height: 64px; border-radius: 18px;
-  background: #fff; border: 1.5px solid #D8ECD8;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s, background 0.2s;
-}
-.wlc-social svg { width: 26px; height: 26px; }
-.wlc-social:active { transform: scale(0.95); background: #F0FAF0; border-color: #2E8B2E; }
-
+/* Согласие — мелкий текст внизу страницы */
 .wlc-terms {
-  font-size: 12px; line-height: 1.5; color: #8aaa8a;
-  text-align: center; margin: 24px 0 0;
+  margin: auto 0 0;
+  padding-top: 32px;
+  font-size: 12px; line-height: 1.5;
+  color: #98A398;
+  text-align: center;
 }
 .wlc-terms a { color: #2E8B2E; font-weight: 600; cursor: pointer; }
