@@ -15,7 +15,7 @@
 <script src="vendor/firebase/firebase-database-compat.js"></script>
 <script src="vendor/firebase/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=78">
+<link rel="stylesheet" href="css/styles.css?v=79">
 </head>
 <body>
 <div class="device-stage">
@@ -312,11 +312,219 @@
 
   <div class="scroll-body" id="homeScrollBody">
 
-    <!-- Brand header (top-centered) -->
-    <div class="home-brand-header">
-      <span class="home-brand-text">GreenLine</span>
-    </div>
+    <!-- ============================================================
+         HEADER: приветствие по имени (без гамбургера, без колокола)
+         ============================================================ -->
+    <header class="hm-header">
+      <div class="hm-greet">
+        <div class="hm-greet-time" id="hmGreetTime">Добрый вечер,</div>
+        <div class="hm-greet-name">
+          <span id="hmGreetName">Друг</span>!
+          <span class="hm-wave" aria-hidden="true">👋</span>
+        </div>
+      </div>
+    </header>
 
+    <!-- ============================================================
+         ПОГОДА + рекомендация услуги (Уральск, OpenWeather API)
+         ============================================================ -->
+    <section class="section hm-block hm-reveal">
+      <div class="hm-weather">
+        <div class="hm-weather-left">
+          <div class="hm-weather-icon" id="hmWeatherIcon" aria-hidden="true">
+            <!-- SVG-солнце по умолчанию; обновляется JS под фактическую погоду -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="9" fill="#FFC940"/>
+              <g stroke="#FFC940" stroke-width="2.6" stroke-linecap="round">
+                <path d="M24 6v6"/><path d="M24 36v6"/>
+                <path d="M6 24h6"/><path d="M36 24h6"/>
+                <path d="M11 11l4 4"/><path d="M33 33l4 4"/>
+                <path d="M37 11l-4 4"/><path d="M15 33l-4 4"/>
+              </g>
+            </svg>
+          </div>
+          <div class="hm-weather-text">
+            <div class="hm-weather-temp" id="hmWeatherTemp">23°</div>
+            <div class="hm-weather-loc">
+              <span id="hmWeatherCity">Уральск</span>, <span id="hmWeatherCond">солнечно</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="hm-weather-rec" id="hmWeatherRec">
+          <span class="hm-weather-rec-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 4 C 7 7, 5 12, 6 18 C 9 15, 11 12, 12 9 C 13 12, 15 15, 18 18 C 19 12, 17 7, 12 4 Z" fill="#3DA83D"/>
+            </svg>
+          </span>
+          <span class="hm-weather-rec-text">
+            <span class="hm-weather-rec-title">Отличный день</span>
+            <span class="hm-weather-rec-sub" id="hmWeatherRecSub">для покоса!</span>
+          </span>
+          <span class="hm-weather-rec-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HERO: фото + слоган + CTA «Рассчитать стоимость»
+         Фото меняется через админку (TODO: api.banners → hero image URL)
+         ============================================================ -->
+    <section class="section hm-block hm-reveal">
+      <div class="hm-hero" onclick="openQuickBookSheet()">
+        <img src="img/hero.jpg" alt="" class="hm-hero-img" loading="lazy"/>
+        <div class="hm-hero-overlay" aria-hidden="true"></div>
+        <div class="hm-hero-content">
+          <h1 class="hm-hero-title">
+            Ваш участок<br>заслуживает<br><em>лучшего</em><span class="hm-hero-leaf" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 4 C 7 7, 5 12, 6 18 C 9 15, 11 12, 12 9 C 13 12, 15 15, 18 18 C 19 12, 17 7, 12 4 Z" fill="#4ADE4A"/>
+              </svg>
+            </span>
+          </h1>
+          <p class="hm-hero-sub">Профессиональный уход<br>для идеального результата</p>
+          <button class="hm-hero-cta" type="button" onclick="event.stopPropagation(); openQuickBookSheet()">
+            <span>Рассчитать стоимость</span>
+            <span class="hm-hero-cta-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         НАШИ УСЛУГИ: 4 карточки горизонтально (с прокруткой на узких)
+         Цены и фото — из админки (TODO: api.services.list())
+         ============================================================ -->
+    <section class="section hm-block hm-reveal">
+      <div class="block-head">
+        <h3 class="block-title">Наши услуги</h3>
+        <span class="block-link" data-action="show-page" data-page="services">Все услуги ›</span>
+      </div>
+      <div class="hm-services-row">
+        <article class="hm-service-card" onclick="openServiceDetail('Покос травы', this, 'home')">
+          <img src="img/a993e26b12.png" alt="" loading="lazy"/>
+          <div class="hm-service-overlay" aria-hidden="true"></div>
+          <div class="hm-service-info">
+            <div class="hm-service-name">Покос<br>травы</div>
+            <div class="hm-service-price">от 2 500 ₸ / сотка</div>
+          </div>
+        </article>
+        <article class="hm-service-card" onclick="openServiceDetail('Посадка газона', this, 'home')">
+          <img src="img/0d19d8e209.png" alt="" loading="lazy"/>
+          <div class="hm-service-overlay" aria-hidden="true"></div>
+          <div class="hm-service-info">
+            <div class="hm-service-name">Посадка<br>газона</div>
+            <div class="hm-service-price">от 4 500 ₸ / сотка</div>
+          </div>
+        </article>
+        <article class="hm-service-card" onclick="openServiceDetail('Вспашка', this, 'home')">
+          <img src="img/c7ea20cb93.png" alt="" loading="lazy"/>
+          <div class="hm-service-overlay" aria-hidden="true"></div>
+          <div class="hm-service-info">
+            <div class="hm-service-name">Вспашка<br>участка</div>
+            <div class="hm-service-price">от 8 000 ₸ / сотка</div>
+          </div>
+        </article>
+        <article class="hm-service-card" onclick="openServiceDetail('Топиарная обрезка', this, 'home')">
+          <img src="img/6c992cb66e.png" alt="" loading="lazy"/>
+          <div class="hm-service-overlay" aria-hidden="true"></div>
+          <div class="hm-service-info">
+            <div class="hm-service-name">Топиарная<br>стрижка</div>
+            <div class="hm-service-price">от 3 000 ₸ / час</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Отзывы клиентов -->
+    <section class="section home-reveal home-block" style="padding-bottom: 96px;">
+      <div class="block-head">
+        <h3 class="block-title">Отзывы клиентов</h3>
+        <span class="block-link">Все ›</span>
+      </div>
+      <div class="reviews-card">
+        <div class="reviews-row" id="reviewsRow">
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Очень аккуратно подстригли газон и убрали всё за собой. Команда вежливая, выехали в назначенное время.</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="0">А</div>
+              <div class="review-author-info">
+                <div class="review-name">Айгуль Н.</div>
+                <div class="review-service">Стрижка газона · 2 дня назад</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Заказывал вспашку — всё по фотографиям. Цена честная, доплат на месте не было. Рекомендую!</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="1">Е</div>
+              <div class="review-author-info">
+                <div class="review-name">Ержан С.</div>
+                <div class="review-service">Вспашка · 5 дней назад</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Подстригли тую идеальной формы. Были опасения после прошлых "мастеров", но эти ребята — профи!</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="2">С</div>
+              <div class="review-author-info">
+                <div class="review-name">Сауле Б.</div>
+                <div class="review-service">Топиарная обрезка · 1 нед.</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="review-quote-mark" aria-hidden="true">"</div>
+            <div class="review-stars" aria-label="5 из 5">
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
+            </div>
+            <p class="review-text">Подписалась на регулярный покос — газон выглядит отлично всё лето. Никаких хлопот.</p>
+            <div class="review-author">
+              <div class="review-avatar" data-color="3">Д</div>
+              <div class="review-author-info">
+                <div class="review-name">Динара К.</div>
+                <div class="review-service">Подписка на покос · 2 нед.</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
     <!-- Personal discount with countdown -->
     <section class="section home-discount-wrap home-reveal">
       <div class="home-discount">
@@ -469,185 +677,6 @@
               <path d="M5 12h14M13 6l6 6-6 6"/>
             </svg>
           </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Быстрая бронь — открывает bottom-sheet выбора услуги -->
-    <section class="section home-reveal home-block">
-      <button type="button" class="home-calc-entry" onclick="openQuickBookSheet()">
-        <span class="home-calc-entry-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="3" width="14" height="18" rx="2"/>
-            <path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h2M12 19h2M16 19h0"/>
-          </svg>
-        </span>
-        <span class="home-calc-entry-body">
-          <span class="home-calc-entry-title">Рассчитать примерную стоимость</span>
-          <span class="home-calc-entry-sub">Выберите услугу — узнаете цену</span>
-        </span>
-        <span class="home-calc-entry-arrow" aria-hidden="true">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
-        </span>
-      </button>
-    </section>
-
-    <!-- Каталог услуг -->
-    <section class="section home-reveal home-block">
-      <div class="block-head">
-        <h3 class="block-title">Каталог услуг</h3>
-      </div>
-      <div class="ba-card">
-        <div class="home-service-grid">
-          <div class="home-service-tile" onclick="openServiceDetail('Покос травы', this, 'home')">
-            <img src="img/a993e26b12.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Покос травы</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-          <div class="home-service-tile" onclick="openServiceDetail('Стрижка газона', this, 'home')">
-            <img src="img/4eecf9d329.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Стрижка газона</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-          <div class="home-service-tile" onclick="openServiceDetail('Вспашка', this, 'home')">
-            <img src="img/c7ea20cb93.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Вспашка</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-          <div class="home-service-tile" onclick="openServiceDetail('Посадка газона', this, 'home')">
-            <img src="img/0d19d8e209.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Посадка газона</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-          <div class="home-service-tile" onclick="openServiceDetail('Посадка растений', this, 'home')">
-            <img src="img/c300d3358f.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Посадка растений</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-          <div class="home-service-tile" onclick="openServiceDetail('Топиарная обрезка', this, 'home')">
-            <img src="img/6c992cb66e.png" alt="">
-            <div class="hst-bottom">
-              <div class="hst-name">Топиарная обрезка</div>
-              <div class="hst-arrow">›</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Наши работы -->
-    <section class="section home-reveal home-block">
-      <div class="block-head">
-        <h3 class="block-title">Наши работы</h3>
-        <span class="block-link" onclick="openGallery()">Все ›</span>
-      </div>
-      <div class="ba-card">
-        <div class="ba-grid">
-          <div class="ba-tile" onclick="openGallery()">
-            <img src="img/bfd86991f4.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
-            <div class="ba-tile-label">Покос · 6 соток</div>
-          </div>
-          <div class="ba-tile" onclick="openGallery()">
-            <img src="img/8ed73f0d79.png" alt="До и после" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
-            <div class="ba-tile-label">Стрижка газона</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Отзывы клиентов -->
-    <section class="section home-reveal home-block" style="padding-bottom: 96px;">
-      <div class="block-head">
-        <h3 class="block-title">Отзывы клиентов</h3>
-        <span class="block-link">Все ›</span>
-      </div>
-      <div class="reviews-card">
-        <div class="reviews-row" id="reviewsRow">
-          <article class="review-card">
-            <div class="review-quote-mark" aria-hidden="true">"</div>
-            <div class="review-stars" aria-label="5 из 5">
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-            </div>
-            <p class="review-text">Очень аккуратно подстригли газон и убрали всё за собой. Команда вежливая, выехали в назначенное время.</p>
-            <div class="review-author">
-              <div class="review-avatar" data-color="0">А</div>
-              <div class="review-author-info">
-                <div class="review-name">Айгуль Н.</div>
-                <div class="review-service">Стрижка газона · 2 дня назад</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="review-card">
-            <div class="review-quote-mark" aria-hidden="true">"</div>
-            <div class="review-stars" aria-label="5 из 5">
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-            </div>
-            <p class="review-text">Заказывал вспашку — всё по фотографиям. Цена честная, доплат на месте не было. Рекомендую!</p>
-            <div class="review-author">
-              <div class="review-avatar" data-color="1">Е</div>
-              <div class="review-author-info">
-                <div class="review-name">Ержан С.</div>
-                <div class="review-service">Вспашка · 5 дней назад</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="review-card">
-            <div class="review-quote-mark" aria-hidden="true">"</div>
-            <div class="review-stars" aria-label="5 из 5">
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-            </div>
-            <p class="review-text">Подстригли тую идеальной формы. Были опасения после прошлых "мастеров", но эти ребята — профи!</p>
-            <div class="review-author">
-              <div class="review-avatar" data-color="2">С</div>
-              <div class="review-author-info">
-                <div class="review-name">Сауле Б.</div>
-                <div class="review-service">Топиарная обрезка · 1 нед.</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="review-card">
-            <div class="review-quote-mark" aria-hidden="true">"</div>
-            <div class="review-stars" aria-label="5 из 5">
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-              <svg viewBox="0 0 16 16" fill="#FFB020"><path d="M8 1l2 4.7 5 .5-3.7 3.4 1.1 5L8 11.9 3.6 14.6l1.1-5L1 6.2l5-.5z"/></svg>
-            </div>
-            <p class="review-text">Подписалась на регулярный покос — газон выглядит отлично всё лето. Никаких хлопот.</p>
-            <div class="review-author">
-              <div class="review-avatar" data-color="3">Д</div>
-              <div class="review-author-info">
-                <div class="review-name">Динара К.</div>
-                <div class="review-service">Подписка на покос · 2 нед.</div>
-              </div>
-            </div>
-          </article>
         </div>
       </div>
     </section>
@@ -1024,11 +1053,14 @@
 
 <!-- ===== SERVICES ===== -->
 <div id="page-services" class="page">
-  <div class="header">
-    <div class="header-top">
+  <div class="header header-with-back">
+    <button class="page-back" type="button" aria-label="Назад" data-action="show-page" data-page="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="header-title-stack">
       <div class="header-logo"><span class="logo-text">GreenLine</span></div>
+      <div class="header-sub">Все услуги</div>
     </div>
-    <div class="header-sub">Все услуги</div>
   </div>
   <div class="scroll-body">
     <div style="padding:8px 0;">
@@ -2719,8 +2751,8 @@ window.toggleTheme = toggleTheme;
 <!-- Слой данных (api.js) и нативных вызовов (native.js).
      UI должен дёргать ТОЛЬКО window.api.* — не firebase.*, не fetch напрямую.
      При переезде на NestJS / Capacitor меняются ТОЛЬКО эти два файла. -->
-<script src="js/api.js?v=1"></script>
+<script src="js/api.js?v=2"></script>
 <script src="js/native.js?v=1"></script>
-<script src="js/app.js?v=71"></script>
+<script src="js/app.js?v=72"></script>
 </body>
 </html>

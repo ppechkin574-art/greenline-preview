@@ -150,6 +150,40 @@
     }
   };
 
+  // ================== WEATHER ==================
+  // Сейчас прямой вызов OpenWeather с ключом в клиенте.
+  // Безопасный путь: Cloud Function проксирует, ключ только на сервере.
+  // TODO: перенести в Cloud Function когда подключим Blaze.
+  const OPENWEATHER_KEY = ''; // ← вставь свой ключ с openweathermap.org или оставь пусто для заглушки
+  const weather = {
+    async get(city) {
+      const fallback = {
+        temp: 23, condition: 'солнечно', icon: '01d',
+        city: city || 'Уральск', main: 'Clear'
+      };
+      if (!OPENWEATHER_KEY) return fallback;
+      try {
+        const url = 'https://api.openweathermap.org/data/2.5/weather?q=' +
+          encodeURIComponent(city || 'Uralsk,KZ') +
+          '&appid=' + OPENWEATHER_KEY +
+          '&units=metric&lang=ru';
+        const r = await fetch(url);
+        if (!r.ok) return fallback;
+        const d = await r.json();
+        return {
+          temp: Math.round(d.main.temp),
+          condition: d.weather[0].description,
+          icon: d.weather[0].icon,
+          city: d.name,
+          main: d.weather[0].main
+        };
+      } catch (e) {
+        console.warn('weather fallback', e);
+        return fallback;
+      }
+    }
+  };
+
   // ================== CHAT (Cloud Function → Claude) ==================
   const chat = {
     async send(/* message */) {
@@ -169,6 +203,7 @@
     pricing: pricing,
     photos: photos,
     chat: chat,
+    weather: weather,
     _internal: { clearRecaptcha: clearRecaptcha }
   };
 })();

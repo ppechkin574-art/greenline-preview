@@ -873,15 +873,108 @@ function setHomeTab(btn) {
   }
 
 // Home hero greeting — заполнение имени пользователя
+// === Приветствие на home ===
+// Время суток + имя пользователя из localStorage (или Firebase Auth profile)
 function renderHomeGreeting() {
-  const nameEl = document.getElementById('homeUserName');
-  if (!nameEl) return;
+  // Старый идентификатор оставляем на всякий случай
+  const oldNameEl = document.getElementById('homeUserName');
+  const newNameEl = document.getElementById('hmGreetName');
+  const timeEl    = document.getElementById('hmGreetTime');
+
   const stored = localStorage.getItem('gl_name') || '';
-  const firstName = stored.trim().split(/\s+/)[0] || 'друг';
-  nameEl.textContent = firstName;
+  const firstName = stored.trim().split(/\s+/)[0] || 'Друг';
+  if (oldNameEl) oldNameEl.textContent = firstName;
+  if (newNameEl) newNameEl.textContent = firstName;
+
+  if (timeEl) {
+    const h = new Date().getHours();
+    let g = 'Добрый вечер,';
+    if (h < 5)        g = 'Доброй ночи,';
+    else if (h < 12)  g = 'Доброе утро,';
+    else if (h < 17)  g = 'Добрый день,';
+    timeEl.textContent = g;
+  }
 }
-// Запуск при загрузке скрипта (DOM уже готов на этом моменте)
 renderHomeGreeting();
+
+// === Погода + рекомендация услуги на home ===
+async function renderHomeWeather() {
+  if (!window.api || !api.weather) return;
+  try {
+    const w = await api.weather.get('Uralsk,KZ');
+    const tEl    = document.getElementById('hmWeatherTemp');
+    const cityEl = document.getElementById('hmWeatherCity');
+    const condEl = document.getElementById('hmWeatherCond');
+    const recEl  = document.getElementById('hmWeatherRecSub');
+    const iconEl = document.getElementById('hmWeatherIcon');
+
+    if (tEl)    tEl.textContent    = w.temp + '°';
+    if (cityEl) cityEl.textContent = 'Уральск'; // принудительно — даже если API вернёт английский
+    if (condEl) condEl.textContent = w.condition;
+    if (recEl)  recEl.textContent  = _pickRecommendation(w);
+    if (iconEl) iconEl.innerHTML   = _renderWeatherIcon(w);
+  } catch (e) { /* остаются заглушки из HTML */ }
+}
+
+// Рекомендация услуги по погоде. Простая эвристика на этапе MVP.
+function _pickRecommendation(w) {
+  const main = (w.main || '').toLowerCase();
+  const t = w.temp;
+  if (main.includes('rain') || main.includes('drizzle') || main.includes('thunder'))
+    return 'отложите покос';
+  if (main.includes('snow'))   return 'для планирования';
+  if (t > 28)                  return 'для полива';
+  if (t >= 18 && t <= 28)      return 'для покоса!';
+  if (t >= 10)                 return 'для посадки';
+  return 'для топиара';
+}
+
+// SVG-иконка погоды по коду от OpenWeather (или main).
+function _renderWeatherIcon(w) {
+  const m = (w.main || '').toLowerCase();
+  if (m.includes('rain') || m.includes('drizzle')) return _wIcon('rain');
+  if (m.includes('snow'))   return _wIcon('snow');
+  if (m.includes('cloud'))  return _wIcon('cloud');
+  if (m.includes('thunder')) return _wIcon('thunder');
+  return _wIcon('sun');
+}
+function _wIcon(kind) {
+  switch (kind) {
+    case 'sun':
+      return '<svg viewBox="0 0 48 48" fill="none">'
+        + '<circle cx="24" cy="24" r="9" fill="#FFC940"/>'
+        + '<g stroke="#FFC940" stroke-width="2.6" stroke-linecap="round">'
+        + '<path d="M24 6v6"/><path d="M24 36v6"/>'
+        + '<path d="M6 24h6"/><path d="M36 24h6"/>'
+        + '<path d="M11 11l4 4"/><path d="M33 33l4 4"/>'
+        + '<path d="M37 11l-4 4"/><path d="M15 33l-4 4"/>'
+        + '</g></svg>';
+    case 'cloud':
+      return '<svg viewBox="0 0 48 48" fill="none">'
+        + '<path d="M14 32 C 8 32 6 26 11 22 C 11 16 18 14 22 18 C 26 12 36 14 36 22 C 42 22 42 32 36 32 Z" fill="#A8B8B8"/>'
+        + '</svg>';
+    case 'rain':
+      return '<svg viewBox="0 0 48 48" fill="none">'
+        + '<path d="M14 26 C 8 26 6 20 11 16 C 11 10 18 8 22 12 C 26 6 36 8 36 16 C 42 16 42 26 36 26 Z" fill="#7A8898"/>'
+        + '<g stroke="#4A8FE0" stroke-width="2.4" stroke-linecap="round">'
+        + '<path d="M16 32l-2 6"/><path d="M24 32l-2 6"/><path d="M32 32l-2 6"/>'
+        + '</g></svg>';
+    case 'snow':
+      return '<svg viewBox="0 0 48 48" fill="none">'
+        + '<path d="M14 26 C 8 26 6 20 11 16 C 11 10 18 8 22 12 C 26 6 36 8 36 16 C 42 16 42 26 36 26 Z" fill="#C8D4E0"/>'
+        + '<g fill="#FFFFFF" stroke="#A8B8C8" stroke-width="0.8">'
+        + '<circle cx="16" cy="36" r="2"/><circle cx="24" cy="40" r="2"/><circle cx="32" cy="36" r="2"/>'
+        + '</g></svg>';
+    case 'thunder':
+      return '<svg viewBox="0 0 48 48" fill="none">'
+        + '<path d="M14 26 C 8 26 6 20 11 16 C 11 10 18 8 22 12 C 26 6 36 8 36 16 C 42 16 42 26 36 26 Z" fill="#5A6878"/>'
+        + '<path d="M22 26 L 18 36 L 22 36 L 20 44 L 30 32 L 24 32 L 28 26 Z" fill="#FFC940"/>'
+        + '</svg>';
+  }
+}
+
+// Запуск при загрузке home
+document.addEventListener('DOMContentLoaded', renderHomeWeather);
 
 // Before/After mini sliders
 
