@@ -7403,20 +7403,25 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
    ============================================================ */
 .wlc-page {
   background: #fff;
-  min-height: 100vh; min-height: 100dvh;
   padding: 0;
+  /* В device-frame .page = height:100% (от .phone). На реальном телефоне = 100vh.
+     Не используем min-height: 100vh — это переполняло бы .phone в desktop-preview. */
 }
 .wlc-content {
   max-width: 380px;
+  width: 100%;
   margin: 0 auto;
   padding:
     calc(env(safe-area-inset-top) + 64px)
     24px
     calc(env(safe-area-inset-bottom) + 24px);
-  min-height: 100vh; min-height: 100dvh;
+  /* flex:1 — заполняем родительский .wlc-page; высоту даёт .page */
+  flex: 1;
   display: flex; flex-direction: column;
   /* Контент прижат к левому краю — это ключ к ощущению из макета */
   text-align: left;
+  /* Если viewport узкий и контент не влезает — даём скролл, но без bounce */
+  overflow-y: auto;
 }
 
 /* Логотип: лист + название в одну строку, слева сверху */
