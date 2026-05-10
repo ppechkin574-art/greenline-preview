@@ -15,7 +15,7 @@
 <script src="vendor/firebase/firebase-database-compat.js"></script>
 <script src="vendor/firebase/firebase-auth-compat.js"></script>
 
-<link rel="stylesheet" href="css/styles.css?v=80">
+<link rel="stylesheet" href="css/styles.css?v=81">
 </head>
 <body>
 <div class="device-stage">
@@ -58,9 +58,11 @@
   <div class="splash-content">
     <div class="splash-logo">
       <svg class="gl-leaves gl-leaves--white splash-leaf" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <path class="gl-leaf-back"   d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
-        <path class="gl-leaf-front"  d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
-        <path class="gl-leaves-stem" d="M16 27 L16 31" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="gl-leaf-back"   d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z"/>
+        <path class="gl-leaf-vein-l" d="M16 25 Q 10 14 8 4"/>
+        <path class="gl-leaf-front"  d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z"/>
+        <path class="gl-leaf-vein-r" d="M16 25 Q 22 14 24 4"/>
+        <path class="gl-leaves-stem" d="M16 25 L16 30"/>
       </svg>
       <div class="splash-brand">GreenLine</div>
     </div>
@@ -78,8 +80,8 @@
       <div class="onb-top">
         <div class="onb-brand">
           <svg class="gl-leaves gl-leaves--white onb-leaf" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <path class="gl-leaf-back"   d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
-            <path class="gl-leaf-front"  d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
+            <path class="gl-leaf-back"   d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z"/>
+            <path class="gl-leaf-front"  d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z"/>
           </svg>
           <span>GreenLine</span>
         </div>
@@ -114,9 +116,11 @@
     <div class="wlc-brand">
       <!-- GreenLine: росток из двух листьев — единый общий компонент .gl-leaves -->
       <svg class="gl-leaves wlc-leaf" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <path class="gl-leaf-back"   d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
-        <path class="gl-leaf-front"  d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
-        <path class="gl-leaves-stem" d="M16 27 L16 31" stroke-width="1.4" stroke-linecap="round"/>
+        <path class="gl-leaf-back"   d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z"/>
+        <path class="gl-leaf-vein-l" d="M16 25 Q 10 14 8 4"/>
+        <path class="gl-leaf-front"  d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z"/>
+        <path class="gl-leaf-vein-r" d="M16 25 Q 22 14 24 4"/>
+        <path class="gl-leaves-stem" d="M16 25 L16 30"/>
       </svg>
       <span class="wlc-brand-text">GreenLine</span>
     </div>
@@ -356,8 +360,8 @@
         <button type="button" class="hm-weather-rec" id="hmWeatherRec">
           <span class="hm-weather-rec-icon" aria-hidden="true">
             <svg class="gl-leaves" viewBox="0 0 32 32" fill="none">
-              <path class="gl-leaf-back"  d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
-              <path class="gl-leaf-front" d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
+              <path class="gl-leaf-back"  d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z"/>
+              <path class="gl-leaf-front" d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z"/>
             </svg>
           </span>
           <span class="hm-weather-rec-text">
@@ -381,8 +385,8 @@
           <h1 class="hm-hero-title">
             Ваш участок<br>заслуживает<br><em>лучшего</em><span class="hm-hero-leaf" aria-hidden="true">
               <svg class="gl-leaves" viewBox="0 0 32 32" fill="none">
-                <path class="gl-leaf-back"  d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z" fill="#3DA83D"/>
-                <path class="gl-leaf-front" d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z" fill="#7BE87B"/>
+                <path class="gl-leaf-back"  d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z" fill="#3DA83D"/>
+                <path class="gl-leaf-front" d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z" fill="#7BE87B"/>
               </svg>
             </span>
           </h1>

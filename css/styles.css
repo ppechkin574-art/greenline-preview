@@ -1,7 +1,10 @@
 
 :root {
-  --green: #2E8B2E;
-  --green-light: #3DA83D;
+  /* Сдвинуто в тёмную сторону: белый текст уверенно читается на бренде.
+     Прежние значения: --green #2E8B2E, --green-light #3DA83D. */
+  --green: #1F6F1F;
+  --green-light: #2E8B2E;
+  --green-deep: #0F3A0F;
   --green-pale: #E8F5E8;
   --green-pale2: #F0FAF0;
   --bg: #F7FAF7;
@@ -7285,14 +7288,15 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
-  background: #2E8B2E;
+  background: #1F5F1F;
 }
 .splash-bg {
   position: absolute; inset: 0;
+  /* Тёмный лесной градиент — белый текст «GreenLine» получает чёткий контраст */
   background:
-    radial-gradient(120% 80% at 50% 35%, rgba(255,255,255,0.18) 0%, transparent 60%),
-    radial-gradient(80% 60% at 20% 80%, rgba(0,0,0,0.18) 0%, transparent 70%),
-    linear-gradient(135deg, #4ADE4A 0%, #2E8B2E 50%, #1F5F1F 100%);
+    radial-gradient(120% 80% at 50% 35%, rgba(255,255,255,0.10) 0%, transparent 60%),
+    radial-gradient(80% 60% at 20% 80%, rgba(0,0,0,0.30) 0%, transparent 70%),
+    linear-gradient(135deg, #2E8B2E 0%, #1F5F1F 50%, #0F3A0F 100%);
 }
 .splash-content {
   position: relative; z-index: 1;
@@ -7345,10 +7349,11 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 }
 .onb-bg {
   position: absolute; inset: 0;
+  /* Тёмный лесной — согласовано со splash, белый текст контрастен */
   background:
-    radial-gradient(110% 70% at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 55%),
+    radial-gradient(110% 70% at 30% 30%, rgba(255,255,255,0.10) 0%, transparent 55%),
     radial-gradient(80% 60% at 80% 90%, rgba(0,0,0,0.35) 0%, transparent 70%),
-    linear-gradient(180deg, #3DA83D 0%, #2E8B2E 45%, #1F5F1F 100%);
+    linear-gradient(180deg, #2E8B2E 0%, #1F5F1F 50%, #0F3A0F 100%);
   z-index: 0;
 }
 .onb-top, .onb-bottom { position: relative; z-index: 1; }
@@ -7468,26 +7473,26 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
 }
 .wlc-btn-login {
-  background: #2E8B2E;
+  background: var(--green);
   color: #fff;
   border: none;
-  /* Лёгкая зеленоватая «подложка» — подчёркивает приподнятость, не давит */
+  /* Подложка под фирменный тёмно-лесной */
   box-shadow:
-    0 6px 16px rgba(46, 139, 46, 0.18),
-    0 2px 4px rgba(46, 139, 46, 0.10);
+    0 6px 16px rgba(31, 111, 31, 0.22),
+    0 2px 4px rgba(31, 111, 31, 0.12);
 }
-.wlc-btn-login:hover  {
-  background: #2A7E2A;
+.wlc-btn-login:hover {
+  background: #185818;
   box-shadow:
-    0 8px 20px rgba(46, 139, 46, 0.22),
-    0 2px 4px rgba(46, 139, 46, 0.12);
+    0 8px 20px rgba(31, 111, 31, 0.26),
+    0 2px 4px rgba(31, 111, 31, 0.14);
 }
 .wlc-btn-login:active {
-  background: #266F26;
+  background: #124012;
   transform: scale(0.985);
   box-shadow:
-    0 4px 10px rgba(46, 139, 46, 0.16),
-    0 1px 2px rgba(46, 139, 46, 0.08);
+    0 4px 10px rgba(31, 111, 31, 0.18),
+    0 1px 2px rgba(31, 111, 31, 0.10);
 }
 
 .wlc-btn-register {
@@ -7524,22 +7529,41 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
 .wlc-terms a { color: #2E8B2E; font-weight: 600; cursor: pointer; }
 
 /* ============================================================
-   GreenLine — общий лого-компонент (два листа, росток)
-   Использовать в HTML так:
+   GreenLine — общий лого-компонент (два листа-миндалинки, росток)
+   Точное соответствие референсу: овальные листья с жилками, левый
+   тёмный, правый светлый, общая база с коротким стеблем.
+
+   HTML-шаблон:
    <svg class="gl-leaves" viewBox="0 0 32 32" fill="none">
-     <path class="gl-leaf-back"  d="M16 27 C 8 23 4 14 9 5 C 13 9 15 17 16 27 Z"/>
-     <path class="gl-leaf-front" d="M16 27 C 24 23 28 14 23 5 C 19 9 17 17 16 27 Z"/>
-     <path class="gl-leaves-stem" d="M16 27 L16 30" stroke-width="1.4" stroke-linecap="round"/>
+     <path class="gl-leaf-back"   d="M16 25 C 4 22 1 12 8 3 C 14 8 16 16 16 25 Z"/>
+     <path class="gl-leaf-vein-l" d="M16 25 Q 10 14 8 4"/>
+     <path class="gl-leaf-front"  d="M16 25 C 28 22 31 12 24 3 C 18 8 16 16 16 25 Z"/>
+     <path class="gl-leaf-vein-r" d="M16 25 Q 22 14 24 4"/>
+     <path class="gl-leaves-stem" d="M16 25 L16 30"/>
    </svg>
    Модификатор .gl-leaves--white для зелёных фонов (splash, onboarding).
    ============================================================ */
-.gl-leaves .gl-leaf-back   { fill: #2E8B2E; }
-.gl-leaves .gl-leaf-front  { fill: #4ADE4A; }
-.gl-leaves .gl-leaves-stem { stroke: #1F5F1F; fill: none; }
+.gl-leaves .gl-leaf-back    { fill: #1A4F1A; }
+.gl-leaves .gl-leaf-front   { fill: #4ABE4A; }
+.gl-leaves .gl-leaf-vein-l,
+.gl-leaves .gl-leaf-vein-r  {
+  fill: none;
+  stroke: rgba(0,0,0,0.18);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+}
+.gl-leaves .gl-leaves-stem  {
+  stroke: #1A4A1A;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  fill: none;
+}
 
-.gl-leaves--white .gl-leaf-back   { fill: rgba(255,255,255,0.92); }
-.gl-leaves--white .gl-leaf-front  { fill: #FFFFFF; }
-.gl-leaves--white .gl-leaves-stem { stroke: rgba(255,255,255,0.7); }
+.gl-leaves--white .gl-leaf-back    { fill: rgba(255,255,255,0.78); }
+.gl-leaves--white .gl-leaf-front   { fill: #FFFFFF; }
+.gl-leaves--white .gl-leaf-vein-l,
+.gl-leaves--white .gl-leaf-vein-r  { stroke: rgba(0,0,0,0.10); }
+.gl-leaves--white .gl-leaves-stem  { stroke: rgba(255,255,255,0.7); }
 
 /* ============================================================
    HOME — новый дизайн под макет «Добрый вечер, Нурболат! 👋»
@@ -7692,7 +7716,7 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   margin-top: 20px;
   align-self: flex-start;
   display: inline-flex; align-items: center; gap: 10px;
-  background: #2E8B2E;
+  background: var(--green);
   color: #fff;
   border: none;
   border-radius: 100px;
@@ -7701,11 +7725,11 @@ body[data-theme="dark"] .kit-step-num[data-state="pending"] {
   font-size: 15px; font-weight: 700;
   cursor: pointer;
   box-shadow:
-    0 6px 16px rgba(46, 139, 46, 0.35),
-    0 2px 4px rgba(0,0,0,0.15);
+    0 6px 16px rgba(31, 111, 31, 0.40),
+    0 2px 4px rgba(0,0,0,0.18);
   transition: transform 0.15s, background 0.2s;
 }
-.hm-hero-cta:active { transform: scale(0.96); background: #266F26; }
+.hm-hero-cta:active { transform: scale(0.96); background: #124012; }
 .hm-hero-cta-arrow {
   display: inline-flex; align-items: center;
   width: 28px; height: 28px;
